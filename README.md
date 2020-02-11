@@ -22,9 +22,12 @@
 
 - React Router (needs to be installed)
 - React Bootstrap (needs to be installed)
-- React Redux? (may need to be installed)
+- React Redux (may need to be installed)
+    - React Redux Dev Tools
 
 ## Dev Environment Setup (INCOMPLETE, ask Jack)
+
+### Frontend
 
 1. Ensure you have NPM installed
 
@@ -35,7 +38,19 @@
 
 ``` {bash}
 cd frontend/
-npm i --save
+npm install
 ```
 
-3. Ensure that NPM packages were properly installed.
+3. To run React app run `npm start`
+
+### Backend
+
+1. Ensure you have NPM installed (see Frontend steps).
+2. Type the following to setup backend/
+
+``` {bash}
+cd backend/
+npm install
+```
+
+3. To run express server, run `DEBUG=backend:* npm start`
