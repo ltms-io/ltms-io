@@ -20,9 +20,9 @@
 
 ## Running List of Installed (or need to be installed) NPM Packages
 
-- React Router (needs to be installed)
-- React Bootstrap (needs to be installed)
-- React Redux (may need to be installed)
+- React Router
+- React Bootstrap
+- React Redux
     - React Redux Dev Tools
 
 ## Dev Environment Setup (INCOMPLETE, ask Jack)
