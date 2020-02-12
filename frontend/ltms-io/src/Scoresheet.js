@@ -5,9 +5,9 @@ import './Scoresheet.css';
 class Square extends React.Component {
     render() {
       return (
-        <textarea className="square">
+        <div type="text" className="category" contentEditable="true">
           {/* TODO */}
-        </textarea>
+        </div>
       );
     }
   }
@@ -17,7 +17,7 @@ class Sheet extends React.Component{
         return <Square />
     }
     render(){
-        const count = 7;
+      var categories = window.prompt("How many categories?");
         
         
         // var add = '<div>';  
@@ -30,8 +30,8 @@ class Sheet extends React.Component{
 
         var items = [];
 
-        for(var i = 0 ; i<count; i++){
-            items.push(<div>{this.renderRow(i)}</div>);
+        for(var i = 0 ; i<categories; i++){
+          items.push(<div>{this.renderRow(i)}{this.renderRow(i)}</div>);
         }
 
         return(

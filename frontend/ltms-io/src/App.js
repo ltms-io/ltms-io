@@ -5,7 +5,6 @@ import './App.css';
 import Sheet from './Scoresheet.js';
 
 function generateSchedule() {
-    
     ReactDOM.render(<Sheet />, document.getElementById('root'));
 }
 
