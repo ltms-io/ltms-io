@@ -5,12 +5,14 @@ import './Scoresheet.css';
 class Square extends React.Component {
     render() {
       return (
-        <div type="text" className="category" contentEditable="true">
+        <input type="text" className="category" contentEditable="true" name="categories">
           {/* TODO */}
-        </div>
+        </input>
       );
     }
   }
+
+
 
 class Sheet extends React.Component{
     renderRow(i){
@@ -31,13 +33,15 @@ class Sheet extends React.Component{
         var items = [];
 
         for(var i = 0 ; i<categories; i++){
-          items.push(<div>{this.renderRow(i)}{this.renderRow(i)}</div>);
+          items.push(this.renderRow(i));
         }
 
         return(
         <div>
             {items}
+            <div><button onClick={() => grabCategories("hello")} className="rend">Render Scoresheet</button></div>
         </div>
+        
 
         );
         // return(
@@ -50,5 +54,15 @@ class Sheet extends React.Component{
         //     </div>
         // );
     }
+}
+
+function grabCategories(variable){
+  alert(variable);
+  var catt = document.getElementsByName("categories");
+  var cat = [];
+  for(var i = 0; i<catt.length; i++){
+    cat.push(catt[i].value);
+  }
+  alert(cat[3]);
 }
 export default Sheet;
