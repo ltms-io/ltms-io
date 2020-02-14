@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 //Create Tournament Schema
 const TournamentSchema = new Schema({
     director: {
-        type: ObjectId,
+        type: String,
         ref: 'User',
         required: true,
     },
