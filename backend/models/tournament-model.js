@@ -4,27 +4,16 @@ const Schema = mongoose.Schema;
 //Create Tournament Schema
 const TournamentSchema = new Schema({
     director: {
-        type: String,
+        type: ObjectId,
         ref: 'User',
         required: true,
     },
-    volunteers: [
-        { 
-            user: {
-                type: String,
-                ref: 'User',
-            }, 
-            role: String, 
-        }
-    ],
+    volunteers: [],
     officialEventFlag: {
         type: Boolean,
         default: false,
     },
-    teams: {
-        type: String,
-        ref: 'Team',
-    },
+    teams: [],
     fieldsCount: {
         type: Number,
         required: true,
@@ -42,6 +31,11 @@ const TournamentSchema = new Schema({
         default: Date.now,
     },
 });
+
+//Instance methods of the Schema
+TournamentSchema.methods.addVolunteer = function(uId, uRole) {
+    this.model.volunteer.add({user: uId, role: uRole})
+};
 
 //Create a model for schema instantiation
 Tournament = mongoose.model('tournaments', TournamentSchema);
