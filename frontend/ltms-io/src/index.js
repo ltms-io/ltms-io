@@ -7,28 +7,36 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { createStore } from 'redux';
 
-function reducer(state, action) {
-	if (action.type == 'changeState') {
-		return action.payload.newState;
-	}
+const initState = {
+	name: "First Last",
+	tournaments: []
+}
 
-	return 'State';
+function reducer(state = initState, action) {
+	if (action.type == "ADD_TOURNAMENT") {
+		return {
+			...state,
+			tournaments: [...state.tournaments, action.tournament]
+		};
+	}
+	if (action.type == "SET_NAME") {
+		return {
+			...state,
+			name: action.name
+		};
+	}
 }
 
 const store = createStore(reducer);
 
-console.log(store.getState());
+store.subscribe(() => {
+	console.log("state updated:");
+	console.log(store.getState());
+})
 
-const action = {
-	type: 'changeState',
-	payload: {
-		newState: 'New state'
-	}
-};
-
-store.dispatch(action);
-
-console.log(store.getState());
+store.dispatch({type: "ADD_TOURNAMENT", tournament: "Purdue FLL 2020"});
+store.dispatch({type: "ADD_TOURNAMENT", tournament: "Indiana FLL 2020"});
+store.dispatch({type: "SET_NAME", name: "Litmus Aiyo"});
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
