@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
-import LTMS from './LTMS';
+import Home from './Home';
+import Dashboard from './Dashboard';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 function App() {
@@ -10,18 +11,11 @@ function App() {
         <h1>LTMS.io</h1>
         <Switch>
           <Route path="/" exact component= { Home } />
-          <Route path="/ltms" component={ LTMS } />
+          <Route path="/dashboard" component={ Dashboard } />
         </Switch>
       </div>
     </Router>
   );
 }
-
-const Home = () => (
-  <div>
-    <h1>Welcome!</h1>
-    <a href="/ltms">Tournament List</a>
-  </div>
-);
 
 export default App;

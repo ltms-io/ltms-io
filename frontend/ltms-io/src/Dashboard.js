@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 
-class LTMS extends Component {
+class Dashboard extends Component {
   render () {
     const { tournaments } = this.props;
     const tournamentList = tournaments.map(tournament => {
       return (
-        <div className="ltms">
+        <div className="tournament">
           <div>ID: { tournament.id }</div>
           <div>Title: { tournament.title }</div>
           <div>Role: { tournament.role } </div>
@@ -27,4 +27,4 @@ const mapStateToProps = (state) => {
   }
 };
 
-export default connect(mapStateToProps)(LTMS);
+export default connect(mapStateToProps)(Dashboard);
