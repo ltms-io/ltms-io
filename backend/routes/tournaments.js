@@ -3,20 +3,6 @@ const router = express.Router();
 const Tournament = require('../models/tournament-model');
 const User = require('../models/user-model');
 
-var exampleUser = new User({
-    name: 'Fake M. Name',
-    email: 'boyo@LTMS.com',
-    password: 'yeet123',
-    userAuthorizer: true
-})
-
-var exampleTournament = new Tournament({
-    director: exampleUser._id,
-    officialEventFlag: true,
-    fieldsCount: 2,
-    matchesPerTeam: 3,
-});
-
 /* GET tournament listing. */
 router.get('/', function(req, res, next) {
   res.send('All these tournaments!');
