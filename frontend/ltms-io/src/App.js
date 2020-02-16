@@ -1,8 +1,16 @@
 import React from 'react';
 import logo from './logo.svg';
+import ReactDOM from 'react-dom';
 import './App.css';
+import Sheet from './Scoresheet.js';
+
+function generateSchedule() {
+    ReactDOM.render(<Sheet />, document.getElementById('root'));
+}
 
 function App() {
+
+
   return (
     <div className="App">
       <header className="App-header">
@@ -18,6 +26,7 @@ function App() {
         >
           Learn React
         </a>
+        <button onClick={() => generateSchedule()} id = "button">Generate Schedule</button>
       </header>
     </div>
   );
