@@ -89,7 +89,7 @@ router.patch('/:id', (req, res) => {
             summaryOfChanges += "•You have been authorized to authorize other users to create official events.\n"
         }
 
-        user.save(); //TODO: ass a .then() or an await?
+        user.save(); //TODO: as a .then() or an await?
 
         const msg = {
             to: req.body.email,
