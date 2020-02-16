@@ -8,7 +8,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 /* GET */
 
 //GET all users listings
-router.get('/api/users', function (req, res, next) {
+router.get('/', function (req, res, next) {
     User.find({}, (err, users) => {
         if(err) {
             res.status(500).send(err);
@@ -19,7 +19,7 @@ router.get('/api/users', function (req, res, next) {
 });
 
 //GET specific user
-router.get('/api/users/:id', (req, res) => {
+router.get('/:id', (req, res) => {
     User.findById(req.params.id).then(user => {
         if(!user) {
             res.status(404).send("user not found");
@@ -32,7 +32,7 @@ router.get('/api/users/:id', (req, res) => {
 /* POST */
 
 //POST new User
-router.post('/api/users', (req, res) => {
+router.post('/', (req, res) => {
     const newUser = new User({
         //TODO: ADD USER STUFF
     })
@@ -50,64 +50,71 @@ router.post('/api/users', (req, res) => {
 //  -user id is supplied as URL param
 //  -changes are supplied via body
 //  -if no change to a field, don't send it
-router.patch('/api/users/:id', (req, res) => {
+router.patch('/:id', (req, res) => {
     if(Object.keys(req.body).length == 0) {
         res.status(400).send("body is empty");
         return;
     }
 
     User.findById(req.params.id).then(user => {
-        // if(!user) {
-        //     res.status(404).send("user not found");
-        //     return;
-        // }
+        if(!user) {
+            res.status(404).send("user not found");
+            return;
+        }
 
         summaryOfChanges = '';
 
         if(req.body.name) {
             user.name = req.body.name;
-            summaryOfChanges.concat(`•Name has been updated to ${req.body.name}\n`);
+            summaryOfChanges += `•Name has been updated to ${req.body.name}\n`
         }
 
         if(req.body.email) { //TODO add email validator
             // user.email = req.body.email;
-            summaryOfChanges.concat(`•Email has been updated to ${req.body.email}\n`); //TODO: maybe ask to confirm on old email if this is the case?
+            summaryOfChanges += `•Email has been updated to ${req.body.email}\n` //TODO: maybe ask to confirm on old email if this is the case?
         }
 
         if(req.body.password) { //TODO: NOTE: adding this becaue it is in schema but I do not think we need this as Auth0 is managing passwords
             //TODO
-            summaryOfChanges.concat("•Password has been updated.\n");
+            summaryOfChanges += "•Password has been updated.\n"
         }
 
         if(req.body.eventAuthorizer) { //TODO: add authorization to this
             user.eventAuthorizer = req.body.eventAuthorizer;
-            summaryOfChanges.concat("•You have been authorized to create official events.\n");
+            summaryOfChanges += "•You have been authorized to create official events.\n"
         }
 
         if(req.body.userAuthorizer) { //TODO: add authorization to this
             user.userAuthorizer = req.body.userAuthorizer;
-            summaryOfChanges.concat("•You have been authorized to authorize other users to create official events.\n");
+            summaryOfChanges += "•You have been authorized to authorize other users to create official events.\n"
         }
 
-        user.save();
-
-        res.status(200).send("changes made successfully");
+        user.save(); //TODO: ass a .then() or an await?
 
         const msg = {
             to: req.body.email,
             from: 'noreply@ltmsio.codes',
             subject: 'Changes have been made to your account',
-            text: msg,
-            html: msg,
+            text: summaryOfChanges,
+            html: summaryOfChanges,
         };
-    })
+
+        console.log(msg);
+
+        sgMail.send(msg).then(() => {
+            res.status(200).send("changes made successfully");
+        }).catch(err => {
+            console.log(err)
+            res.status(500).send(err);
+        });
+    // })
 });
 
 /* DELETE */
 
 //DELETE user
 
-router.delete('/api/users/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
     //TODO: Actually add something
     res.status(501).send("not ready for that yet");
 });
