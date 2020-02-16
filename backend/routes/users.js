@@ -107,7 +107,7 @@ router.patch('/:id', (req, res) => {
             console.log(err)
             res.status(500).send(err);
         });
-    // })
+    })
 });
 
 /* DELETE */
