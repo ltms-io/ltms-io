@@ -11,8 +11,6 @@ import rootReducer from './reducers/rootReducer'
 
 const store = createStore(rootReducer);
 
-console.log(store.getState());
-
 ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
