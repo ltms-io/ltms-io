@@ -29,7 +29,7 @@ const UserSchema = new Schema({
     },
 });
 
-//Create a model for the user scheme
+//Create a model for the user schema
 const User = mongoose.model('users', UserSchema);
 
 //Export

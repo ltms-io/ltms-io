@@ -18,12 +18,12 @@ var exampleTournament = new Tournament({
 });
 
 /* GET tournament listing. */
-router.get('/api/tournaments', function(req, res, next) {
+router.get('/', function(req, res, next) {
   res.send('All these tournaments!');
 });
 
 /* GET specific tournament. */
-router.get('/api/tournaments/:id', (req, res) => {
+router.get('/:id', (req, res) => {
     if (!req.body.auth) { // TODO: replace with correct authorization field or auth handler module
         res.status(401).send('Authorization invalid');
         return;
@@ -32,8 +32,13 @@ router.get('/api/tournaments/:id', (req, res) => {
     res.send(exampleTournament);
 })
 
+/* GET tournaments by users */
+router.get('/user/:id', (req, res) => {
+    
+})
+
 /* UPDATE specific tournament. */
-router.put('/api/tournaments/:id', (req, res) => {
+router.post('/:id', (req, res) => {
     if (!req.body.auth) { // TODO: replace with correct authorization field or auth handler module
         res.status(401).send('Authorization invalid');
         return;
