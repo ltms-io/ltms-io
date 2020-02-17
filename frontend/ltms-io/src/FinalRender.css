@@ -1,0 +1,35 @@
+.category{
+    position: relative;
+    background: #fff;
+    border: 1px solid #999;
+    font-size: 15px;
+    font-weight: bold;
+    margin-right: 0px;
+    margin-top: 0px;
+    padding: 0;
+    text-align: left;
+    overflow-wrap: break-word;
+    resize: none;
+    height: 24px;
+    width: 400px;
+    left: 50px;
+    top: 50px;
+}
+
+.scoreInputs{
+    position: relative;
+    background: #fff;
+    border: 1px solid #999;
+    font-size: 15px;
+    font-weight: bold;
+    margin-right: 0px;
+    margin-top: 0px;
+    padding: 0;
+    text-align: left;
+    overflow-wrap: break-word;
+    resize: none;
+    height: 24px;
+    width: 400px;
+    left: 450px;
+    top: 50px;
+}
