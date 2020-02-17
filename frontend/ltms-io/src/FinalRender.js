@@ -16,14 +16,15 @@ class FinalRender extends React.Component{
 
         var items = [];
 
-        for(var i = 0; i < cat.length; i++){
-            items.push(<div className = "category"><div className = "scoreInputs"></div></div>);
+        for(var j = 0; j < cat.length; j++){
+            items.push(<div className = "category">{cat[j]}</div>)
+            items.push(<input className = "scoreInputs"></input>);
         }
 
-        //var inputs = [];
+        /*var inputs = [];
         
-        /*for(var i = 0; i<items.length; i++){
-            inputs.push(<div className = "scoreInputs"></div>);
+        for(var k = 0; k<cat.length; k++){
+        inputs.push(<div>{items}</div>);
         }*/
 
         return(
