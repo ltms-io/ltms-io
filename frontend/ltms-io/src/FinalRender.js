@@ -14,8 +14,10 @@ class FinalRender extends React.Component{
             cat.push(catt[i].value);
         }
 
+        //saves category and scoreInput
         var items = [];
 
+        //populates items
         for(var j = 0; j < cat.length; j++){
             items.push(<div className = "category">{cat[j]}</div>)
             items.push(<input className = "scoreInputs"></input>);
@@ -27,8 +29,12 @@ class FinalRender extends React.Component{
         inputs.push(<div>{items}</div>);
         }*/
 
+        //returns script
         return(
-        <text>{items}</text>
+            <div>
+                <text>{items}</text>
+                <div><button className="calc">Calculate Score</button></div>
+            </div>
         );
     }
 }

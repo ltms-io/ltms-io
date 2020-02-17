@@ -33,3 +33,9 @@
     left: 450px;
     top: 14px;
 }
+
+.calc{
+    position: absolute;
+    top: 50%;
+    right: 50%;
+}
