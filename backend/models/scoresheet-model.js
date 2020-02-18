@@ -16,7 +16,7 @@ const SchoresheetSchema = new Schema({
 });
 
 //Create a model for scoresheet schema instantiation
-Team = mongoose.model('scoresheet', ScoresheetSchema);
+Scoresheet = mongoose.model('scoresheet', ScoresheetSchema);
 
 //Export the model for use in other javascript files
 module.exports = Team;
