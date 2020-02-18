@@ -19,4 +19,4 @@ const SchoresheetSchema = new Schema({
 Scoresheet = mongoose.model('scoresheet', ScoresheetSchema);
 
 //Export the model for use in other javascript files
-module.exports = Team;
+module.exports = Scoresheet;
