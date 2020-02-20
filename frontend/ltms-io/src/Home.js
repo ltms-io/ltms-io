@@ -6,7 +6,8 @@ class Home extends Component {
     return(
       <div>
         <h1>Welcome!</h1>
-        <a href="/dashboard">Dashboard</a>
+        <div><a href="/dashboard">Dashboard</a></div>
+        <div><a href="/login">Login</a></div>
       </div>
     );
   }
