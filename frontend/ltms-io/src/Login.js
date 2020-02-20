@@ -1,15 +1,20 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Form, Button } from 'react-bootstrap'
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Form, Button } from "react-bootstrap";
 
 class Login extends Component {
   handleSubmit(e) {
     e.preventDefault();
-    alert("Email: " + e.target.elements.email.value + "\nPassword: " + e.target.elements.password.value);
+    alert(
+      "Email: " +
+        e.target.elements.email.value +
+        "\nPassword: " +
+        e.target.elements.password.value
+    );
   }
 
   render() {
-    return(
+    return (
       <div>
         <h1>Login</h1>
         <Form onSubmit={this.handleSubmit}>
