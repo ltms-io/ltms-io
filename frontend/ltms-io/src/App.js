@@ -4,7 +4,7 @@ import Home from './components/Home';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
 import ResetLogin from './components/ResetLogin';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 function App() {
   return (

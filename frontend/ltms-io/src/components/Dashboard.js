@@ -13,9 +13,17 @@ class Dashboard extends Component {
         </div>
       );
     });
+    const name = this.props.name;
+    const email = this.props.email;
     return(
-      <div className="tournament-list">
-        { tournamentList }
+      <div>
+        <div className="user-info">
+          <h3>Welcome { name }!</h3>
+          <h4>Email: { email }</h4>
+        </div>
+        <div className="tournament-list">
+          { tournamentList }
+        </div>
       </div>
     );
   }
@@ -23,6 +31,8 @@ class Dashboard extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    name: state.name,
+    email: state.email,
     tournaments: state.tournaments
   }
 };
