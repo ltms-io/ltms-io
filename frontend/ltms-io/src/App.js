@@ -5,11 +5,11 @@ import Dashboard from "./Dashboard";
 import Login from "./Login";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-function App() {
+function App(props) {
   return (
     <Router>
       <div className="App">
-        <h1>LTMS.io</h1>
+        <h1>LTMS.io{props.name}</h1>
         <Switch>
           <Route path="/" exact component={Home} />
           <Route path="/dashboard" component={Dashboard} />
