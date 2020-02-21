@@ -1,9 +1,7 @@
 const initState =  {
-  tournaments: [
-    {id: "1", title: "Purdue FLL 2020", role: "Tournament Director"},
-    {id: "2", title: "Indiana FLL 2020", role: "Referee"},
-    {id: "3", title: "National FLL 2020", role: "Volunteer"}
-  ]
+  name: "",
+  email: "",
+  tournaments: []
 };
 
 const rootReducer = (state = initState, action) => {
