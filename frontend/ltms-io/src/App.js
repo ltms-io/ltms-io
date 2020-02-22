@@ -2,7 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 import ReactDOM from 'react-dom';
 import './App.css';
-import Sheet from './Scoresheet.js';
+import Sheet from './Component/Scoresheet.js';
 
 function generateSchedule() {
     ReactDOM.render(<Sheet />, document.getElementById('root'));
