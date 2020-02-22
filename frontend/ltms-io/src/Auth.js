@@ -1,3 +1,4 @@
+/* eslint no-restricted-globals: 0*/
 import auth0 from "auth0-js";
 
 export default class Auth {
@@ -21,7 +22,7 @@ export default class Auth {
   handleAuthentication() {
     this.auth0.parseHash((err, authResults) => {
       if (authResults && authResults.accessToken && authResults.idToken) {
-        let expiresAt = JSOW.stringify(
+        let expiresAt = JSON.stringify(
           authResults.expiresIn * 1000 + new Date().getTime()
         );
         localStorage.setItem("access_token", authResults.accessToken);
@@ -37,7 +38,7 @@ export default class Auth {
   }
 
   isAuthenticated() {
-    let expiresAt = JSOW.parse(localStorage.getItem("expires_at"));
+    let expiresAt = JSON.parse(localStorage.getItem("expires_at"));
     return new Date().getTime() < expiresAt;
   }
 }

@@ -9,6 +9,9 @@ import { createStore } from "redux";
 import { Provider } from "react-redux";
 import rootReducer from "./reducers/rootReducer";
 
+import Auth from "./Auth";
+const auth = new Auth();
+
 const store = createStore(rootReducer);
 
 let state = {};
@@ -23,8 +26,11 @@ window.setState = changes => {
   );
 };
 
+/* eslint no-restricted-globals: 0*/
+
 let initialState = {
-  name: "User"
+  name: "User",
+  location: location.pathname.replace(/^\/?|\/$/g, "")
 };
 
 window.setState(initialState);
