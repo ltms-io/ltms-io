@@ -1,11 +1,14 @@
 /* eslint no-restricted-globals: 0*/
 import auth0 from "auth0-js";
 
+const LOGIN_SUCCESS_PAGE = "/";
+const LOGIN_FAIL_PAGE = "/login";
+
 export default class Auth {
   auth0 = new auth0.WebAuth({
     domain: "dev-s68c-q-y.auth0.com",
     clientID: "4J9E3tWlJczAxTGBR2YUO61Rmebmlnmf",
-    redirectUri: "http://localhost:3000/home",
+    redirectUri: "http://localhost:3000",
     audience: "https://dev-s68c-q-y.auth0.com/userinfo",
     responseType: "token id_token",
     scope: "openid"
@@ -29,9 +32,9 @@ export default class Auth {
         localStorage.setItem("id_token", authResults.idToken);
         localStorage.setItem("expires_at", expiresAt);
         location.hash = "";
-        location.pathname = "";
+        location.pathname = LOGIN_SUCCESS_PAGE;
       } else {
-        location.pathname = "";
+        location.pathname = LOGIN_FAIL_PAGE;
         console.log(err);
       }
     });

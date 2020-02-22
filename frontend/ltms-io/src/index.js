@@ -30,7 +30,8 @@ window.setState = changes => {
 
 let initialState = {
   name: "User",
-  location: location.pathname.replace(/^\/?|\/$/g, "")
+  //location: location.pathname.replace(/^\/?|\/$/g, ""),
+  auth
 };
 
 window.setState(initialState);
