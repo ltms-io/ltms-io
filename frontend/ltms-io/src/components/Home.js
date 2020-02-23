@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 
 class Home extends Component {
   render () {
@@ -9,6 +9,7 @@ class Home extends Component {
         <div><a href="/dashboard">Dashboard</a></div>
         <div><a href="/login">Login</a></div>
         <div><a href="/createtournament">Create A Tournament</a></div>
+        <div><a href="/accountdetails">Edit Account Details</a></div>
       </div>
     );
   }

@@ -1,8 +1,8 @@
 const initState =  {
+  name: "Test Test",
+  email: "test@test.com",
   tournaments: [
-    {id: "1", title: "Purdue FLL 2020", role: "Tournament Director"},
-    {id: "2", title: "Indiana FLL 2020", role: "Referee"},
-    {id: "3", title: "National FLL 2020", role: "Volunteer"}
+    {id: "69", title: "Testfest 2020", role: "Tester"}
   ]
 };
 
