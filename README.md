@@ -11,6 +11,7 @@
 ## General Notes
 
 - The current plan is to develop the frontend and backend in their own folders as opposed to serving the frontend out of the express server from the build directory. This is so that we can take advantage of hot-reload developing.
+- Testing has been setup in the backend. It requires you to go into the testing-app.js file and declare your routes and any other dependencies that are in app.js. Open to better approaches. 
 
 ## Lanuages and Frameworks
 

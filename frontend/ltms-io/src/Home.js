@@ -8,6 +8,7 @@ class Home extends Component {
         <h1>Welcome!</h1>
         <div><a href="/dashboard">Dashboard</a></div>
         <div><a href="/login">Login</a></div>
+        <div><a href="/createtournament">Create A Tournament</a></div>
       </div>
     );
   }
