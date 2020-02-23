@@ -62,6 +62,10 @@ router.post('/:id', (req, res) => {
             tournament.teams = req.body.teams;
         }
 
+        if (req.body.volunteers) {
+            tournament.teams = req.body.volunteers;
+        }
+
         if (req.body.fieldsCount) {
             tournament.fieldsCount = req.body.fieldsCount;
         }
@@ -69,6 +73,15 @@ router.post('/:id', (req, res) => {
         if (req.body.matchesPerTeam) {
             tournament.matchesPerTeam = req.body.matchesPerTeam;
         }
+
+        if (req.body.startDate) {
+            tournament.startDate = req.body.startDate;
+        }
+
+        if (req.body.endDate) {
+            tournament.startDate = req.body.endDate;
+        }
+        tournament.save().then((tournament) => res.send(tournament)).catch((err) => console.log(err));
     });
 });
 
