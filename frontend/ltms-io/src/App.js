@@ -4,6 +4,7 @@ import Home from './components/Home';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
 import ResetLogin from './components/ResetLogin';
+import AccountDetails from './components/AccountDetails';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
           <Route path="/dashboard" component={ Dashboard } />
           <Route path="/login" component={ Login } />
           <Route path="/resetlogin" component={ ResetLogin } />
+          <Route path="/accountdetails" component={ AccountDetails } />
         </Switch>
       </div>
     </Router>

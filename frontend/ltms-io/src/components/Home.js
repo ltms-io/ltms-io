@@ -9,6 +9,7 @@ class Home extends Component {
         <div><a href="/dashboard">Dashboard</a></div>
         <div><a href="/login">Login</a></div>
         <div><a href="/resetlogin">Reset Login</a></div>
+        <div><a href="/accountdetails">Edit Account Details</a></div>
       </div>
     );
   }

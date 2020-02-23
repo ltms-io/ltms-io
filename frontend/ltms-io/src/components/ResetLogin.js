@@ -16,7 +16,6 @@ class ResetLogin extends Component {
   render() {
     return(
       <div>
-        <h1>Reset Login Information</h1>
         <div>
           <h3>Reset Email Address</h3>
           <Form onSubmit={this.handleUsername}>
