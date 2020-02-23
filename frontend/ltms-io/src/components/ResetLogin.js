@@ -3,6 +3,13 @@ import { connect } from 'react-redux';
 import { Form, Button } from 'react-bootstrap';
 
 class ResetLogin extends Component {
+  constructor(props) {
+    super(props);
+
+    this.handleUsername = this.handleUsername.bind(this);
+    this.handlePassword = this.handlePassword.bind(this);
+  }
+
   handleUsername(e) {
     e.preventDefault();
     alert("Email reset to: " + e.target.elements.email.value);
@@ -16,7 +23,6 @@ class ResetLogin extends Component {
   render() {
     return(
       <div>
-        <h1>Reset Login Information</h1>
         <div>
           <h3>Reset Email Address</h3>
           <Form onSubmit={this.handleUsername}>
