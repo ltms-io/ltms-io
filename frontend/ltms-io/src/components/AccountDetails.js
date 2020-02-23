@@ -5,10 +5,22 @@ import ResetLogin from './ResetLogin';
 import logo from '../logo.svg';
 
 class AccountDetails extends Component {
+  constructor(props) {
+    super(props);
+    
+    this.handleName = this.handleName.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+  }
+
   handleName(e) {
     e.preventDefault();
     alert("Name reset to: " + e.target.elements.firstname.value + " " +
           e.target.elements.lastname.value);
+  }
+
+  handleDelete(e) {
+    e.preventDefault();
+    alert("Deleting account!");
   }
 
   render() {
@@ -48,6 +60,9 @@ class AccountDetails extends Component {
             </Col>
           </Row>
         </Container>
+        <Button variant="outline-danger" onClick={this.handleDelete}>
+          Delete my Account
+        </Button>
       </div>
     );
   }
