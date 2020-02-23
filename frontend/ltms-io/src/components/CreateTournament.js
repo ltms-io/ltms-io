@@ -39,6 +39,9 @@ export default class CreateEvent extends Component {
         }
 
         this.setState({validated: true});
+
+        event.preventDefault();
+        //TODO: Call create event API
     }
 
     render() {
