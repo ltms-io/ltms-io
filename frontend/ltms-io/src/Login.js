@@ -3,7 +3,22 @@ import { connect } from "react-redux";
 import { Form, Button } from "react-bootstrap";
 
 class Login extends Component {
-  handleSubmit(e) {
+  render() {
+    console.log(this.props, "???");
+    return (
+      <div>
+        <p className="App-intro">Hello User</p>
+        <div>
+          <hr />
+          Please login first
+          <hr />
+          <button onClick={this.props.auth.login}>Login</button>
+        </div>
+      </div>
+    );
+  }
+
+  /*handleSubmit(e) {
     e.preventDefault();
     alert(
       "Email: " +
@@ -32,7 +47,7 @@ class Login extends Component {
         </Form>
       </div>
     );
-  }
+  }*/
 }
 
 export default Login;
