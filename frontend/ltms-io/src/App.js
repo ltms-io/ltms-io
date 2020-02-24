@@ -6,6 +6,7 @@ import Login from './components/Login';
 import AccountDetails from './components/AccountDetails';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import CreateTournament from './components/CreateTournament';
+import VolunteerModalTest from './components/VolunteerModalTest';
 
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
@@ -21,6 +22,7 @@ function App() {
           <Route path="/login" component={ Login } />
           <Route path="/createtournament" component={ CreateTournament } />
           <Route path="/accountdetails" component={ AccountDetails } />
+          <Route path="/volunteermodaltest" component={ VolunteerModalTest } />
         </Switch>
       </div>
     </Router>
