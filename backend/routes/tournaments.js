@@ -14,8 +14,15 @@ router.get('/:id', (req, res) => {
         res.status(401).send('Authorization invalid');
         return;
     }
-    
-    res.send(exampleTournament);
+    Tournament.findById(req.params.id).then((tournament) => {
+        if(!tournament) {
+            res.status(404).send("tournament not found");
+            return;
+        }
+
+        res.status(200).send(tournament);
+    })
+    //res.send(exampleTournament);
 });
 
 /* GET tournaments by users */
@@ -41,15 +48,14 @@ router.post('/register', (req, res) => {
     }
 });
 
-/* UPDATE specific tournament. */
-router.post('/:id', (req, res) => {
+/* PATCH specific tournament. */
+router.patch('/:id', (req, res) => {
     if (!req.body.auth) { // TODO: replace with correct authorization field or auth handler module
         res.status(401).send('Authorization invalid');
         return;
     }
     
-    //TODO: Update tournament based upon req.body.tournament
-    Tournament.findById(req.body.id).then((tournament) => {
+    Tournament.findById(req.params.id).then((tournament) => {
         if (req.body.director) {
             tournament.director = req.body.director;
         }
@@ -81,6 +87,18 @@ router.post('/:id', (req, res) => {
         if (req.body.endDate) {
             tournament.startDate = req.body.endDate;
         }
+        tournament.save().then((tournament) => res.send(tournament)).catch((err) => console.log(err));
+    });
+});
+
+router.patch('/setofficialevent/:id', (req, res) => {
+    if (req.body.auth) {
+        //TODO: replace with actually good auth and user can make an event official
+        res.status(401).send('Authorization invalud')
+    }
+
+    Tournament.findById(req.params.id).then((tournament) => {
+        tournament.officialEventFlag = req.body.eventFlag;
         tournament.save().then((tournament) => res.send(tournament)).catch((err) => console.log(err));
     });
 });
