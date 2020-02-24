@@ -29,6 +29,21 @@ router.get('/:id', (req, res) => {
     })
 });
 
+//GET specific user by email
+router.get('/email', (req, res) => {
+    User.find({ email: req.body.email }, (err, user) => {
+        if(err) {
+            res.status(500).send(err);
+        }
+        
+        if(!user) {
+            res.status(404).send("user not found");
+        }
+
+        res.status(200).send(user);
+    })
+})
+
 /* POST */
 
 //POST new User
