@@ -12,6 +12,7 @@ export default class VolunteerAssignmentModal extends Component {
             <Container>
                 <Modal
                 show={this.props.show}
+                onHide={this.props.handleClose}
                 size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
                 centered>
