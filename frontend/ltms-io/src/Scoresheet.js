@@ -4,6 +4,7 @@ import {Form, Button, Col, Row} from 'react-bootstrap';
 
 class Sheet extends React.Component{
 
+  //Constructor sets up the state variable
   constructor(props){
     super(props);
     this.state = {
@@ -12,13 +13,18 @@ class Sheet extends React.Component{
       finalscore: 0
     }
 
+    //binds the fuction
     this.handleInsert = this.handleInsert.bind(this);
   }
 
+  //function to handle the calculate score call
   handleInsert(e) {
     e.preventDefault();
+
+    //new score to hold the final score
     var newScore = 0;
     
+    //begins adding all scores to the newScore variable
     if(parseInt(e.target.elements.scoring1.value, 10)){
       newScore += parseInt(e.target.elements.scoring1.value, 10);
     }
@@ -103,6 +109,8 @@ class Sheet extends React.Component{
       //     ))}
       //   </Form>
       // </div>
+
+      //script to render the page
       <div>
         <h3>Team Scoring</h3>
         <Form onSubmit = {this.handleInsert}>
@@ -242,24 +250,5 @@ class Sheet extends React.Component{
     ); 
   }
 }
-
-// class Cate extends React.Component{
-//   render(){
-//     return (
-//       <div>
-//         <Form>
-//           <Row>
-//             <Col>
-//               <Form.Control type = "text" placeholder = {this.props.finalscore} readonly = "true"/>
-//             </Col>
-//             <Col xs = "3">
-//               <Form.Control type = "text" placeholder = "Enter Score"/>
-//             </Col>
-//           </Row>
-//         </Form>
-//       </div>
-//     );
-//   }
-// }
 
 export default Sheet;
