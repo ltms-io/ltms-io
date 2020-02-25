@@ -3,13 +3,33 @@ import { connect } from 'react-redux';
 import { Form, Button } from 'react-bootstrap';
 
 class Login extends Component {
-  handleSubmit(e) {
+  render() {
+    console.log(this.props, "???");
+    return (
+      <div>
+        <p className="App-intro">Hello User</p>
+        <div>
+          <hr />
+          Please login first
+          <hr />
+          <button onClick={this.props.auth.login}>Login</button>
+        </div>
+      </div>
+    );
+  }
+
+  /*handleSubmit(e) {
     e.preventDefault();
-    alert("Email: " + e.target.elements.email.value + "\nPassword: " + e.target.elements.password.value);
+    alert(
+      "Email: " +
+        e.target.elements.email.value +
+        "\nPassword: " +
+        e.target.elements.password.value
+    );
   }
 
   render() {
-    return(
+    return (
       <div>
         <h1>Login</h1>
         <Form onSubmit={this.handleSubmit}>
@@ -27,7 +47,7 @@ class Login extends Component {
         </Form>
       </div>
     );
-  }
+  }*/
 }
 
 export default Login;

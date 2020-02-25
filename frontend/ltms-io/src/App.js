@@ -10,7 +10,8 @@ import CreateTournament from './components/CreateTournament';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 
-function App() {
+function App(props) {
+  //console.log(props);
   return (
     <Router>
       <div className="App">
@@ -18,7 +19,7 @@ function App() {
         <Switch>
           <Route path="/" exact component= { Home } />
           <Route path="/dashboard" component={ Dashboard } />
-          <Route path="/login" component={ Login } />
+          <Route path="/login" component={() => <Login auth={props.auth} />} />
           <Route path="/createtournament" component={ CreateTournament } />
           <Route path="/accountdetails" component={ AccountDetails } />
         </Switch>
