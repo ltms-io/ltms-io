@@ -233,7 +233,7 @@ class Sheet extends React.Component{
         <Form>
           <Row>
             <Col xs = "1">Final Score</Col>
-            <Col xs = "3">
+            <Col xs = "2">
               <Form.Control type = "text" placeholder = {this.state.finalscore} readonly = "true"/>
             </Col>
           </Row>
