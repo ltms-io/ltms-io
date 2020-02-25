@@ -22,10 +22,10 @@ router.get('/', function (req, res, next) {
 router.get('/:id', (req, res) => {
     User.findById(req.params.id).then(user => {
         if(!user) {
-            res.status(404).send("user not found");
+            return res.status(404).send("user not found");
         }
 
-        res.status(200).send(user);
+        return res.status(200).send(user);
     })
 });
 
@@ -33,7 +33,7 @@ router.get('/:id', (req, res) => {
 
 router.post("/register", (req, res) => {
     if (!req.body.name || !req.body.email || !req.body.password) {
-        return res.status(400).json(errors);
+        return res.status(400).send("Need email and name at minimum");
     }
 
     User.findOne({ email: req.body.email }).then((user) => {
@@ -46,7 +46,7 @@ router.post("/register", (req, res) => {
                 email: req.body.email,
                 password: req.body.password,
                 eventAuthorizer: req.body.eventAuthorizer,
-                userAuthorizer: req.body.userAuthorizer,
+                userAuthorizer: req.body.userAuthorizer
             });
             createdUser.save().then((user) => res.send(user)).catch((err) => console.log(err));
         }
@@ -61,14 +61,12 @@ router.post("/register", (req, res) => {
 //  -if no change to a field, don't send it
 router.patch('/:id', (req, res) => {
     if(Object.keys(req.body).length == 0) {
-        res.status(400).send("body is empty");
-        return;
+        return res.status(400).send("body is empty");
     }
 
     User.findById(req.params.id).then((user) => {
         if(!user) {
-            res.status(404).send("user not found");
-            return;
+            return res.status(404).send("user not found");
         }
 
         summaryOfChanges = '';
@@ -79,7 +77,7 @@ router.patch('/:id', (req, res) => {
         }
 
         if(req.body.email) { //TODO add email validator
-            // user.email = req.body.email;
+            user.email = req.body.email;
             summaryOfChanges += `•Email has been updated to ${req.body.email}\n` //TODO: maybe ask to confirm on old email if this is the case?
         }
 
@@ -125,10 +123,13 @@ router.patch('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
     User.findOneAndDelete({_id: req.params.id}, (err) => {
-        
+        if (err) {
+            res.status(501).send("Server error.");
+        }
+        else {
+            res.status(200).send("User eradicated");
+        }
     });
-    //TODO: Actually add something
-    res.status(501).send("not ready for that yet");
 });
 
 module.exports = router;
