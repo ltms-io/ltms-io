@@ -3,6 +3,9 @@ import auth0 from "auth0-js";
 
 const LOGIN_SUCCESS_PAGE = "/";
 const LOGIN_FAIL_PAGE = "/login";
+var access = "";
+var id = "";
+var expires = "";
 
 export default class Auth {
   auth0 = new auth0.WebAuth({
@@ -22,12 +25,27 @@ export default class Auth {
     this.auth0.authorize();
   }
 
+  setAccessToken(token) {
+    this.access = token;
+  }
+
+  setidToken(token) {
+    this.id = token;
+  }
+
+  setExpiresAt(token) {
+    this.expires = token;
+  }
+
   handleAuthentication() {
     this.auth0.parseHash((err, authResults) => {
       if (authResults && authResults.accessToken && authResults.idToken) {
         let expiresAt = JSON.stringify(
           authResults.expiresIn * 1000 + new Date().getTime()
         );
+        this.setAccessToken(authResults.accessToken);
+        this.setidToken(authResults.idToken);
+        this.setExpiresAt(expiresAt);
         localStorage.setItem("access_token", authResults.accessToken);
         localStorage.setItem("id_token", authResults.idToken);
         localStorage.setItem("expires_at", expiresAt);
@@ -43,6 +61,18 @@ export default class Auth {
   isAuthenticated() {
     let expiresAt = JSON.parse(localStorage.getItem("expires_at"));
     return new Date().getTime() < expiresAt;
+  }
+
+  getAccessToken(){
+    return this.access;
+  }
+
+  getIdToken() {
+    return this.id;
+  }
+
+  getExpiresAt() {
+    return this.expires;
   }
 
   logout() {

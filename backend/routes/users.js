@@ -44,6 +44,23 @@ router.post('/', (req, res) => {
     //TODO: Send user confirmation email
 });
 
+router.post('/login', (req, res) => {
+    var authId = localStorage.getItem("access_token");
+    console.log(authId);
+//     JSON.parse
+//     User.findOne(authId).then(user => {
+//         if(!user) {
+//             res.status(404).send("Not a user");
+//         }
+
+//         user.save().then(user => {
+//             res.json(user);
+//         }).catch(err => {
+//             console.log(err);
+//         })
+//     })
+})
+
 /* PATCH */
 
 //PATCH an existing user
