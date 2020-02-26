@@ -22,6 +22,7 @@ export default class Auth {
     this.auth0.authorize();
   }
 
+
   handleAuthentication() {
     this.auth0.parseHash((err, authResults) => {
       if (authResults && authResults.accessToken && authResults.idToken) {

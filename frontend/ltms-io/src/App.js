@@ -13,6 +13,9 @@ import "react-dates/lib/css/_datepicker.css";
 
 function App(props) {
   //console.log(props);
+  if(props.auth.isAuthenticated()){
+    
+  }
   return (
     <Router>
       <div className="App">

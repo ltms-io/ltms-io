@@ -1,9 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
+const axios = require('axios');
+
 class Home extends Component {
+
   render() {
     return (
+
       <div>
         <h1>Welcome!</h1>
         {this.props.auth.isAuthenticated() && (
