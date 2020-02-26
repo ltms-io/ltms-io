@@ -1,15 +1,27 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { connect } from "react-redux";
 
 class Home extends Component {
-  render () {
-    return(
+  render() {
+    return (
       <div>
         <h1>Welcome!</h1>
-        <div><a href="/dashboard">Dashboard</a></div>
-        <div><a href="/login">Login</a></div>
-        <div><a href="/createtournament">Create A Tournament</a></div>
-        <div><a href="/accountdetails">Edit Account Details</a></div>
+        {this.props.auth.isAuthenticated() && (
+          <div>(You are authenticated!)</div>
+        )}
+        <div>
+          <a href="/dashboard">Dashboard</a>
+        </div>
+        <div>
+          <a href="/login">Login</a>
+        </div>
+        <div>
+          <a href="/createtournament">Create A Tournament</a>
+        </div>
+        <div>
+          <a href="/accountdetails">Edit Account Details</a>
+        </div>
+        <button onClick={this.props.auth.logout}>Logout</button>
       </div>
     );
   }
