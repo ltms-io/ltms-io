@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Form, Button } from 'react-bootstrap';
+import axios from 'axios';
 
 class ResetLogin extends Component {
+  state = {
+    user: {}
+  };
+
   constructor(props) {
     super(props);
 
@@ -10,9 +15,20 @@ class ResetLogin extends Component {
     this.handlePassword = this.handlePassword.bind(this);
   }
 
-  handleUsername(e) {
+  async handleUsername(e) {
     e.preventDefault();
     alert("Email reset to: " + e.target.elements.email.value);
+    this.state.user.email = e.target.elements.email.value;
+    console.log("Updated state:");
+    console.log(this.state);
+    await axios.patch("http://localhost:5000/api/users/5e54b2a86efec099146c054b", {
+      email: this.state.user.email
+    });
+    await axios.get("http://localhost:5000/api/users/5e54b2a86efec099146c054b")
+      .then ( (result) => {
+        console.log("Updated GET:");
+        console.log(result);
+      });
   }
 
   handlePassword(e) {
@@ -57,6 +73,15 @@ class ResetLogin extends Component {
         </div>
       </div>
     );
+  }
+
+  async componentDidMount() {
+    await axios.get("http://localhost:5000/api/users/5e54b2a86efec099146c054b")
+      .then ( (result) => {
+        console.log("Initial GET:");
+        console.log(result);
+        this.setState({user: result.data});
+      });
   }
 }
 
