@@ -1,16 +1,15 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Form, Button } from 'react-bootstrap';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Form, Button } from "react-bootstrap";
 
 class Login extends Component {
   render() {
-    console.log(this.props, "???");
     return (
       <div>
         <p className="App-intro">Hello User</p>
         <div>
           <hr />
-          Please login first
+          Please login using Auth0
           <hr />
           <button onClick={this.props.auth.login}>Login</button>
         </div>
