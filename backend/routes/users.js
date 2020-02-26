@@ -8,7 +8,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 /* GET */
 
 //GET all users listings
-router.get('/', function (req, res, next) {
+router.get('/', (req, res, next) => {
     User.find({}, (err, users) => {
         if(err) {
             res.status(500).send(err);
