@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-const axios = require('axios');
-
 class Home extends Component {
 
   render() {

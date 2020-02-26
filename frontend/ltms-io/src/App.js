@@ -10,11 +10,18 @@ import Callback from "./components/Callback";
 
 import "react-dates/initialize";
 import "react-dates/lib/css/_datepicker.css";
+import axios from 'axios';
 
 function App(props) {
   //console.log(props);
   if(props.auth.isAuthenticated()){
-    
+    var request = "http://localhost:5000/api/users/" + localStorage.getItem("id_token");
+    console.log(localStorage.getItem("access_token"));
+    axios.get(request).then(function(response) {
+      console.log(response);
+    }).catch(function(err){
+      console.log(err);
+    });
   }
   return (
     <Router>
