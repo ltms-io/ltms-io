@@ -8,7 +8,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 /* GET */
 
 //GET all users listings
-router.get('/', function (req, res, next) {
+router.get('/', (req, res, next) => {
     User.find({}, (err, users) => {
         if(err) {
             res.status(500).send(err);
@@ -22,26 +22,35 @@ router.get('/', function (req, res, next) {
 router.get('/:id', (req, res) => {
     User.findById(req.params.id).then(user => {
         if(!user) {
-            res.status(404).send("user not found");
+            return res.status(404).send("user not found");
         }
 
-        res.status(200).send(user);
+        return res.status(200).send(user);
     })
 });
 
 /* POST */
 
-//POST new User
-router.post('/', (req, res) => {
-    const newUser = new User({
-        //TODO: ADD USER STUFF
-    })
+router.post("/register", (req, res) => {
+    if (!req.body.name || !req.body.email || !req.body.password) {
+        return res.status(400).send("Need email and name at minimum");
+    }
 
-    //TODO: MORE PREP WORK FOR USER
-
-    newUser.save().then(newUser => res.json(newUser)).catch(err => console.log(err));
-
-    //TODO: Send user confirmation email
+    User.findOne({ email: req.body.email }).then((user) => {
+        if (user) {
+        return res.status(400).send("User email exists");
+        }
+        else {
+            const createdUser = new User({
+                name: req.body.name,
+                email: req.body.email,
+                password: req.body.password,
+                eventAuthorizer: req.body.eventAuthorizer,
+                userAuthorizer: req.body.userAuthorizer
+            });
+            createdUser.save().then((user) => res.send(user)).catch((err) => console.log(err));
+        }
+    });
 });
 
 /* PATCH */
@@ -52,14 +61,12 @@ router.post('/', (req, res) => {
 //  -if no change to a field, don't send it
 router.patch('/:id', (req, res) => {
     if(Object.keys(req.body).length == 0) {
-        res.status(400).send("body is empty");
-        return;
+        return res.status(400).send("body is empty");
     }
 
-    User.findById(req.params.id).then(user => {
+    User.findById(req.params.id).then((user) => {
         if(!user) {
-            res.status(404).send("user not found");
-            return;
+            return res.status(404).send("user not found");
         }
 
         summaryOfChanges = '';
@@ -70,7 +77,7 @@ router.patch('/:id', (req, res) => {
         }
 
         if(req.body.email) { //TODO add email validator
-            // user.email = req.body.email;
+            user.email = req.body.email;
             summaryOfChanges += `•Email has been updated to ${req.body.email}\n` //TODO: maybe ask to confirm on old email if this is the case?
         }
 
@@ -89,7 +96,7 @@ router.patch('/:id', (req, res) => {
             summaryOfChanges += "•You have been authorized to authorize other users to create official events.\n"
         }
 
-        user.save(); //TODO: as a .then() or an await?
+        user.save().then((user) => res.send(user)).catch((err) => console.log(err)); //TODO: as a .then() or an await?
 
         const msg = {
             to: req.body.email,
@@ -115,8 +122,14 @@ router.patch('/:id', (req, res) => {
 //DELETE user
 
 router.delete('/:id', (req, res) => {
-    //TODO: Actually add something
-    res.status(501).send("not ready for that yet");
+    User.findOneAndDelete({_id: req.params.id}, (err) => {
+        if (err) {
+            res.status(501).send("Server error.");
+        }
+        else {
+            res.status(200).send("User eradicated");
+        }
+    });
 });
 
 module.exports = router;

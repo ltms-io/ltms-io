@@ -8,6 +8,10 @@ const TournamentSchema = new Schema({
         ref: 'User',
         required: true,
     },
+    name: {
+        type: String,
+        required: true,
+    },
     volunteers: [],
     officialEventFlag: {
         type: Boolean,
