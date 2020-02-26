@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -20,6 +21,9 @@ app.use(
   })
 );
 app.use(bodyParser.json());
+
+//CORS Middleware to enable api calls from same origin
+app.use(cors());
 
 //DB config
 const db = "mongodb+srv://FLTMS_App:pcXQ4HvRcyASuxeq@clusterfltms-yea2u.azure.mongodb.net/test?retryWrites=true&w=majority"
