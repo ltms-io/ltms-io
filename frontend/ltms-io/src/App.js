@@ -15,9 +15,8 @@ import axios from 'axios';
 function App(props) {
   //console.log(props);
   if(props.auth.isAuthenticated()){
-    var request = "http://localhost:5000/api/users/" + localStorage.getItem("id_token");
     console.log(localStorage.getItem("access_token"));
-    axios.get(request).then(function(response) {
+    axios.post('http://localhost:5000/api/users/login/' + localStorage.getItem("id_token")+'/').then(function(response) {
       console.log(response);
     }).catch(function(err){
       console.log(err);
