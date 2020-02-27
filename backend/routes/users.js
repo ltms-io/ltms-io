@@ -70,7 +70,7 @@ router.post('/search', (req, res) => {
             return res.status(404).send("User not found");
         }
         console.log("user:");
-        return res.status(200).send({email: user.email, name: user.name});
+        return res.status(200).send({email: user.email, name: user.name, _id: user._id});
     });
 });
 
