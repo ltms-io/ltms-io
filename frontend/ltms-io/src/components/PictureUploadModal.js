@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react'
 import { Container, Form, Button, Modal, Row, Col } from 'react-bootstrap'
+import axios from 'axios';
 
 
 export default class PictureUploadModal extends Component {
@@ -9,7 +10,8 @@ export default class PictureUploadModal extends Component {
         super(props)
 
         this.state = {
-            selectedFile: null
+            selectedFile: null,
+            uploadDone: false
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -27,6 +29,16 @@ export default class PictureUploadModal extends Component {
         var data = new FormData();
         data.set("uuid", "UUID_GOES_HERE");
         data.append("file", this.state.selectedFile)
+
+        axios.post('TODO:URL-GOES-HERE', data, {
+            'Content-Type': 'multipart/form-data'
+        })
+        .then(res => {
+            //TODO: set upload to false
+        })
+        .catch(err => {
+            console.log(err);
+        })
     }
 
     render() {
