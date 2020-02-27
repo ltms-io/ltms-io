@@ -18,6 +18,9 @@ router.get('/', function (req, res, next) {
     })
 });
 
+
+
+
 //GET specific user
 router.get('/:id', (req, res) => {
     User.findById(req.params.id).then(user => {
@@ -29,20 +32,6 @@ router.get('/:id', (req, res) => {
     })
 });
 
-//GET specific user by email
-router.get('/email', (req, res) => {
-    User.find({ email: req.body.email }, (err, user) => {
-        if(err) {
-            res.status(500).send(err);
-        }
-        
-        if(!user) {
-            res.status(404).send("user not found");
-        }
-
-        res.status(200).send(user);
-    })
-})
 
 /* POST */
 
@@ -57,6 +46,32 @@ router.post('/', (req, res) => {
     newUser.save().then(newUser => res.json(newUser)).catch(err => console.log(err));
 
     //TODO: Send user confirmation email
+});
+
+//POST search for user by included values
+router.post('/search', (req, res) => {
+
+    // Valid search terms are email, name
+    const body = {};
+    if (req.body.email) {
+        body.email = req.body.email;
+    }
+
+    if (req.body.name) {
+        body.name = req.body.name;
+    }
+
+    User.findOne(body, (err, user) => {
+        if(err) {
+            return res.status(500).send(err);
+        }
+        
+        if(!user) {
+            return res.status(404).send("User not found");
+        }
+        console.log("user:");
+        return res.status(200).send({email: user.email, name: user.name});
+    });
 });
 
 /* PATCH */

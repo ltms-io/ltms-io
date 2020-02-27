@@ -12,12 +12,11 @@ export default class VolunteerAssignmentModal extends Component {
     }
 
     searchFunction() {
-        const params = {
+        const body = {
             email: this.emailInput.current.value,
         }
     
-        //axios.get({url: 'http://localhost:5000/api/users/email', data: params}).then((x) => {console.log(x)});
-        console.log(this.emailInput.current.value);
+       axios({method: 'post', url: 'http://localhost:5000/api/users/search', data: body}).then((x) => {console.log(x.data)});
     }
 
 
