@@ -4,6 +4,31 @@ import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import logo from '../logo.svg';
 
 class RoleChange extends Component{
+
+    constructor(props){
+        super(props);
+        this.state = {
+            userEmail: "",
+            userEventRole: ""
+        }
+
+        this.handleRoleChange = this.handleRoleChange.bind(this);
+    }
+
+    handleRoleChange(e) {
+        e.preventDefault(e);
+
+        var email = e.target.elements.email.value;
+        var eventRole = e.target.elements.eventRole.value;
+
+        this.setState({userEmail: email});
+        this.setState({userEventRole: eventRole});
+
+        console.log(this.state.userEmail);
+        console.log(this.state.userEventRole);
+
+    }
+
     render(){
         return(
             <div>
@@ -13,7 +38,7 @@ class RoleChange extends Component{
             <Row>
               <Col>
                   <h3>Enter Patron Email</h3>
-                  <Form>
+                  <Form onSubmit={this.handleRoleChange}>
                     <Row>
                       <Col xs = "4">
                         <Form.Group controlId="email">
