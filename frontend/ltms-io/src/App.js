@@ -4,6 +4,7 @@ import Home from './components/Home';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
 import AccountDetails from './components/AccountDetails';
+import RoleChange from './components/RoleChange';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import CreateTournament from './components/CreateTournament';
 
@@ -22,6 +23,7 @@ function App(props) {
           <Route path="/login" component={() => <Login auth={props.auth} />} />
           <Route path="/createtournament" component={ CreateTournament } />
           <Route path="/accountdetails" component={ AccountDetails } />
+          <Route path="/rolechange" component={ RoleChange } />
         </Switch>
       </div>
     </Router>

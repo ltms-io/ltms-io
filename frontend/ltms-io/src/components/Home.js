@@ -10,6 +10,7 @@ class Home extends Component {
         <div><a href="/login">Login</a></div>
         <div><a href="/createtournament">Create A Tournament</a></div>
         <div><a href="/accountdetails">Edit Account Details</a></div>
+        <div><a href="/rolechange">Edit User Role</a></div>
       </div>
     );
   }
