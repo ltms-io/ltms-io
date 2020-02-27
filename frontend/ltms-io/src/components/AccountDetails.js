@@ -46,7 +46,7 @@ class AccountDetails extends Component {
     console.log("UPDATED STATE", this.state);
   }
 
-  handleDelete(e) {
+  async handleDelete(e) {
     e.preventDefault();
     alert("Deleting account!");
     // Use this statement instead once backend Auth0 connection for register
@@ -60,6 +60,20 @@ class AccountDetails extends Component {
       console.log(error);
     });
     */
+
+    await axios({
+      method: 'DELETE',
+      url: `https://dev-s68c-q-y.auth0.com/api/v2/users/${this.state.uid}`,
+      headers: {
+        'content-type': 'application/json',
+        'authorization': 'Bearer ' + localStorage.getItem("access_token")
+      },
+      body: {},
+      json: true
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
   }
 
   render() {
