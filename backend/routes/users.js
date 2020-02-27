@@ -53,6 +53,10 @@ router.post("/register", (req, res) => {
     });
 });
 
+router.post("/uploadpicture", async (req, res) => {
+    //CODE
+})
+
 /* PATCH */
 
 //PATCH an existing user
