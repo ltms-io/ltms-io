@@ -21,6 +21,9 @@ class Home extends Component {
         <div>
           <a href="/accountdetails">Edit Account Details</a>
         </div>
+        <div>
+          <a href="/pictureuploadtest">Picture Upload Test</a>
+        </div>
         <button onClick={this.props.auth.logout}>Logout</button>
       </div>
     );
