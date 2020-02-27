@@ -44,12 +44,14 @@ class ResetLogin extends Component {
       });
 
     console.log("UPDATED STATE", this.state);
+
   }
 
   async handlePassword(e) {
     e.preventDefault();
 
     if (e.target.elements.oldpw.value !== this.state.dbresults.password) {
+
       alert("Invalid old password!: " + e.target.elements.oldpw.value);
     }
     else if (e.target.elements.newpw.value !==
@@ -65,6 +67,7 @@ class ResetLogin extends Component {
       await axios.patch("http://localhost:5000/api/users/5e54b2a86efec099146c054b", {
         email: this.state.dbresults.email,
         password: this.state.dbresults.password
+
       })
       .catch( (error) => {
         console.log(error);
@@ -145,7 +148,7 @@ class ResetLogin extends Component {
         console.log(error);
       });
 
-    console.log("INITIAL STATE", this.state)
+    console.log("INITIAL STATE", this.state);
   }
 }
 
