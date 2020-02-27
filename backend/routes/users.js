@@ -9,18 +9,18 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 //GET all users listings
 router.get('/', (req, res, next) => {
-    console.log("here");
-    // User.find({}, (err, users) => {
-    //     if(err) {
-    //         res.status(500).send(err);
-    //     }
+    User.find({}, (err, users) => {
+        if(err) {
+            res.status(500).send(err);
+        }
 
-    //     res.send(users);
-    // })
+        res.send(users);
+    })
 });
 
 //GET specific user
 router.get('/:id', (req, res) => {
+
     User.findById(req.params.id).then(user => {
         if(!user) {
             return res.status(404).send("user not found");
@@ -54,21 +54,15 @@ router.post("/register", (req, res) => {
     });
 });
 
-router.post('/login', (req, res) => {
-    var authId = localStorage.getItem("access_token");
-    console.log(authId);
-//     JSON.parse
-//     User.findOne(authId).then(user => {
-//         if(!user) {
-//             res.status(404).send("Not a user");
-//         }
+router.post('/login/:id', (req, res) => {
+    var authId = req.params.id;
+    User.findById(authId).then(user => {
+        if(!user) {
+            return res.status(404).send("Not a user");
+        }
 
-//         user.save().then(user => {
-//             res.json(user);
-//         }).catch(err => {
-//             console.log(err);
-//         })
-//     })
+        return res.status(200).send(user);
+    })
 })
 
 /* PATCH */
