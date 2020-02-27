@@ -27,14 +27,15 @@ export default class PictureUploadModal extends Component {
 
     handleSubmit(event) {
         var data = new FormData();
-        data.set("uuid", "UUID_GOES_HERE");
+        // data.set("uuid", "UUID_GOES_HERE");
         data.append("file", this.state.selectedFile)
 
-        axios.post('TODO:URL-GOES-HERE', data, {
+        axios.post('http://localhost:5000/api/users/uploadpicture', data, {
             'Content-Type': 'multipart/form-data'
         })
         .then(res => {
             //TODO: set upload to false
+            console.log(res);
         })
         .catch(err => {
             console.log(err);

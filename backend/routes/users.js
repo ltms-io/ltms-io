@@ -1,16 +1,45 @@
+//azure code pulled from https://github.com/Azure-Samples/azure-sdk-for-js-storage-blob-stream-nodejs/
+
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user-model');
 const sgMail = require('@sendgrid/mail');
+const dev_config = require('../config/dev-params')
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const { BlobServiceClient, StorageSharedKeyCredential, newPipeline } = require('@azure/storage-blob');
+const multer = require('multer');
+const inMemoryStorage = multer.memoryStorage();
+const uploadStrategy = multer({ storage: inMemoryStorage }).single('file');
+const getStream = require('into-stream');
+const uuidv1 = require('uuidv1');
+
+const ONE_MEGABYTE = 1024 * 1024;
+const uploadOptions = { bufferSize: 4 * ONE_MEGABYTE, maxBuffers: 20 };
+const ONE_MINUTE = 60 * 1000;
+
+const sharedKeyCredential = new StorageSharedKeyCredential(
+    dev_config.AZURE_STORAGE_ACCOUNT_NAME || process.env.AZURE_STORAGE_ACCOUNT_NAME,
+    dev_config.AZURE_STORAGE_ACCOUNT_ACCESS_KEY || process.env.AZURE_STORAGE_ACCOUNT_ACCESS_KEY);
+const pipeline = newPipeline(sharedKeyCredential);
+
+const blobServiceClient = new BlobServiceClient(
+    `https://${dev_config.AZURE_STORAGE_ACCOUNT_NAME || process.env.AZURE_STORAGE_ACCOUNT_NAME}.blob.core.windows.net`,
+    pipeline
+)
+
+const getBlobName = originalName => {
+    const ident = uuidv1();
+    return `${ident}-${originalName}`;
+}
+
+sgMail.setApiKey(dev_config.SENDGRID_API_KEY || process.env.SENDGRID_API_KEY);
 
 /* GET */
 
 //GET all users listings
 router.get('/', (req, res, next) => {
     User.find({}, (err, users) => {
-        if(err) {
+        if (err) {
             res.status(500).send(err);
         }
 
@@ -21,7 +50,7 @@ router.get('/', (req, res, next) => {
 //GET specific user
 router.get('/:id', (req, res) => {
     User.findById(req.params.id).then(user => {
-        if(!user) {
+        if (!user) {
             return res.status(404).send("user not found");
         }
 
@@ -38,7 +67,7 @@ router.post("/register", (req, res) => {
 
     User.findOne({ email: req.body.email }).then((user) => {
         if (user) {
-        return res.status(400).send("User email exists");
+            return res.status(400).send("User email exists");
         }
         else {
             const createdUser = new User({
@@ -53,9 +82,26 @@ router.post("/register", (req, res) => {
     });
 });
 
-router.post("/uploadpicture", async (req, res) => {
-    //CODE
-})
+router.post("/uploadpicture", uploadStrategy, async (req, res) => {
+    const blobName = getBlobName(req.file.originalname);
+    const stream = getStream(req.file.buffer);
+    const containerClient = blobServiceClient.getContainerClient('images');
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+    try {
+        await blockBlobClient.uploadStream(stream,
+            uploadOptions.bufferSize, uploadOptions.maxBuffers,
+            {
+                blobHTTPHeaders: {
+                    blobContentType: "image/jpeg" //TODO: pull type from req
+                }
+            });
+        res.status(200).send("File upload success");
+    } catch(err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+});
 
 /* PATCH */
 
@@ -64,38 +110,38 @@ router.post("/uploadpicture", async (req, res) => {
 //  -changes are supplied via body
 //  -if no change to a field, don't send it
 router.patch('/:id', (req, res) => {
-    if(Object.keys(req.body).length == 0) {
+    if (Object.keys(req.body).length == 0) {
         return res.status(400).send("body is empty");
     }
 
     User.findById(req.params.id).then((user) => {
-        if(!user) {
+        if (!user) {
             return res.status(404).send("user not found");
         }
 
         summaryOfChanges = '';
 
-        if(req.body.name) {
+        if (req.body.name) {
             user.name = req.body.name;
             summaryOfChanges += `•Name has been updated to ${req.body.name}\n`
         }
 
-        if(req.body.email) { //TODO add email validator
+        if (req.body.email) { //TODO add email validator
             user.email = req.body.email;
             summaryOfChanges += `•Email has been updated to ${req.body.email}\n` //TODO: maybe ask to confirm on old email if this is the case?
         }
 
-        if(req.body.password) { //TODO: NOTE: adding this becaue it is in schema but I do not think we need this as Auth0 is managing passwords
+        if (req.body.password) { //TODO: NOTE: adding this becaue it is in schema but I do not think we need this as Auth0 is managing passwords
             //TODO
             summaryOfChanges += "•Password has been updated.\n"
         }
 
-        if(req.body.eventAuthorizer) { //TODO: add authorization to this
+        if (req.body.eventAuthorizer) { //TODO: add authorization to this
             user.eventAuthorizer = req.body.eventAuthorizer;
             summaryOfChanges += "•You have been authorized to create official events.\n"
         }
 
-        if(req.body.userAuthorizer) { //TODO: add authorization to this
+        if (req.body.userAuthorizer) { //TODO: add authorization to this
             user.userAuthorizer = req.body.userAuthorizer;
             summaryOfChanges += "•You have been authorized to authorize other users to create official events.\n"
         }
@@ -126,7 +172,7 @@ router.patch('/:id', (req, res) => {
 //DELETE user
 
 router.delete('/:id', (req, res) => {
-    User.findOneAndDelete({_id: req.params.id}, (err) => {
+    User.findOneAndDelete({ _id: req.params.id }, (err) => {
         if (err) {
             res.status(501).send("Server error.");
         }
