@@ -80,7 +80,7 @@ class AccountDetails extends Component {
                     <Row>
                       <Col>
                         <Form.Group controlId="name">
-                          <Form.Control defaultValue={this.state} />
+                          <Form.Control defaultValue={this.state.dbresults.name} />
                         </Form.Group>
                       </Col>
                     </Row>
@@ -117,6 +117,7 @@ class AccountDetails extends Component {
         console.log(error);
       });
 
+    this.setState({ state: this.state });
     console.log("INITIAL STATE", this.state);
   }
 }
