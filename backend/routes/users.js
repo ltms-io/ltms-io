@@ -54,7 +54,7 @@ router.post("/register", (req, res) => {
     });
 });
 
-router.post('/login', (req) => {
+router.post('/login', (req, res) => {
     var authId = localStorage.getItem("access_token");
     console.log(authId);
 //     JSON.parse

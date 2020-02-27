@@ -16,7 +16,7 @@ function App(props) {
   //console.log(props);
   if(props.auth.isAuthenticated()){
     console.log(localStorage.getItem("access_token"));
-    axios.post('http://localhost:5000/api/users/login/' + localStorage.getItem("id_token")+'/').then(function(response) {
+    axios.post('http://localhost:5000/api/users/login', localStorage.getItem("id_token")).then(function(response) {
       console.log(response);
     }).catch(function(err){
       console.log(err);
