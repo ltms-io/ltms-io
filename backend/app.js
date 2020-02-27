@@ -26,8 +26,8 @@ app.use(bodyParser.json());
 app.use(cors());
 
 //DB config
-const db = "mongodb+srv://FLTMS_App:pcXQ4HvRcyASuxeq@clusterfltms-yea2u.azure.mongodb.net/test?retryWrites=true&w=majority"
-
+//const db = "mongodb+srv://FLTMS_App:pcXQ4HvRcyASuxeq@clusterfltms-yea2u.azure.mongodb.net/test?retryWrites=true&w=majority"
+const db = 'mongodb://localhost:27017/test1';
 //connect to MongoDB
 mongoose
   .connect(
@@ -36,7 +36,7 @@ mongoose
   )
   .then(() => console.log("MongoDB successfully connected"))
   .catch(err => console.log(err));
-
+  
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
