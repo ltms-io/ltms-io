@@ -15,11 +15,10 @@ export default class VolunteerModalTest extends Component {
         return (
             <div>
                 <Button 
-                    onClick={() => this.setState({addVolunteerShow: true})}
-                    handleClose={() => this.setState({addVolunteerShow: false})} >
+                    onClick={() => this.setState({addVolunteerShow: true})} >
                         Test out the modal!!
                     </Button>
-                <VolunteerAssignmentModal show={this.state.addVolunteerShow}></VolunteerAssignmentModal>
+                <VolunteerAssignmentModal show={this.state.addVolunteerShow} handleClose={() => this.setState({addVolunteerShow: false})}></VolunteerAssignmentModal>
             </div>
         )
     }
