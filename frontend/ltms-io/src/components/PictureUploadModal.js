@@ -13,7 +13,7 @@ export default class PictureUploadModal extends Component {
 
         this.state = {
             selectedFile: null,
-            uploading: false
+            uploading: false,
         }
 
         this.handleChange = this.handleChange.bind(this);

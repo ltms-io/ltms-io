@@ -27,6 +27,15 @@ const UserSchema = new Schema({
         type: Boolean,
         default: false,
     },
+    profilePic: {
+        is_azure: {
+            type: Boolean,
+            default: false,
+        },
+        url: {
+            type: String,
+        },
+    },
 });
 
 //Create a model for the user schema

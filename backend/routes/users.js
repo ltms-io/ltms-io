@@ -1,5 +1,6 @@
 //azure code pulled from https://github.com/Azure-Samples/azure-sdk-for-js-storage-blob-stream-nodejs/
 
+const axios = require('axios');
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user-model');
@@ -75,7 +76,11 @@ router.post("/register", (req, res) => {
                 email: req.body.email,
                 password: req.body.password,
                 eventAuthorizer: req.body.eventAuthorizer,
-                userAuthorizer: req.body.userAuthorizer
+                userAuthorizer: req.body.userAuthorizer,
+                profilePic: {
+                    is_azure: false,
+                    url: req.body.picture,
+                }
             });
             createdUser.save().then((user) => res.send(user)).catch((err) => console.log(err));
         }
@@ -83,8 +88,13 @@ router.post("/register", (req, res) => {
 });
 
 router.post("/uploadpicture", uploadStrategy, async (req, res) => {
+    if (!req.file || req.file.mimetype.indexOf("image/") === -1)  {
+        res.status(400).send("Make sure you upload a file that is an image");
+    }
+
     const blobName = getBlobName(req.file.originalname);
     const stream = getStream(req.file.buffer);
+    // console.log(req.file);
     const containerClient = blobServiceClient.getContainerClient('images');
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
@@ -93,7 +103,7 @@ router.post("/uploadpicture", uploadStrategy, async (req, res) => {
             uploadOptions.bufferSize, uploadOptions.maxBuffers,
             {
                 blobHTTPHeaders: {
-                    blobContentType: "image/jpeg" //TODO: pull type from req
+                    blobContentType: req.file.mimetype
                 }
             });
         res.status(200).send("File upload success");
@@ -101,6 +111,29 @@ router.post("/uploadpicture", uploadStrategy, async (req, res) => {
         console.log(err);
         res.status(500).send(err);
     }
+});
+
+router.post("/profilepic", (req, res) =>{
+    const m_id = req.body.id;
+    console.log(m_id);
+
+    User.findById(m_id).then((user) => {
+        console.log(user);
+        if (!user) {
+            return res.status(404).send("User was not found");
+        }
+        if (!user.profilePic.url) {
+            return res.status(404).send("User has no profile picture");
+        }
+
+        if (user.profilePic.is_azure) {
+            //TODO: Azure profile picture retrieval
+        }
+        else {
+            return res.status(200).send(user.profilePic.url);
+        }
+    }).catch((err) => {console.log(err)});
+
 });
 
 /* PATCH */
@@ -146,6 +179,12 @@ router.patch('/:id', (req, res) => {
             summaryOfChanges += "•You have been authorized to authorize other users to create official events.\n"
         }
 
+        if (req.body.picture) {
+            user.profilePic.url = req.body.picture;
+            user.is_azure = false;
+            summaryOfChanges += "•Your profile picture has set to an external source.\n"
+        }
+
         user.save().then((user) => res.send(user)).catch((err) => console.log(err)); //TODO: as a .then() or an await?
 
         const msg = {
@@ -156,14 +195,14 @@ router.patch('/:id', (req, res) => {
             html: summaryOfChanges,
         };
 
-        console.log(msg);
+        // console.log(msg);
 
-        sgMail.send(msg).then(() => {
-            res.status(200).send("changes made successfully");
-        }).catch(err => {
-            console.log(err)
-            res.status(500).send(err);
-        });
+        // sgMail.send(msg).then(() => {
+        //     res.status(200).send("changes made successfully");
+        // }).catch(err => {
+        //     console.log(err)
+        //     res.status(500).send(err);
+        // });
     })
 });
 
