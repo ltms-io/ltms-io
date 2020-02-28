@@ -46,8 +46,33 @@ router.get('/', (req, res, next) => {
     })
 });
 
+//POST specific user
+router.post('/auth', (req, res) => {
+    const userinfo = req.body.data;
+    console.log(userinfo);
 
-
+    User.findOne({auth0id: userinfo.sub}).then((user) => {
+        if (!user) {
+            console.log("Creating user");
+            const createdUser = new User({
+                name: userinfo.name,
+                email: userinfo.email,
+                auth0id: userinfo.sub,
+                eventAuthorizer: false,
+                userAuthorizer: false
+            });
+            createdUser.save().then((user) => {
+                res.send(user)
+            }).catch((err) => {
+                console.log(err)
+            });
+        }
+        else {
+            console.log("User already exists!")
+            res.status(200).send(user);
+        }
+    });
+});
 
 //GET specific user
 router.get('/:id', (req, res) => {
@@ -76,7 +101,7 @@ router.post("/register", (req, res) => {
             const createdUser = new User({
                 name: req.body.name,
                 email: req.body.email,
-                password: req.body.password,
+                auth0id: 'meh',
                 eventAuthorizer: req.body.eventAuthorizer,
                 userAuthorizer: req.body.userAuthorizer,
                 profilePic: {
@@ -190,8 +215,8 @@ router.post('/search', (req, res) => {
 //  -user id is supplied as URL param
 //  -changes are supplied via body
 //  -if no change to a field, don't send it
-router.patch('/:id', (req, res) => {
-    if (Object.keys(req.body).length == 0) {
+router.patch('/updateuser', (req, res) => {
+    if(Object.keys(req.body).length == 0) {
         return res.status(400).send("body is empty");
     }
 
@@ -210,11 +235,6 @@ router.patch('/:id', (req, res) => {
         if (req.body.email) { //TODO add email validator
             user.email = req.body.email;
             summaryOfChanges += `•Email has been updated to ${req.body.email}\n` //TODO: maybe ask to confirm on old email if this is the case?
-        }
-
-        if (req.body.password) { //TODO: NOTE: adding this becaue it is in schema but I do not think we need this as Auth0 is managing passwords
-            //TODO
-            summaryOfChanges += "•Password has been updated.\n"
         }
 
         if (req.body.eventAuthorizer) { //TODO: add authorization to this

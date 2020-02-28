@@ -11,7 +11,7 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
-    password: {
+    auth0id: {
         type: String,
         required: true,
     },
