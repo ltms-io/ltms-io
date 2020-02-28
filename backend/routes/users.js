@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user-model');
 const sgMail = require('@sendgrid/mail');
+const jsonWeb = require('jsonwebtoken');
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -55,7 +56,7 @@ router.post("/register", (req, res) => {
 
 router.post('/login/:id', (req, res) => {
     var authId = req.params.id;
-    User.Collection("Information").findOne({authID: authId}).then(user => {
+    User.findById(authId).then(user => {
         if(!user) {
             return res.status(404).send("Not a user");
         }
@@ -89,7 +90,7 @@ router.patch('/:id', (req, res) => {
         return res.status(400).send("body is empty");
     }
 
-    User.Collection("Information").findById(req.params.id).then((user) => {
+    User.findById(req.params.id).then((user) => {
         if(!user) {
             return res.status(404).send("user not found");
         }
@@ -142,6 +143,39 @@ router.patch('/:id', (req, res) => {
     })
 });
 
+//PATCH request to give users authorizations
+router.patch('/authorization/:id', (req, res) => {
+    if(Object.keys(req.body).length == 0) {
+        return res.status(400).send("body is empty");
+    }
+
+    User.findById(req.params.id).then((user) => {
+        if(!user) {
+            return res.status(404).send("user not found");
+        }
+        summaryOfChanges = '';
+        user.eventAuthorizer = req.body.userAuthorizer;
+        summaryOfChanges += "•You have been authorized to authorize other users to create official events.\n";
+
+        
+        const msg = {
+            to: req.body.email,
+            from: 'noreply@ltmsio.codes',
+            subject: 'Changes have been made to your account',
+            text: summaryOfChanges,
+            html: summaryOfChanges,
+        };
+
+        console.log(msg);
+
+        sgMail.send(msg).then(() => {
+            res.status(200).send("changes made successfully");
+        }).catch(err => {
+            console.log(err);
+            res.status(500).send(err);
+        });
+    });
+});
 /* DELETE */
 
 //DELETE user

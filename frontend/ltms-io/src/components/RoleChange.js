@@ -10,7 +10,6 @@ class RoleChange extends Component{
         super(props);
         this.state = {
             userEmail: "",
-            userEventRole: ""
         }
 
         this.handleRoleChange = this.handleRoleChange.bind(this);
@@ -20,13 +19,16 @@ class RoleChange extends Component{
         e.preventDefault(e);
 
         var email = e.target.elements.email.value;
-        var eventRole = e.target.elements.eventRole.value;
 
         this.setState({userEmail: email});
-        this.setState({userEventRole: eventRole});
 
         console.log(this.state.userEmail);
-        console.log(this.state.userEventRole);
+
+        axios.patch('http://localhost:5000/api/users/authorization/5e54b2a86efec099146c054b', {email: this.state.userEmail}).then(function(response){
+          console.log(response);
+        }).catch(function(err){
+          console.log(err);
+        })
 
     }
 
@@ -44,11 +46,6 @@ class RoleChange extends Component{
                       <Col xs = "4">
                         <Form.Group controlId="email">
                           <Form.Control type = "email" placeholder = "Email Here"></Form.Control>
-                        </Form.Group>
-                      </Col>
-                      <Col xs = "3">
-                        <Form.Group controlId="eventRole">
-                          <Form.Control type = "text" placeholder = "New Event Role"></Form.Control>
                         </Form.Group>
                       </Col>
                     </Row>
