@@ -28,10 +28,12 @@ router.get('/auth/:token', (req, res) => {
     axios({method: 'get',
            url: 'https://dev-s68c-q-y.auth0.com/userinfo',
            headers: {
-               'authorization': `Bearer ${accessToken}`,
+               'uthorization': `Bearer ${accessToken}`,
             }
         }).then((userDataResponse) => {
             console.log('FUN!');
+            console.log(userDataResponse);
+            return res.status(200).send("yee");
         //Destruct the  data from  from auth0
         //const { name, nickname, email, picture, sub } = userDataResponse.data;
         // console.log(userDataResponse.data);
@@ -98,7 +100,7 @@ router.post("/register", (req, res) => {
 
     User.findOne({ email: req.body.email }).then((user) => {
         if (user) {
-        return res.status(400).send("User email exists");
+            return res.status(400).send("User email exists");
         }
         else {
             const createdUser = new User({

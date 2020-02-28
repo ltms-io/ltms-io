@@ -39,9 +39,11 @@ export default class Auth {
            headers: {
                'authorization': `Bearer ${authResults.accessToken}`,
             }
-        }).then((userDataResponse) => { console.log(userDataResponse)});
+        }).then((userDataResponse) => {
+          console.log(userDataResponse.data); 
+          axios.get(`http://localhost:5000/api/users/auth/${localStorage.getItem("access_token")}`);
+        });
         
-        axios.get(`http://localhost:5000/api/users/auth/${localStorage.getItem("access_token")}`).then((x) => {console.log(x)}).catch((err) => {console.log(err)});
         // location.hash = "";
         // location.pathname = LOGIN_SUCCESS_PAGE;
       } else {
