@@ -1,4 +1,3 @@
-
 import React from "react";
 import LTMSNavbar from "./components/LTMSNavbar";
 import Home from "./components/Home";
@@ -22,7 +21,6 @@ function App(props) {
       <div className="App">
         <LTMSNavbar />
         <Switch>
-    
           <Route path="/" exact component={() => <Home auth={props.auth} />} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/login" component={() => <Login auth={props.auth} />} />
@@ -31,6 +29,7 @@ function App(props) {
           <Route path="/createscoresheet" component={ Sheet }/>
           <Route path="/callback" component={Callback} />
           <Route path="/pictureuploadtest" component={PictureUploadModalTest} />
+          <Route path="/volunteermodaltest" component={ VolunteerModalTest } />
         </Switch>
       </div>
     </Router>

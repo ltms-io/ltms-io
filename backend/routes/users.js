@@ -48,6 +48,9 @@ router.get('/', (req, res, next) => {
     })
 });
 
+
+
+
 //GET specific user
 router.get('/:id', (req, res) => {
     User.findById(req.params.id).then(user => {
@@ -58,6 +61,7 @@ router.get('/:id', (req, res) => {
         return res.status(200).send(user);
     })
 });
+
 
 /* POST */
 
@@ -151,6 +155,34 @@ router.post("/profilepic", (req, res) =>{
         }
     }).catch((err) => {console.log(err)});
 
+//POST search for user by included values
+router.post('/search', (req, res) => {
+    if (!req.body.email && !req.body.name) {
+        res.status(400).send("body is empty");
+        return;
+    }
+
+    // Valid search terms are email, name
+    const body = {};
+    if (req.body.email) {
+        body.email = req.body.email;
+    }
+
+    if (req.body.name) {
+        body.name = req.body.name;
+    }
+
+    User.findOne(body, (err, user) => {
+        if(err) {
+            return res.status(500).send(err);
+        }
+        
+        if(!user) {
+            return res.status(404).send("User not found");
+        }
+        console.log("user:");
+        return res.status(200).send({email: user.email, name: user.name, _id: user._id});
+    });
 });
 
 /* PATCH */
