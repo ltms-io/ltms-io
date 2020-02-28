@@ -16,6 +16,7 @@ class Home extends Component {
     return (
       <div>
         <h1>Welcome!</h1>
+
         {this.props.auth.isAuthenticated() && (
           <div>(You are authenticated!)</div>
         )}
@@ -31,7 +32,11 @@ class Home extends Component {
         <div>
           <a href="/accountdetails">Edit Account Details</a>
         </div>
+        <div>
+            <a href="/createscoresheet">Create A Scoresheet</a>
+        </div>
         <button onClick={this.props.auth.logout}>Logout</button>
+
       </div>
     );
   }
