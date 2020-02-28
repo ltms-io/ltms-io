@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import logo from '../logo.svg';
-import axios from 'axios';
+const axios = require('axios');
 
 class RoleChange extends Component{
 
@@ -27,8 +27,6 @@ class RoleChange extends Component{
 
         console.log(this.state.userEmail);
         console.log(this.state.userEventRole);
-
-        axios.patch
 
     }
 

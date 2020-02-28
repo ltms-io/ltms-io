@@ -53,19 +53,30 @@ router.post("/register", (req, res) => {
     });
 });
 
-  router.post('/login', (req, res) => {
-      User.findOne(req.email).then(user => {
-          if(!user) {
-              res.status(404).send("Not a user");
-          }
+router.post('/login/:id', (req, res) => {
+    var authId = req.params.id;
+    User.Collection("Information").findOne({authID: authId}).then(user => {
+        if(!user) {
+            return res.status(404).send("Not a user");
+        }
 
-          user.save().then(user => {
-              res.json(user);
-          }).catch(err => {
-              console.log(err);
-          })
-      })
-  })
+        var payload = {
+            name: user.name,
+            email: user.email,
+            eventAuthorizer: user.eventAuthorizer,
+            userAuthorizer: user.userAuthorizerh
+        }
+
+        var tok = jsonWeb.sign(
+            payload,
+            "123456",
+        );
+        jsonWeb.verify(tok, "123456", function(err, decoded){
+            console.log(decoded.name);
+        })
+        return res.status(200).send(user);
+    })
+})
 
 /* PATCH */
 

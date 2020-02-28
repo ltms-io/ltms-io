@@ -7,6 +7,7 @@ import AccountDetails from "./components/AccountDetails";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import CreateTournament from "./components/CreateTournament";
 import Callback from "./components/Callback";
+import RoleChange from "./components/RoleChange";
 
 import "react-dates/initialize";
 import "react-dates/lib/css/_datepicker.css";
