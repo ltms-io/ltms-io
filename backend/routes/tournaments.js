@@ -37,7 +37,7 @@ router.get('/user/:id', (req, res) => {
 /* POST register new tournament */
 router.post('/register', (req, res) => {
     if (!req.body.director || !req.body.fieldsCount) {
-        return res.status(400).json(errors);
+        return res.status(400).json("errors");
     }
 
     if (false) { //TODO: Add a check for recent tournament created by user

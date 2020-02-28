@@ -3,6 +3,8 @@
 import React, { Component } from 'react'
 import { Container, Col, Row, Form, Button } from 'react-bootstrap'
 import { SingleDatePicker } from 'react-dates'
+import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 
 export default class CreateEvent extends Component {
     constructor(props) {
@@ -36,12 +38,28 @@ export default class CreateEvent extends Component {
         if (form.checkValidity() === false) {
             event.preventDefault();
             event.stopPropagation();
+            this.setState({validated: true});
+        } else {
+            event.preventDefault();
+            
+            axios.post("http://localhost:5000/api/tournaments/register", {
+                director: "Tom Cruise", //TODO: add director from authed user
+                name: this.state.tourneyName,
+                teams: "",
+                officialEventFlag: true, //TODO: implement checking
+                //TODO: send JA
+                //TODO: send head ref
+                fieldsCount: this.state.numTables,
+                matchesPerTeam: this.state.numMatches,
+                startDate: this.state.date,
+                endDate: this.state.date
+            }).then(res => {
+                console.log(res);
+                window.location = '/dashboard';
+            }).catch(err => {
+                console.log(err);
+            })
         }
-
-        this.setState({validated: true});
-
-        event.preventDefault();
-        //TODO: Call create event API
     }
 
     render() {
