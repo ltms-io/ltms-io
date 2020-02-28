@@ -6,12 +6,12 @@ class Login extends Component {
   render() {
     return (
       <div>
-        <p className="App-intro">Hello User</p>
+        <p className="App-intro">Please login using Auth0</p>
+        {!this.props.auth.isAuthenticated() && (
+          <div>(You are currently not logged in)</div>
+        )}
         <div>
-          <hr />
-          Please login using Auth0
-          <hr />
-          <button onClick={this.props.auth.login}>Login</button>
+          <button onClick={this.props.auth.login}>Login/SignUp</button>
         </div>
       </div>
     );
