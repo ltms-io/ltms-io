@@ -11,6 +11,10 @@ const TeamSchema = new Schema({
         type: String,
         required: true,
     },
+    tournamentId: {
+        type: String,
+        required: true,
+    },
     judgingScores: [],
     matchScores: [],
 });
