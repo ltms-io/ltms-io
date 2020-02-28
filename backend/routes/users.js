@@ -1,6 +1,5 @@
 //azure code pulled from https://github.com/Azure-Samples/azure-sdk-for-js-storage-blob-stream-nodejs/
 
-const axios = require('axios');
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user-model');
@@ -16,7 +15,6 @@ const uuidv1 = require('uuidv1');
 
 const ONE_MEGABYTE = 1024 * 1024;
 const uploadOptions = { bufferSize: 4 * ONE_MEGABYTE, maxBuffers: 20 };
-const ONE_MINUTE = 60 * 1000;
 
 const sharedKeyCredential = new StorageSharedKeyCredential(
     dev_config.AZURE_STORAGE_ACCOUNT_NAME || process.env.AZURE_STORAGE_ACCOUNT_NAME,
@@ -251,12 +249,12 @@ router.patch('/:id', (req, res) => {
 
         // console.log(msg);
 
-        // sgMail.send(msg).then(() => {
-        //     res.status(200).send("changes made successfully");
-        // }).catch(err => {
-        //     console.log(err)
-        //     res.status(500).send(err);
-        // });
+        sgMail.send(msg).then(() => {
+            res.status(200).send("changes made successfully");
+        }).catch(err => {
+            console.log(err)
+            res.status(500).send(err);
+        });
     });
 });
 
