@@ -20,29 +20,40 @@ class Home extends Component {
         {this.props.auth.isAuthenticated() && (
           <div>(You are authenticated!)</div>
         )}
-        <div>
-          <a href="/dashboard">Dashboard</a>
-        </div>
+        {this.props.auth.isAuthenticated() && (
+          <div>
+            <a href="/dashboard">Dashboard</a>
+          </div>
+        )}
         <div>
           <a href="/login">Login</a>
         </div>
-        <div>
-          <a href="/createtournament">Create A Tournament</a>
-        </div>
-        <div>
-          <a href="/accountdetails">Edit Account Details</a>
-        </div>
+        {this.props.auth.isAuthenticated() && (
+          <div>
+            <a href="/createtournament">Create A Tournament</a>
+          </div>
+        )}
+        {this.props.auth.isAuthenticated() && (
+          <div>
+            <a href="/accountdetails">Edit Account Details</a>
+          </div>
+        )}
+        {this.props.auth.isAuthenticated() && (
+          <button onClick={this.props.auth.logout}>Logout</button>
+        )}
+{this.props.auth.isAuthenticated() && (
         <div>
           <a href="/pictureuploadtest">Picture Upload Test</a>
-        </div>
+        </div>)}
+  {this.props.auth.isAuthenticated() && (
         <div>
           <a href="/createscoresheet">Create A Scoresheet</a>
-        </div>
+        </div>)}
+  {this.props.auth.isAuthenticated() && (
         <div>
             <a href="/volunteermodaltest">Volunteer Assignment Modal Test</a>
-        </div>
+        </div>)}
 
-        <button onClick={this.props.auth.logout}>Logout</button>
 
       </div>
     );
