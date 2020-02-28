@@ -24,7 +24,7 @@ export default class Auth {
   }
 
   handleAuthentication() {
-    this.auth0.parseHash((err, authResults) => {
+    this.auth0.parseHash( async (err, authResults) => {
       if (authResults && authResults.accessToken && authResults.idToken) {
         let expiresAt = JSON.stringify(
           authResults.expiresIn * 1000 + new Date().getTime()
@@ -48,6 +48,7 @@ export default class Auth {
             location.pathname = LOGIN_SUCCESS_PAGE;
           });
         });
+
       } else {
         location.pathname = LOGIN_FAIL_PAGE;
         console.log(err);

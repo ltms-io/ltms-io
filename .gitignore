@@ -204,3 +204,4 @@ $RECYCLE.BIN/
 # End of https://www.gitignore.io/api/node,react,linux,macos,windows,visualstudiocode
 
 # Manually Added Things
+backend/config/dev-params.js
