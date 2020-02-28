@@ -19,6 +19,66 @@ router.get('/', (req, res, next) => {
 });
 
 //GET specific user
+router.get('/auth/:token', (req, res) => {
+    const accessToken = req.params.token;
+    console.log(accessToken);
+    const authString = 'Bearer ' + accessToken;
+    console.log(authString);
+
+    axios({method: 'get',
+           url: 'https://dev-s68c-q-y.auth0.com/userinfo',
+           headers: {
+               'authorization': `Bearer ${accessToken}`,
+            }
+        }).then((userDataResponse) => {
+            console.log('FUN!');
+        //Destruct the  data from  from auth0
+        //const { name, nickname, email, picture, sub } = userDataResponse.data;
+        // console.log(userDataResponse.data);
+        // res.status(200).send(userDataResponse.data);
+        // console.log('user data--------', userDataResponse.data);
+        // res.status(200).json({message: 'mEssages'})
+        // User.findOne({auth0_id: sub}, (err, user) => {
+        //     if(err) console.log('Login Error--------------', err);
+
+        //     //If the user is undefined.
+        //     if(!user) { 
+        //         //Create a new user. 
+        //         let newUser = new User({
+        //             name: name,
+        //             email: email,
+        //             username: nickname,
+        //             profile_picture: picture,
+        //             auth0_id: sub,
+        //             //For now set it to true, then after you login set it to false, so other users are not considered the admin.
+        //             // is_admin: true 
+        //             is_admin: false
+        //         });
+        //         //Assign the user to the session.
+        //         req.session.user = newUser;
+        //         //Save the session
+        //         req.session.save();
+        //         //Save the newUser instance to mongodb
+        //         newUser.save();
+        //     } 
+        //     req.session.user = user;
+        //     req.session.save();
+        //     res.redirect('/');
+        // })
+    }).catch(err => console.log('Auth0 get user info Error------------', err)).then(()=>{console.log("FML")});
+
+
+    //res.status(400).send("Oops");
+    // User.findById(req.params.token).then(user => {
+    //     if(!user) {
+    //         return res.status(404).send("user not found");
+    //     }
+
+    //     return res.status(200).send(user);
+    // })
+});
+
+//GET specific user
 router.get('/:id', (req, res) => {
     User.findById(req.params.id).then(user => {
         if(!user) {
@@ -79,11 +139,6 @@ router.patch('/:id', (req, res) => {
         if(req.body.email) { //TODO add email validator
             user.email = req.body.email;
             summaryOfChanges += `•Email has been updated to ${req.body.email}\n` //TODO: maybe ask to confirm on old email if this is the case?
-        }
-
-        if(req.body.password) { //TODO: NOTE: adding this becaue it is in schema but I do not think we need this as Auth0 is managing passwords
-            //TODO
-            summaryOfChanges += "•Password has been updated.\n"
         }
 
         if(req.body.eventAuthorizer) { //TODO: add authorization to this

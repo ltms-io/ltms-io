@@ -1,5 +1,6 @@
 /* eslint no-restricted-globals: 0*/
 import auth0 from "auth0-js";
+import axios from 'axios';
 
 const LOGIN_SUCCESS_PAGE = "/";
 const LOGIN_FAIL_PAGE = "/login";
@@ -11,7 +12,7 @@ export default class Auth {
     redirectUri: "http://localhost:3000/callback",
     audience: "https://dev-s68c-q-y.auth0.com/userinfo",
     responseType: "token id_token",
-    scope: "openid"
+    scope: "openid profile email"
   });
 
   constructor() {
@@ -31,8 +32,18 @@ export default class Auth {
         localStorage.setItem("access_token", authResults.accessToken);
         localStorage.setItem("id_token", authResults.idToken);
         localStorage.setItem("expires_at", expiresAt);
-        location.hash = "";
-        location.pathname = LOGIN_SUCCESS_PAGE;
+        console.log(authResults.accessToken);
+        axios({
+           method: 'GET',
+           url: 'https://dev-s68c-q-y.auth0.com/userinfo',
+           headers: {
+               'authorization': `Bearer ${authResults.accessToken}`,
+            }
+        }).then((userDataResponse) => { console.log(userDataResponse)});
+        
+        axios.get(`http://localhost:5000/api/users/auth/${localStorage.getItem("access_token")}`).then((x) => {console.log(x)}).catch((err) => {console.log(err)});
+        // location.hash = "";
+        // location.pathname = LOGIN_SUCCESS_PAGE;
       } else {
         location.pathname = LOGIN_FAIL_PAGE;
         console.log(err);
