@@ -1,4 +1,4 @@
-//some code pulled from https://www.w3schools.com/react/react_forms.asp and 
+//some code pulled from https://www.w3schools.com/react/react_forms.asp and
 
 import React, { Component } from 'react'
 import { Container, Col, Row, Form, Button } from 'react-bootstrap'

@@ -3,7 +3,6 @@ import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 
 class ResetLogin extends Component {
-
   constructor(props) {
     super(props);
 
@@ -23,27 +22,9 @@ class ResetLogin extends Component {
     this.state.dbresults.email = e.target.elements.email.value;
     // Use this statement instead once backend Auth0 connection for register
     // is complete (5e54b2a86efec099146c054b is random test uid):
-    // await axios.patch(`http://localhost:5000/api/users/${this.state.uid}`, {
-    await axios.patch("http://localhost:5000/api/users/5e54b2a86efec099146c054b", {
+    //await axios.patch("http://localhost:5000/api/users/5e54b2a86efec099146c054b", {
+    await axios.patch(`http://localhost:5000/api/users/${this.state.uid}`, {
       email: this.state.dbresults.email
-    })
-    .catch( (error) => {
-      console.log(error);
-    });
-
-    console.log("ATTEMPTING AUTH0 EMAIL PATCH");
-    await axios({
-      method: 'PATCH',
-      url: `https://dev-s68c-q-y.auth0.com/api/v2/users/${this.state.uid}`,
-      headers: {
-        'content-type': 'application/json',
-        'authorization': 'Bearer ' + localStorage.getItem("access_token")
-      },
-      body: {
-        email: this.state.dbresults.email,
-        connection: 'Username-Password-Authentication'
-      },
-      json: true
     })
     .catch( (error) => {
       console.log(error);
@@ -51,8 +32,8 @@ class ResetLogin extends Component {
 
     // Use this statement instead once backend Auth0 connection for register
     // is complete (5e54b2a86efec099146c054b is random test uid):
-    // await axios.get(`http://localhost:5000/api/users/${this.state.uid}`)
-    await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
+    //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
+    await axios.get(`http://localhost:5000/api/users/${this.state.uid}`)
       .then ( (result) => {
         this.state.dbresults = result.data;
       })
@@ -61,7 +42,6 @@ class ResetLogin extends Component {
       });
 
     console.log("UPDATED STATE", this.state);
-
   }
 
   async handlePassword(e) {
@@ -73,7 +53,7 @@ class ResetLogin extends Component {
       headers: {'content-type': 'application/json'},
       data: {
         client_id: '4J9E3tWlJczAxTGBR2YUO61Rmebmlnmf',
-        email: this.state.authresults.name,
+        email: this.state.authresults.email,
         connection: 'Username-Password-Authentication'
       },
       json: true
@@ -110,18 +90,27 @@ class ResetLogin extends Component {
   }
 
   async componentDidMount() {
-    await axios.get(`https://dev-s68c-q-y.auth0.com/userinfo?access_token=${localStorage.getItem("access_token")}`)
-      .then( (result) => {
-        this.state.authresults = result.data;
-        this.state.uid = this.state.authresults.sub;
-      }).catch( (error) => {
-        console.log(error)
-      });
+    await axios({
+      method: 'GET',
+      url: `https://dev-s68c-q-y.auth0.com/userinfo`,
+      headers: {
+        'content-type': 'application/json',
+        'authorization': 'Bearer ' + localStorage.getItem("access_token")
+      },
+      json: true
+    })
+    .then( (result) => {
+      this.state.authresults = result.data;
+      this.state.uid = this.state.authresults.sub;
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
 
     // Use this statement instead once backend Auth0 connection for register
     // is complete (5e54b2a86efec099146c054b is random test uid):
-    // await axios.get(`http://localhost:5000/api/users/${this.state.uid}`)
-    await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
+    //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
+    await axios.get(`http://localhost:5000/api/users/${this.state.uid.substring(6)}`)
       .then ( (result) => {
         this.state.dbresults = result.data;
       })
@@ -129,7 +118,9 @@ class ResetLogin extends Component {
         console.log(error);
       });
 
-    console.log("INITIAL STATE", this.state);
+    this.setState(this.state);
+
+    console.log("INITIAL RESET LOGIN STATE", this.state);
   }
 }
 
