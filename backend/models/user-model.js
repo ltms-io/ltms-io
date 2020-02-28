@@ -34,11 +34,9 @@ const UserSchema = new Schema({
         },
         imgUrl: {
             type: String,
-            default: '',
         },
         thumbUrl: {
             type: String,
-            default: '',
         },
     },
 });

@@ -10,7 +10,6 @@ class AccountDetails extends Component {
 
     this.state = {
       uid: "",
-      profilepic: "",
       dbresults: {},
       authresults: {}
     };
@@ -77,7 +76,7 @@ class AccountDetails extends Component {
               <Col>
                 <div>
                   <h3>Edit Profile Picture</h3>
-                  {this.state.profilepic ? <img src={this.state.profilepic.imgUrl} /> : <img src={logo} alt="account"/>}
+                  <img alt="profile" src={logo} />
                 </div>
                 <div>
                   <h3>Edit Name</h3>
@@ -136,7 +135,6 @@ class AccountDetails extends Component {
     await axios.post(`http://localhost:5000/api/users/auth`, {data: {sub: localStorage.getItem("auth0_id")}})
       .then ( (result) => {
         this.state.dbresults = result.data;
-        this.state.profilepic = result.data.profilepic.imgUrl;
       })
       .catch( (error) => {
         console.log(error);

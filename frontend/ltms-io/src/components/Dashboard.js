@@ -7,15 +7,12 @@ class Dashboard extends Component {
     super(props);
 
     this.state = {
-      tournaments: [],
       dbresults: {},
       authresults: {}
     };
   }
 
   render () {
-
-  //  var tournaments = this.state.tournaments.map((x))
     return(
       <div>
         <div>
@@ -30,8 +27,6 @@ class Dashboard extends Component {
         <div>
           mongo-id: { this.state.dbresults._id }
         </div>
-
-        
       </div>
     );
   }
@@ -66,14 +61,6 @@ class Dashboard extends Component {
       .catch( (error) => {
         console.log(error);
       });
-
-    await axios.post("http://localhost:5000/api/tournaments/user", {data: {auth0id: localStorage.getItem("auth0_id")}})
-      .then((result) => {
-        this.state.tournaments = result.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      })
 
     this.setState(this.state);
 
