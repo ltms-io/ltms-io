@@ -50,6 +50,10 @@ router.post('/', (req, res) => {
 
 //POST search for user by included values
 router.post('/search', (req, res) => {
+    if (!req.body.email && !req.body.name) {
+        res.status(400).send("body is empty");
+        return;
+    }
 
     // Valid search terms are email, name
     const body = {};
