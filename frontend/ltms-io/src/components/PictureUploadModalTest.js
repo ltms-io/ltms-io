@@ -10,22 +10,26 @@ class PictureUploadModalTest extends Component {
 
         this.state = {
             addVolunteerShow: false,
+            thumbUrl: '',
             imgUrl: '',
         }
     }
 
     modalClose = () => {
         this.setState({addVolunteerShow: false});
+        // setTimeout(() => {
         this.requestUserImg();
+        // }, 12000);
     }
 
-    requestUserImg() {
+    async requestUserImg() {
+        //TODO: Replace with actual current user id once implemented
         axios({method: "post", url: "http://localhost:5000/api/users/profilepic", data: {id: "5e54b2b96efec099146c054c"}})
         .then((res)=> {
             if (res.status === 200) {
                 console.log("Img url:");
                 console.log(res.data);
-                this.setState({imgUrl: res.data});
+                this.setState({thumbUrl: res.data.thumbUrl, imgUrl: res.data.imgUrl});
             }
         })
     }
@@ -42,7 +46,8 @@ class PictureUploadModalTest extends Component {
                     show={this.state.addVolunteerShow} 
                     handleClose={this.modalClose} 
                     name={this.props.name}></PictureUploadModal>
-                {this.state.imgUrl ? <img src={this.state.imgUrl}/> : null}
+                    {this.state.thumbUrl ? <img src={this.state.thumbUrl}/> : null}
+                    {this.state.imgUrl ? <img src={this.state.imgUrl}/> : null}
             </div>
         )
     }

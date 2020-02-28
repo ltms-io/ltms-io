@@ -32,7 +32,10 @@ const UserSchema = new Schema({
             type: Boolean,
             default: false,
         },
-        url: {
+        imgUrl: {
+            type: String,
+        },
+        thumbUrl: {
             type: String,
         },
     },

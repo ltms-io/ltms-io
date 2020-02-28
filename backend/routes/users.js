@@ -79,7 +79,8 @@ router.post("/register", (req, res) => {
                 userAuthorizer: req.body.userAuthorizer,
                 profilePic: {
                     is_azure: false,
-                    url: req.body.picture,
+                    thumbUrl: req.body.thumbPicture,
+                    imgUrl: req.body.picture
                 }
             });
             createdUser.save().then((user) => res.send(user)).catch((err) => console.log(err));
@@ -88,29 +89,45 @@ router.post("/register", (req, res) => {
 });
 
 router.post("/uploadpicture", uploadStrategy, async (req, res) => {
-    if (!req.file || req.file.mimetype.indexOf("image/") === -1)  {
+    if (!req.file || req.file.mimetype.indexOf("image/") === -1 || req.b)  {
         res.status(400).send("Make sure you upload a file that is an image");
     }
 
     const blobName = getBlobName(req.file.originalname);
     const stream = getStream(req.file.buffer);
     // console.log(req.file);
+    console.log(req.id);
     const containerClient = blobServiceClient.getContainerClient('images');
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
-    try {
-        await blockBlobClient.uploadStream(stream,
+    User.findById(req.body.id).then((user) => {
+        console.log("User:");
+        console.log(user);
+        if (!user) {
+            return res.status(404).send("User not found");
+        }
+
+        user.profilePic.is_azure = true;
+        user.profilePic.thumbUrl = `https://ltmsstore.blob.core.windows.net/thumbnails/${blobName}`;
+        user.profilePic.imgUrl = `https://ltmsstore.blob.core.windows.net/images/${blobName}`;
+        user.save();
+        blockBlobClient.uploadStream(stream,
             uploadOptions.bufferSize, uploadOptions.maxBuffers,
             {
                 blobHTTPHeaders: {
                     blobContentType: req.file.mimetype
                 }
+            }).then(() => {
+                return res.status(200).send("File upload success")
+            }).catch((err) => {
+                console.log(err);
+                return res.status(500).send(err);
             });
-        res.status(200).send("File upload success");
-    } catch(err) {
+    }).catch((err) => {
         console.log(err);
         res.status(500).send(err);
-    }
+    });
+
 });
 
 router.post("/profilepic", (req, res) =>{
@@ -122,12 +139,12 @@ router.post("/profilepic", (req, res) =>{
         if (!user) {
             return res.status(404).send("User was not found");
         }
-        if (!user.profilePic.url) {
+        if (!user.profilePic.imgUrl && !user.profilePic.thumUrl) {
             return res.status(404).send("User has no profile picture");
         }
 
         if (user.profilePic.is_azure) {
-            //TODO: Azure profile picture retrieval
+            return res.status(200).send({thumbUrl: user.profilePic.thumbUrl, imgUrl: user.profilePic.imgUrl});
         }
         else {
             return res.status(200).send(user.profilePic.url);
@@ -180,9 +197,13 @@ router.patch('/:id', (req, res) => {
         }
 
         if (req.body.picture) {
-            user.profilePic.url = req.body.picture;
+            user.profilePic.imgUrl = req.body.picture;
             user.is_azure = false;
             summaryOfChanges += "•Your profile picture has set to an external source.\n"
+        }
+
+        if (req.body.thumb) {
+            user.profilePic.thumbUrl = req.body.thumb;
         }
 
         user.save().then((user) => res.send(user)).catch((err) => console.log(err)); //TODO: as a .then() or an await?
