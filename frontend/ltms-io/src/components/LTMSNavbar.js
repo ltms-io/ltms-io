@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
-import logo from '../logo.svg';
+import sample from '../logo.svg';
+import logo from '../ltmsio-logo-wide.png';
 import axios from 'axios';
 
 class LTMSNavbar extends Component {
@@ -17,11 +18,13 @@ class LTMSNavbar extends Component {
   render() {
     return(
       <div>
-        <Navbar bg="dark" variant="dark">
-          <Navbar.Brand href="/">LTMS.io</Navbar.Brand>
+        <Navbar bg="secondary" >
+          <Navbar.Brand href="/">
+            <img src={logo} width="100" />
+          </Navbar.Brand>
           <Nav className="ml-auto">
             <Navbar.Brand href="/accountdetails">
-              <img alt="logo" src={logo} width="30" height="30"
+              <img src={sample} width="30" height="30"
                    className="d-inline-block align-top" />
             </Navbar.Brand>
             <NavDropdown alignRight title="Menu">
