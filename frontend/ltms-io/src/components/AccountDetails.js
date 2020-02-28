@@ -57,6 +57,8 @@ class AccountDetails extends Component {
     .catch( (error) => {
       console.log(error);
     });
+
+    this.props.auth.logout();
   }
 
   render() {
