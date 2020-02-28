@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user-model');
 const sgMail = require('@sendgrid/mail');
+const jsonWeb = require('jsonwebtoken')
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -61,6 +62,20 @@ router.post('/login/:id', (req, res) => {
             return res.status(404).send("Not a user");
         }
 
+        var payload = {
+            name: user.name,
+            email: user.email,
+            eventAuthorizer: user.eventAuthorizer,
+            userAuthorizer: user.userAuthorizerh
+        }
+
+        var tok = jsonWeb.sign(
+            payload,
+            "123456",
+        );
+        jsonWeb.verify(tok, "123456", function(err, decoded){
+            console.log(decoded.name);
+        })
         return res.status(200).send(user);
     })
 })

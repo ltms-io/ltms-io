@@ -26,8 +26,8 @@ app.use(bodyParser.json());
 app.use(cors());
 
 //DB config
-//const db = "mongodb+srv://FLTMS_App:pcXQ4HvRcyASuxeq@clusterfltms-yea2u.azure.mongodb.net/test?retryWrites=true&w=majority"
-const db = 'mongodb://localhost:27017/test1';
+const db = "mongodb+srv://FLTMS_App:pcXQ4HvRcyASuxeq@clusterfltms-yea2u.azure.mongodb.net/test?retryWrites=true&w=majority"
+
 //connect to MongoDB
 mongoose
   .connect(
