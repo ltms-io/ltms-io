@@ -154,7 +154,7 @@ router.patch('/authorization/:id', (req, res) => {
             return res.status(404).send("user not found");
         }
         summaryOfChanges = '';
-        user.eventAuthorizer = req.body.userAuthorizer;
+        user.eventAuthorizer = true;
         summaryOfChanges += "•You have been authorized to authorize other users to create official events.\n";
 
         
