@@ -33,7 +33,11 @@ router.post('/auth', (req, res) => {
                 eventAuthorizer: false,
                 userAuthorizer: false
             });
-            createdUser.save().then((user) => res.send(user)).catch((err) => console.log(err));
+            createdUser.save().then((user) => {
+                res.send(user)
+            }).catch((err) => {
+                console.log(err)
+            });
         }
         else {
             console.log("User already exists!")
@@ -87,8 +91,6 @@ router.patch('/updateuser', (req, res) => {
     if(Object.keys(req.body).length == 0) {
         return res.status(400).send("body is empty");
     }
-
-    
 
     User.findById(req.params.id).then((user) => {
         if(!user) {

@@ -40,12 +40,14 @@ export default class Auth {
                'authorization': `Bearer ${authResults.accessToken}`,
             }
         }).then((userDataResponse) => {
-          console.log(userDataResponse.data); 
-          axios.post(`http://localhost:5000/api/users/auth/`, {data: userDataResponse.data}).then((x) => console.log(x.data));
+          console.log(userDataResponse.data);
+          localStorage.setItem("auth0_id", userDataResponse.data.sub); 
+          axios.post(`http://localhost:5000/api/users/auth/`, {data: userDataResponse.data}).then((x) => {
+            console.log(x.data);         
+            location.hash = "";
+            location.pathname = LOGIN_SUCCESS_PAGE;
+          });
         });
-        
-        // location.hash = "";
-        // location.pathname = LOGIN_SUCCESS_PAGE;
       } else {
         location.pathname = LOGIN_FAIL_PAGE;
         console.log(err);
