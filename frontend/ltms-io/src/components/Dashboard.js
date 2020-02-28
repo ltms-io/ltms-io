@@ -1,31 +1,66 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
+import axios from 'axios';
 
 class Dashboard extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      uid: "",
+      dbresults: {},
+      authresults: {}
+    };
+  }
+
   render () {
-    const { tournaments } = this.props;
-    const tournamentList = tournaments.map(tournament => {
-      return (
-        <div className="tournament">
-          <div>ID: { tournament.id }</div>
-          <div>Title: { tournament.title }</div>
-          <div>Role: { tournament.role } </div>
-        </div>
-      );
-    });
-    const name = this.props.name;
-    const email = this.props.email;
     return(
       <div>
-        <div className="user-info">
-          <h3>Welcome { name }!</h3>
-          <h4>Email: { email }</h4>
+        <div>
+          Email: { this.state.dbresults.email }
         </div>
-        <div className="tournament-list">
-          { tournamentList }
+        <div>
+          Name: { this.state.dbresults.name }
+        </div>
+        <div>
+          UID: { this.state.uid }
         </div>
       </div>
     );
+  }
+
+  async componentDidMount() {
+    await axios({
+      method: 'GET',
+      url: `https://dev-s68c-q-y.auth0.com/userinfo`,
+      headers: {
+        'content-type': 'application/json',
+        'authorization': 'Bearer ' + localStorage.getItem("access_token")
+      },
+      json: true
+    })
+    .then( (result) => {
+      this.state.authresults = result.data;
+      this.state.uid = this.state.authresults.sub;
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
+
+    // Use this statement instead once backend Auth0 connection for register
+    // is complete (5e54b2a86efec099146c054b is random test uid):
+    //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
+    await axios.get(`http://localhost:5000/api/users/${this.state.uid.substring(6)}`)
+      .then ( (result) => {
+        this.state.dbresults = result.data;
+      })
+      .catch( (error) => {
+        console.log(error);
+      });
+
+    this.setState(this.state);
+
+    console.log("INITIAL DASHBOARD STATE", this.state);
   }
 }
 
