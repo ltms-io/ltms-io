@@ -12,6 +12,7 @@ import Callback from "./components/Callback";
 
 import "react-dates/initialize";
 import "react-dates/lib/css/_datepicker.css";
+import PictureUploadModalTest from "./components/PictureUploadModalTest";
 
 function App(props) {
   //console.log(props);
@@ -27,6 +28,7 @@ function App(props) {
           <Route path="/accountdetails" component={() => <AccountDetails auth={props.auth} />} />
           <Route path="/createscoresheet" component={ Sheet }/>
           <Route path="/callback" component={Callback} />
+          <Route path="/pictureuploadtest" component={PictureUploadModalTest} />
           <Route path="/volunteermodaltest" component={ VolunteerModalTest } />
         </Switch>
       </div>

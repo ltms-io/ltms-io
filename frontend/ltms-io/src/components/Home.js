@@ -33,7 +33,10 @@ class Home extends Component {
           <a href="/accountdetails">Edit Account Details</a>
         </div>
         <div>
-            <a href="/createscoresheet">Create A Scoresheet</a>
+          <a href="/pictureuploadtest">Picture Upload Test</a>
+        </div>
+        <div>
+          <a href="/createscoresheet">Create A Scoresheet</a>
         </div>
         <div>
             <a href="/volunteermodaltest">Volunteer Assignment Modal Test</a>
