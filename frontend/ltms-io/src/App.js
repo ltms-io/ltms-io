@@ -25,7 +25,7 @@ function App(props) {
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/login" component={() => <Login auth={props.auth} />} />
           <Route path="/createtournament" component={CreateTournament} />
-          <Route path="/accountdetails" component={AccountDetails} />
+          <Route path="/accountdetails" component={() => <AccountDetails auth={props.auth} />} />
           <Route path="/callback" component={Callback} />
         </Switch>
       </div>
