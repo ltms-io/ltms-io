@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import ResetLogin from './ResetLogin';
 import logo from '../logo.svg';
@@ -86,7 +85,7 @@ class AccountDetails extends Component {
               <Col>
                 <div>
                   <h3>Edit Profile Picture</h3>
-                  <img src={logo} />
+                  <img alt="profile" src={logo} />
                 </div>
                 <div>
                   <h3>Edit Name</h3>
