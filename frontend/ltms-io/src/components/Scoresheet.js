@@ -66,50 +66,11 @@ class Sheet extends React.Component{
     }
 
     this.setState({finalscore: newScore});
-    // var newArray = [...this.state.events];
-    // newArray.push({
-    //   categ: e.target.elements.category.value,
-    //   scoretype: e.target.elements.score.value
-    // })
-    // this.setState({events: newArray})
-    
 
-
-    /*var s = <Form.Control type = "text"> {e.target.elements.category.value}</Form.Control>;
-    cats.push(s);
-    score.push(e.target.elements.score.value);*/
   }
     
   render(){
     return(
-      // <div>
-      //   <h3>Add a category</h3>
-      //   <Form onSubmit={this.handleInsert}>
-      //     <Row>
-      //       <Col>
-      //     <Form.Group controlId = "category">
-      //       <Form.Control type = "text" placeholder = "Category"/>
-      //     </Form.Group>
-      //     </Col>
-      //     <Col>
-      //     <Form.Group controlId = "score">
-      //       <Form.Control type = "text" placeholder = "Score Type"/>
-      //     </Form.Group>
-      //     </Col>
-      //     </Row>
-      //     <Button variant = "outline-primary" type = "submit">
-      //       Add Category
-      //     </Button>
-      //   </Form>
-      //   <Form>
-      //     {this.state.events.map(event => (
-      //       <Cate
-      //       categ = {event.categ}
-      //       />
-      //     ))}
-      //   </Form>
-      // </div>
-
       //script to render the page
       <div>
         <h3>Team Scoring</h3>
