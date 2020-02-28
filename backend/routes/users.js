@@ -149,31 +149,35 @@ router.patch('/authorization/:id', (req, res) => {
         return res.status(400).send("body is empty");
     }
 
+    console.log(req.body);
     User.findById(req.params.id).then((user) => {
         if(!user) {
             return res.status(404).send("user not found");
         }
         summaryOfChanges = '';
-        user.eventAuthorizer = true;
+        user.eventAuthorizer = false;
         summaryOfChanges += "•You have been authorized to authorize other users to create official events.\n";
+        user.save().then((user) => res.send(user)).catch((err) => console.log(err));
 
         
-        const msg = {
-            to: req.body.email,
-            from: 'noreply@ltmsio.codes',
-            subject: 'Changes have been made to your account',
-            text: summaryOfChanges,
-            html: summaryOfChanges,
-        };
+        // const msg = {
+        //     to: req.body.email,
+        //     from: 'noreply@ltmsio.codes',
+        //     subject: 'Changes have been made to your account',
+        //     text: summaryOfChanges,
+        //     html: summaryOfChanges,
+        // };
 
-        console.log(msg);
+        // console.log(msg);
 
-        sgMail.send(msg).then(() => {
-            res.status(200).send("changes made successfully");
-        }).catch(err => {
-            console.log(err);
-            res.status(500).send(err);
-        });
+        return res.status(200).send("Changes made successfully");
+
+        // sgMail.send(msg).then(() => {
+        //     res.status(200).send("changes made successfully");
+        // }).catch(err => {
+        //     console.log(err);
+        //     res.status(500).send(err);
+        // });
     });
 });
 /* DELETE */

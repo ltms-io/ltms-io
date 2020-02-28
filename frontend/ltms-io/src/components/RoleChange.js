@@ -24,7 +24,7 @@ class RoleChange extends Component{
 
         console.log(this.state.userEmail);
 
-        axios.patch('http://localhost:5000/api/users/authorization/5e54b2a86efec099146c054b', {email: this.state.userEmail}).then(function(response){
+        axios.patch('http://localhost:5000/api/users/authorization/5e54b2a86efec099146c054b', {data:{email: this.state.userEmail}}).then(function(response){
           console.log(response);
         }).catch(function(err){
           console.log(err);
