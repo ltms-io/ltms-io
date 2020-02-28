@@ -60,20 +60,7 @@ class LTMSNavbar extends Component {
         this.state.dbresults = result.data;
       })
       .catch( async (error) => {
-        if (error.response.status === 404) {
-          console.log("FUCK YOU DUMBASS");
-          await axios.post(`http://localhost:5000/api/users/register`, {
-            uid: this.state.uid.substring(6),
-            email: this.state.authresults.email,
-            name: this.state.authresults.name
-          })
-          .catch( (error) => {
-            console.log(error);
-          });
-        }
-        else {
           console.log(error);
-        }
       });
 
     this.setState(this.state);
