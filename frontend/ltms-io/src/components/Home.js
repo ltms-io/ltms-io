@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
+const axios = require('axios');
+
 class Home extends Component {
+
   constructor(props) {
     super(props);
 
@@ -14,6 +17,7 @@ class Home extends Component {
 
   render() {
     return (
+
       <div>
         <h1>Welcome!</h1>
       
