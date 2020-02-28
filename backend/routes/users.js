@@ -78,7 +78,7 @@ router.patch('/:id', (req, res) => {
         return res.status(400).send("body is empty");
     }
 
-    User.findById(req.params.id).then((user) => {
+    User.Collection("Information").findById(req.params.id).then((user) => {
         if(!user) {
             return res.status(404).send("user not found");
         }
