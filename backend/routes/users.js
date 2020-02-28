@@ -118,28 +118,27 @@ router.post("/register", (req, res) => {
 });
 
 router.post("/uploadpicture", uploadStrategy, async (req, res) => {
-    if (!req.file || req.file.mimetype.indexOf("image/") === -1 || req.b)  {
+    if (!req.file || req.file.mimetype.indexOf("image/") === -1)  {
         res.status(400).send("Make sure you upload a file that is an image");
     }
+
+    console.log("==== REQUEST =====");
+    console.log(req.body);
 
     const blobName = getBlobName(req.file.originalname);
     const stream = getStream(req.file.buffer);
     // console.log(req.file);
-    console.log(req.id);
     const containerClient = blobServiceClient.getContainerClient('images');
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
-    User.findById(req.body.id).then((user) => {
+    User.findOne({auth0id: req.body.auth0id}).then((user) => {
         console.log("User:");
         console.log(user);
         if (!user) {
             return res.status(404).send("User not found");
         }
 
-        user.profilePic.is_azure = true;
-        user.profilePic.thumbUrl = `https://ltmsstore.blob.core.windows.net/thumbnails/${blobName}`;
-        user.profilePic.imgUrl = `https://ltmsstore.blob.core.windows.net/images/${blobName}`;
-        user.save();
+        
         blockBlobClient.uploadStream(stream,
             uploadOptions.bufferSize, uploadOptions.maxBuffers,
             {
@@ -147,7 +146,19 @@ router.post("/uploadpicture", uploadStrategy, async (req, res) => {
                     blobContentType: req.file.mimetype
                 }
             }).then(() => {
-                return res.status(200).send("File upload success")
+                user.profilePic = {
+                    is_azure: true,
+                    thumbUrl: `https://ltmsstore.blob.core.windows.net/thumbnails/${blobName}`,
+                    imgUrl: `https://ltmsstore.blob.core.windows.net/images/${blobName}`
+                }
+                //user.auth0id = req.auth0id
+                console.log(user);
+                user.save().then(() => {
+                    return res.status(200).send("File upload success")
+                }).catch((err) => {
+                    return res.status(500).send(err);
+                });
+                
             }).catch((err) => {
                 console.log(err);
                 return res.status(500).send(err);
@@ -160,10 +171,8 @@ router.post("/uploadpicture", uploadStrategy, async (req, res) => {
 });
 
 router.post("/profilepic", (req, res) =>{
-    const m_id = req.body.id;
-    console.log(m_id);
 
-    User.findById(m_id).then((user) => {
+    User.findOne({auth0id: req.body.auth0id}).then((user) => {
         console.log(user);
         if (!user) {
             return res.status(404).send("User was not found");

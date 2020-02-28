@@ -28,62 +28,89 @@ router.get('/:id', (req, res) => {
 
 
 /* GET tournaments by user id */
-router.get('/user/:id', (req, res) => {
-    User.find({ director: req.params.id }, (err, tournaments) => {
-        
-    });
+router.post('/user', (req, res) => {
+    User.findOne({ auth0id: req.body.auth0id })
+    .then((user) => {
+        console.log(user);
+        console.log(user._id);
+        if (user) {
+            Tournament.find({director: user._id})
+            .then((tournaments) => {
+                console.log(tournaments);
+                res.status(200).send(tournaments);
+            }).catch((err) => {
+                res.status(500).send(err);
+            })
+        }  
+        else {
+            res.status(404).send("No such user found");
+        } 
+    })
+    .catch((err) => {
+        res.status(500).send(err);
+    })
 });
 
 /* POST register new tournament */
 router.post('/register', (req, res) => {
-    if (!req.body.director || !req.body.fieldsCount) {
+    if (!req.body.auth0id || !req.body.fieldsCount) {
         return res.status(400).json("errors");
     }
 
-    if (false) { //TODO: Add a check for recent tournament created by user
-        return res.status(400).send("Tournament recently ceated");
-    }
-    else {
-        var tournamentDetails = {
-            director: req.body.director,
-            fieldsCount: req.body.fieldsCount
-        }
+    console.log("====REQUEST====");
+    console.log(req.body)
 
-        if (req.body.name) {
-            tournamentDetails.name = req.body.name;
+    User.findOne({auth0id: req.body.auth0id}).then((user) => {
+        console.log("====USER====");
+        console.log(user);
+        if (false) { //TODO: Add a check for recent tournament created by user
+            return res.status(400).send("Tournament recently ceated");
         }
+        else {
+            console.log(user._id);
+            var tournamentDetails = {
+                director: user._id,
+                fieldsCount: req.body.fieldsCount
+            }
 
-        if (req.body.teams) {
-            tournamentDetails.teams = req.body.teams;
+            if (req.body.name) {
+                tournamentDetails.name = req.body.name;
+            }
+
+            if (req.body.teams) {
+                tournamentDetails.teams = req.body.teams;
+            }
+
+            if (req.body.officialEventFlag) {
+                tournamentDetails.officialEventFlag = req.body.officialEventFlag;
+            }
+
+            if (req.body.volunteers) {
+                tournamentDetails.volunteers = req.body.volunteers;
+            }
+
+            if (req.body.fieldsCount) {
+                tournamentDetails.fieldsCount = req.body.fieldsCount;
+            }
+
+            if (req.body.matchesPerTeam) {
+                tournamentDetails.matchesPerTeam = req.body.matchesPerTeam;
+            }
+
+            if (req.body.startDate) {
+                tournamentDetails.startDate = req.body.startDate;
+            }
+
+            if (req.body.endDate) {
+                tournamentDetails.startDate = req.body.endDate;
+            }
+
+            const createdTournament = new Tournament(tournamentDetails);
+            createdTournament.save().then((tournament) => res.send(tournament)).catch((err) => console.log(err));
         }
-
-        if (req.body.officialEventFlag) {
-            tournamentDetails.officialEventFlag = req.body.officialEventFlag;
-        }
-
-        if (req.body.volunteers) {
-            tournamentDetails.volunteers = req.body.volunteers;
-        }
-
-        if (req.body.fieldsCount) {
-            tournamentDetails.fieldsCount = req.body.fieldsCount;
-        }
-
-        if (req.body.matchesPerTeam) {
-            tournamentDetails.matchesPerTeam = req.body.matchesPerTeam;
-        }
-
-        if (req.body.startDate) {
-            tournamentDetails.startDate = req.body.startDate;
-        }
-
-        if (req.body.endDate) {
-            tournamentDetails.startDate = req.body.endDate;
-        }
-
-        const createdTournament = new Tournament(tournamentDetails);
-        createdTournament.save().then((tournament) => res.send(tournament)).catch((err) => console.log(err));
-    }
+    }).catch((err) => {
+        res.status(404).send("Your user id was invalid!");
+    })
 });
 
 /* PATCH specific tournament. */
