@@ -155,9 +155,9 @@ router.patch('/authorization/:id', (req, res) => {
             return res.status(404).send("user not found");
         }
         summaryOfChanges = '';
-        user.eventAuthorizer = false;
+        user.userAuthorizer = !user.userAuthorizer;
         summaryOfChanges += "•You have been authorized to authorize other users to create official events.\n";
-        user.save().then((user) => res.send(user)).catch((err) => console.log(err));
+        user.save().then((user) => res.send("Changes made successfully")).catch((err) => console.log(err));
 
         
         // const msg = {
@@ -169,8 +169,6 @@ router.patch('/authorization/:id', (req, res) => {
         // };
 
         // console.log(msg);
-
-        return res.status(200).send("Changes made successfully");
 
         // sgMail.send(msg).then(() => {
         //     res.status(200).send("changes made successfully");
