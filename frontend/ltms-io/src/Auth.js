@@ -41,7 +41,7 @@ export default class Auth {
             }
         }).then((userDataResponse) => {
           console.log(userDataResponse.data); 
-          axios.get(`http://localhost:5000/api/users/auth/${localStorage.getItem("access_token")}`);
+          axios.post(`http://localhost:5000/api/users/auth/`, {data: userDataResponse.data}).then((x) => console.log(x.data));
         });
         
         // location.hash = "";

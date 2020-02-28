@@ -18,66 +18,28 @@ router.get('/', (req, res, next) => {
     })
 });
 
-//GET specific user
-router.get('/auth/:token', (req, res) => {
-    const accessToken = req.params.token;
-    console.log(accessToken);
-    const authString = 'Bearer ' + accessToken;
-    console.log(authString);
+//POST specific user
+router.post('/auth', (req, res) => {
+    const userinfo = req.body.data;
+    console.log(userinfo);
 
-    axios({method: 'get',
-           url: 'https://dev-s68c-q-y.auth0.com/userinfo',
-           headers: {
-               'uthorization': `Bearer ${accessToken}`,
-            }
-        }).then((userDataResponse) => {
-            console.log('FUN!');
-            console.log(userDataResponse);
-            return res.status(200).send("yee");
-        //Destruct the  data from  from auth0
-        //const { name, nickname, email, picture, sub } = userDataResponse.data;
-        // console.log(userDataResponse.data);
-        // res.status(200).send(userDataResponse.data);
-        // console.log('user data--------', userDataResponse.data);
-        // res.status(200).json({message: 'mEssages'})
-        // User.findOne({auth0_id: sub}, (err, user) => {
-        //     if(err) console.log('Login Error--------------', err);
-
-        //     //If the user is undefined.
-        //     if(!user) { 
-        //         //Create a new user. 
-        //         let newUser = new User({
-        //             name: name,
-        //             email: email,
-        //             username: nickname,
-        //             profile_picture: picture,
-        //             auth0_id: sub,
-        //             //For now set it to true, then after you login set it to false, so other users are not considered the admin.
-        //             // is_admin: true 
-        //             is_admin: false
-        //         });
-        //         //Assign the user to the session.
-        //         req.session.user = newUser;
-        //         //Save the session
-        //         req.session.save();
-        //         //Save the newUser instance to mongodb
-        //         newUser.save();
-        //     } 
-        //     req.session.user = user;
-        //     req.session.save();
-        //     res.redirect('/');
-        // })
-    }).catch(err => console.log('Auth0 get user info Error------------', err)).then(()=>{console.log("FML")});
-
-
-    //res.status(400).send("Oops");
-    // User.findById(req.params.token).then(user => {
-    //     if(!user) {
-    //         return res.status(404).send("user not found");
-    //     }
-
-    //     return res.status(200).send(user);
-    // })
+    User.findOne({auth0id: userinfo.sub}).then((user) => {
+        if (!user) {
+            console.log("Creating user");
+            const createdUser = new User({
+                name: userinfo.name,
+                email: userinfo.email,
+                auth0id: userinfo.sub,
+                eventAuthorizer: false,
+                userAuthorizer: false
+            });
+            createdUser.save().then((user) => res.send(user)).catch((err) => console.log(err));
+        }
+        else {
+            console.log("User already exists!")
+            res.status(200).send(user);
+        }
+    });
 });
 
 //GET specific user
@@ -106,7 +68,7 @@ router.post("/register", (req, res) => {
             const createdUser = new User({
                 name: req.body.name,
                 email: req.body.email,
-                password: req.body.password,
+                auth0id: 'meh',
                 eventAuthorizer: req.body.eventAuthorizer,
                 userAuthorizer: req.body.userAuthorizer
             });
@@ -121,10 +83,12 @@ router.post("/register", (req, res) => {
 //  -user id is supplied as URL param
 //  -changes are supplied via body
 //  -if no change to a field, don't send it
-router.patch('/:id', (req, res) => {
+router.patch('/updateuser', (req, res) => {
     if(Object.keys(req.body).length == 0) {
         return res.status(400).send("body is empty");
     }
+
+    
 
     User.findById(req.params.id).then((user) => {
         if(!user) {
