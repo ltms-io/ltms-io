@@ -20,6 +20,7 @@ const sharedKeyCredential = new StorageSharedKeyCredential(
     dev_config.AZURE_STORAGE_ACCOUNT_NAME || process.env.AZURE_STORAGE_ACCOUNT_NAME,
     dev_config.AZURE_STORAGE_ACCOUNT_ACCESS_KEY || process.env.AZURE_STORAGE_ACCOUNT_ACCESS_KEY);
 const pipeline = newPipeline(sharedKeyCredential);
+const jsonWeb = require('jsonwebtoken')
 
 const blobServiceClient = new BlobServiceClient(
     `https://${dev_config.AZURE_STORAGE_ACCOUNT_NAME || process.env.AZURE_STORAGE_ACCOUNT_NAME}.blob.core.windows.net`,
@@ -76,6 +77,7 @@ router.post('/auth', (req, res) => {
 
 //GET specific user
 router.get('/:id', (req, res) => {
+
     User.findById(req.params.id).then(user => {
         if (!user) {
             return res.status(404).send("user not found");
@@ -208,6 +210,30 @@ router.post('/search', (req, res) => {
         return res.status(200).send({email: user.email, name: user.name, _id: user._id});
     });
 });
+router.post('/login/:id', (req, res) => {
+    var authId = req.params.id;
+    User.findById(authId).then(user => {
+        if(!user) {
+            return res.status(404).send("Not a user");
+        }
+
+        var payload = {
+            name: user.name,
+            email: user.email,
+            eventAuthorizer: user.eventAuthorizer,
+            userAuthorizer: user.userAuthorizerh
+        }
+
+        var tok = jsonWeb.sign(
+            payload,
+            "123456",
+        );
+        jsonWeb.verify(tok, "123456", function(err, decoded){
+            console.log(decoded.name);
+        })
+        return res.status(200).send(user);
+    })
+})
 
 /* PATCH */
 

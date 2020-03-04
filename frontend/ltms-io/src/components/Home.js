@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 
 
-const axios = require('axios');
-
 class Home extends Component {
 
   constructor(props) {

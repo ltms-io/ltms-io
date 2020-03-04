@@ -14,11 +14,16 @@ import "react-dates/initialize";
 import "react-dates/lib/css/_datepicker.css";
 import PictureUploadModalTest from "./components/PictureUploadModalTest";
 import VolunteerModalTest from "./components/PictureUploadModalTest";
+import axios from 'axios';
 
 function App(props) {
   //console.log(props);
   if(props.auth.isAuthenticated()){
-    
+    axios.post('http://localhost:5000/api/users/login/5e54b2a86efec099146c054b').then(function(response) {
+      console.log(response);
+    }).catch(function(err){
+      console.log(err);
+    });
   }
   return (
     <Router>
