@@ -8,7 +8,7 @@ class Sheet extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      modal: false,
+
       events: [],
       finalscore: 0
     }
