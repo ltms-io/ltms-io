@@ -13,8 +13,8 @@ import Callback from "./components/Callback";
 import "react-dates/initialize";
 import "react-dates/lib/css/_datepicker.css";
 import PictureUploadModalTest from "./components/PictureUploadModalTest";
-import VolunteerModalTest from "./components/PictureUploadModalTest";
-import axios from 'axios';
+import VolunteerModalTest from "./components/VolunteerModalTest";
+
 
 function App(props) {
   //console.log(props);
