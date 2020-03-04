@@ -11,11 +11,7 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
-<<<<<<< HEAD
-    auth0id: {
-=======
     authID: {
->>>>>>> 101-4-maintain-author
         type: String,
         required: true,
     },
