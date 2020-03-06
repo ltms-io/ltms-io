@@ -15,10 +15,6 @@ import "react-dates/lib/css/_datepicker.css";
 import PictureUploadModalTest from "./components/PictureUploadModalTest";
 
 function App(props) {
-  //console.log(props);
-  if(props.auth.isAuthenticated()){
-    
-  }
   return (
     <Router>
       <div className="App">
@@ -32,7 +28,6 @@ function App(props) {
           <Route path="/createscoresheet" component={ Sheet }/>
           <Route path="/callback" component={Callback} />
           <Route path="/pictureuploadtest" component={PictureUploadModalTest} />
-          <Route path="/volunteermodaltest" component={ VolunteerModalTest } />
         </Switch>
       </div>
     </Router>

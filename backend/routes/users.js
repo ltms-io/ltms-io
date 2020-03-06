@@ -49,7 +49,7 @@ router.get('/', (req, res, next) => {
 //POST specific user
 router.post('/auth', (req, res) => {
     const userinfo = req.body.data;
-    console.log(userinfo);
+    //console.log(userinfo);
 
     User.findOne({auth0id: userinfo.sub}).then((user) => {
         if (!user) {
@@ -62,9 +62,9 @@ router.post('/auth', (req, res) => {
                 userAuthorizer: false
             });
             createdUser.save().then((user) => {
-                res.send(user)
+                res.send(user);
             }).catch((err) => {
-                console.log(err)
+                console.log(err);
             });
         }
         else {
@@ -74,6 +74,7 @@ router.post('/auth', (req, res) => {
     });
 });
 
+/*
 //GET specific user
 router.get('/:id', (req, res) => {
     User.findById(req.params.id).then(user => {
@@ -84,7 +85,24 @@ router.get('/:id', (req, res) => {
         return res.status(200).send(user);
     })
 });
+*/
 
+//POST to get specific user using auth0id
+router.post('/getuser', (req, res) => {
+  const body = {};
+  if (req.body.auth0id) {
+      body.auth0id = req.body.auth0id;
+  }
+  else {
+      return res.status(400).send("no auth0id given");
+  }
+  User.findOne(body, (err, user) => {
+    if (!user) {
+        return res.status(404).send("user not found");
+    }
+    return res.status(200).send(user);
+  });
+});
 
 /* POST */
 
@@ -200,7 +218,7 @@ router.post('/search', (req, res) => {
         if(err) {
             return res.status(500).send(err);
         }
-        
+
         if(!user) {
             return res.status(404).send("User not found");
         }
@@ -220,7 +238,15 @@ router.patch('/updateuser', (req, res) => {
         return res.status(400).send("body is empty");
     }
 
-    User.findById(req.params.id).then((user) => {
+    //User.findById(req.params.id).then((user) => {
+    const body = {};
+    if (req.body.auth0id) {
+        body.auth0id = req.body.auth0id;
+    }
+    else {
+        return res.status(400).send("no auth0id given");
+    }
+    User.findOne(body, (err, user) => {
         if (!user) {
             return res.status(404).send("user not found");
         }

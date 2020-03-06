@@ -1,5 +1,4 @@
 import React from 'react';
-import {connect} from 'react-redux';
 import {Form, Button, Col, Row} from 'react-bootstrap';
 
 class Sheet extends React.Component{
@@ -23,12 +22,12 @@ class Sheet extends React.Component{
 
     //new score to hold the final score
     var newScore = 0;
-    
+
     //begins adding all scores to the newScore variable
     if(parseInt(e.target.elements.scoring1.value, 10)){
       newScore += parseInt(e.target.elements.scoring1.value, 10);
     }
-    
+
     if(parseInt(e.target.elements.scoring2.value, 10)){
       newScore += parseInt(e.target.elements.scoring2.value, 10);
     }
@@ -36,7 +35,7 @@ class Sheet extends React.Component{
     if(parseInt(e.target.elements.scoring3.value, 10)){
       newScore += parseInt(e.target.elements.scoring3.value, 10);
     }
-    
+
     if(parseInt(e.target.elements.scoring4.value, 10)){
       newScore += parseInt(e.target.elements.scoring4.value, 10);
     }
@@ -68,7 +67,7 @@ class Sheet extends React.Component{
     this.setState({finalscore: newScore});
 
   }
-    
+
   render(){
     return(
       //script to render the page
@@ -208,7 +207,7 @@ class Sheet extends React.Component{
           </Row>
         </Form>
       </div>
-    ); 
+    );
   }
 }
 

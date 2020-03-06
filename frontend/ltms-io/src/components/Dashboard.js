@@ -5,7 +5,7 @@ import axios from 'axios';
 class Dashboard extends Component {
   constructor(props) {
     super(props);
-
+    console.log(props);
     this.state = {
       uid: "",
       dbresults: {},
@@ -47,16 +47,13 @@ class Dashboard extends Component {
       console.log(error);
     });
 
-    // Use this statement instead once backend Auth0 connection for register
-    // is complete (5e54b2a86efec099146c054b is random test uid):
-    //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
-    await axios.get(`http://localhost:5000/api/users/${this.state.uid.substring(6)}`)
-      .then ( (result) => {
+    await axios.post(`http://localhost:5000/api/users/getuser`, {
+      auth0id: this.state.uid
+    }).then ( (result) => {
         this.state.dbresults = result.data;
-      })
-      .catch( (error) => {
+    }).catch( (error) => {
         console.log(error);
-      });
+    });
 
     this.setState(this.state);
 
