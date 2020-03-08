@@ -50,7 +50,6 @@ export default class TournamentSearch extends Component {
                                         <Form.Control type="date" placeholder="date"/>
                                         </Form.Group> */}
                                         <SingleDatePicker
-                                            required
                                             showClearDate
                                             numberOfMonths="1"
                                             date={this.state.date}
@@ -83,7 +82,7 @@ export default class TournamentSearch extends Component {
         const searchDate = this.state.date;
         const searchUser = e.target.elements.user_name.value;
 
-        if (!searchName && !searchDate && !searchUser) {
+        if (!searchName && searchDate != null && !searchUser) {
             this.setState({errMsg: "No search parameters!"});
             return;
         }
@@ -101,7 +100,7 @@ export default class TournamentSearch extends Component {
         }
 
         if (searchUser) {
-            req.user_name = searchName;
+            req.user_name = searchUser;
         }
 
         console.log(req);

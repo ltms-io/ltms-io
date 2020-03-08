@@ -79,7 +79,7 @@ router.post('/search', async(req, res) => {
         query.startDate = req.body.date;
     }
 
-    Tournament.findOne(query).then((tournament) => {
+    Tournament.find(query).then((tournament) => {
         if (!tournament) {
             return res.status(404).send("No results found");
         }
