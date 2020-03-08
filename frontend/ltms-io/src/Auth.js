@@ -43,7 +43,7 @@ export default class Auth {
         }).then((userDataResponse) => {
           console.log(userDataResponse.data);
           localStorage.setItem("auth0_id", userDataResponse.data.sub); 
-          axios.post(`http://localhost:5000/api/users/auth/`, {data: userDataResponse.data}).then((x) => {
+          axios.post('http://localhost:5000/api/users/auth/', {data: userDataResponse.data}).then((x) => {
             console.log(x.data);         
             location.hash = "";
             location.pathname = LOGIN_SUCCESS_PAGE;
