@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { SingleDatePicker } from 'react-dates'
 import { Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
 import axios from 'axios';
 
@@ -8,7 +9,8 @@ export default class TournamentSearch extends Component {
         super(props);
     
         this.state = {
-          errMsg: "",
+            date: null,
+            errMsg: "",
         };
     
         this.handleSearch = this.handleSearch.bind(this);
@@ -44,9 +46,19 @@ export default class TournamentSearch extends Component {
                                         </Form.Group>
                                     </Col>
                                     <Col>
-                                        <Form.Group controlId="date">
+                                        {/* <Form.Group controlId="date">
                                         <Form.Control type="date" placeholder="date"/>
-                                        </Form.Group>
+                                        </Form.Group> */}
+                                        <SingleDatePicker
+                                            required
+                                            showClearDate
+                                            numberOfMonths="1"
+                                            date={this.state.date}
+                                            onDateChange={date => this.setState({ date })}
+                                            focused={this.state.focused}
+                                            onFocusChange={({ focused }) => this.setState({ focused })}
+                                            id="tourneyCreateDatePicker"
+                                        />
                                     </Col>
                                 </Row>
                                 <Button variant="primary" type="submit">
@@ -68,7 +80,7 @@ export default class TournamentSearch extends Component {
 
         
         const searchName = e.target.elements.tournament_name.value;
-        const searchDate = e.target.elements.date.value;
+        const searchDate = this.state.date;
         const searchUser = e.target.elements.user_name.value;
 
         if (!searchName && !searchDate && !searchUser) {
