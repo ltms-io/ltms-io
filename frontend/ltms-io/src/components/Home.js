@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import axios from 'axios';
+import React, { Component } from "react";
+import axios from "axios";
 
 class Home extends Component {
   constructor(props) {
@@ -16,7 +16,7 @@ class Home extends Component {
     return (
       <div>
         <h1>Welcome!</h1>
-      
+
         {this.props.auth.isAuthenticated() && (
           <div>(You are authenticated!)</div>
         )}
@@ -41,50 +41,58 @@ class Home extends Component {
         {this.props.auth.isAuthenticated() && (
           <button onClick={this.props.auth.logout}>Logout</button>
         )}
-{this.props.auth.isAuthenticated() && (
-        <div>
-          <a href="/pictureuploadtest">Picture Upload Test</a>
-        </div>)}
-  {this.props.auth.isAuthenticated() && (
-        <div>
-          <a href="/createscoresheet">Create A Scoresheet</a>
-        </div>)}
-  {this.props.auth.isAuthenticated() && (
-        <div>
+        {this.props.auth.isAuthenticated() && (
+          <div>
+            <a href="/pictureuploadtest">Picture Upload Test</a>
+          </div>
+        )}
+        {this.props.auth.isAuthenticated() && (
+          <div>
+            <a href="/createscoresheet">Create A Scoresheet</a>
+          </div>
+        )}
+        {this.props.auth.isAuthenticated() && (
+          <div>
             <a href="/volunteermodaltest">Volunteer Assignment Modal Test</a>
-        </div>)}
-
-
+          </div>
+        )}
+        <div>
+          <a href="/Judge">Judge</a>
+        </div>
+        <div>
+          <a href="/EditTournament">Edit Tournament</a>
+        </div>
       </div>
     );
   }
 
   async componentDidMount() {
     await axios({
-      method: 'GET',
+      method: "GET",
       url: `https://dev-s68c-q-y.auth0.com/userinfo`,
       headers: {
-        'content-type': 'application/json',
-        'authorization': 'Bearer ' + localStorage.getItem("access_token")
+        "content-type": "application/json",
+        authorization: "Bearer " + localStorage.getItem("access_token")
       },
       json: true
     })
-    .then( (result) => {
-      this.state.authresults = result.data;
-      this.state.uid = this.state.authresults.sub;
-    })
-    .catch( (error) => {
-      console.log(error);
-    });
+      .then(result => {
+        this.state.authresults = result.data;
+        this.state.uid = this.state.authresults.sub;
+      })
+      .catch(error => {
+        console.log(error);
+      });
 
     // Use this statement instead once backend Auth0 connection for register
     // is complete (5e54b2a86efec099146c054b is random test uid):
     //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
-    await axios.get(`http://localhost:5000/api/users/${this.state.uid.substring(6)}`)
-      .then ( (result) => {
+    await axios
+      .get(`http://localhost:5000/api/users/${this.state.uid.substring(6)}`)
+      .then(result => {
         this.state.dbresults = result.data;
       })
-      .catch( (error) => {
+      .catch(error => {
         console.log(error);
       });
 

@@ -34,7 +34,7 @@ function App(props) {
           <Route path="/callback" component={Callback} />
           <Route path="/pictureuploadtest" component={PictureUploadModalTest} />
           <Route path="/Judge" component={Judge} />
-          <Route path="/Edit Tournament" component={EditTournament} />
+          <Route path="/EditTournament" component={EditTournament} />
         </Switch>
       </div>
     </Router>
