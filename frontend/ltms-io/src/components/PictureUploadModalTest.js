@@ -24,7 +24,7 @@ class PictureUploadModalTest extends Component {
 
     async requestUserImg() {
         //TODO: Replace with actual current user id once implemented
-        axios({method: "post", url: "http://localhost:5000/api/users/profilepic", data: {id: "5e54b2b96efec099146c054c"}})
+        axios({method: "post", url: "http://localhost:5000/api/users/profilepic", data: {auth0id: localStorage.getItem("auth0_id")}})
         .then((res)=> {
             if (res.status === 200) {
                 console.log("Img url:");

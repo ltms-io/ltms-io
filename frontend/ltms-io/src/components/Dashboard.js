@@ -7,13 +7,15 @@ class Dashboard extends Component {
     super(props);
     console.log(props);
     this.state = {
-      uid: "",
+      tournaments: [],
       dbresults: {},
       authresults: {}
     };
   }
 
   render () {
+
+  //  var tournaments = this.state.tournaments.map((x))
     return(
       <div>
         <div>
@@ -23,29 +25,18 @@ class Dashboard extends Component {
           Name: { this.state.dbresults.name }
         </div>
         <div>
-          UID: { this.state.uid }
+          Auth-UID: { this.state.dbresults.auth0id }
         </div>
+        <div>
+          mongo-id: { this.state.dbresults._id }
+        </div>
+
+        
       </div>
     );
   }
 
   async componentDidMount() {
-    await axios({
-      method: 'GET',
-      url: `https://dev-s68c-q-y.auth0.com/userinfo`,
-      headers: {
-        'content-type': 'application/json',
-        'authorization': 'Bearer ' + localStorage.getItem("access_token")
-      },
-      json: true
-    })
-    .then( (result) => {
-      this.state.authresults = result.data;
-      this.state.uid = this.state.authresults.sub;
-    })
-    .catch( (error) => {
-      console.log(error);
-    });
 
     await axios.post(`http://localhost:5000/api/users/getuser`, {
       auth0id: this.state.uid
@@ -54,6 +45,14 @@ class Dashboard extends Component {
     }).catch( (error) => {
         console.log(error);
     });
+
+    await axios.post("http://localhost:5000/api/tournaments/user", {data: {auth0id: localStorage.getItem("auth0_id")}})
+      .then((result) => {
+        this.state.tournaments = result.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      })
 
     this.setState(this.state);
 

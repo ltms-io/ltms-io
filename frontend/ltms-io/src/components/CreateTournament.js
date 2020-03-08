@@ -43,7 +43,7 @@ export default class CreateEvent extends Component {
             event.preventDefault();
 
             axios.post("http://localhost:5000/api/tournaments/register", {
-                director: "Tom Cruise", //TODO: add director from authed user
+                auth0id: localStorage.getItem("auth0_id"), //TODO: add director from authed user
                 name: this.state.tourneyName,
                 teams: "",
                 officialEventFlag: true, //TODO: implement checking

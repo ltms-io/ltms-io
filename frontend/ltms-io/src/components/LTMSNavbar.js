@@ -28,13 +28,20 @@ class LTMSNavbar extends Component {
   }
 
   async componentDidMount() {
-    await axios.get(`http://localhost:5000/api/users/`)
-    .then ( (result) => {
-      console.log("CURRENT USERS");
-      console.log(result);
-    }).catch( (error) => {
-        console.log(error);
-    });
+    // Use this statement instead once backend Auth0 connection for register
+    // is complete (5e54b2a86efec099146c054b is random test uid):
+    //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
+    await axios.post(`http://localhost:5000/api/users/auth`, {data: {sub: localStorage.getItem("auth0_id")}})
+      .then((result) => {
+        this.setState({dbresults: result.data});
+      })
+      .catch( async (error) => {
+          console.log(error);
+      });
+
+    this.setState(this.state);
+
+    console.log("INITIAL NAVBAR STATE", this.state);
   }
 }
 
