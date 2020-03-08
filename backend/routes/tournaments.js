@@ -31,12 +31,9 @@ router.get('/:id', (req, res) => {
 router.post('/user', (req, res) => {
     User.findOne({ auth0id: req.body.auth0id })
     .then((user) => {
-        console.log(user);
-        console.log(user._id);
         if (user) {
             Tournament.find({director: user._id})
             .then((tournaments) => {
-                console.log(tournaments);
                 res.status(200).send(tournaments);
             }).catch((err) => {
                 res.status(500).send(err);
@@ -57,17 +54,11 @@ router.post('/register', (req, res) => {
         return res.status(400).json("errors");
     }
 
-    console.log("====REQUEST====");
-    console.log(req.body)
-
     User.findOne({auth0id: req.body.auth0id}).then((user) => {
-        console.log("====USER====");
-        console.log(user);
         if (false) { //TODO: Add a check for recent tournament created by user
             return res.status(400).send("Tournament recently ceated");
         }
         else {
-            console.log(user._id);
             var tournamentDetails = {
                 director: user._id,
                 fieldsCount: req.body.fieldsCount
@@ -186,4 +177,5 @@ router.delete('/:id', (req,res) => {
     });
 
 });
+
 module.exports = router;

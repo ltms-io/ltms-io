@@ -51,11 +51,9 @@ router.get('/', (req, res, next) => {
 //POST specific user
 router.post('/auth', (req, res) => {
     const userinfo = req.body.data;
-    console.log(userinfo);
 
     User.findOne({auth0id: userinfo.sub}).then((user) => {
         if (!user) {
-            console.log("Creating user");
             const createdUser = new User({
                 name: userinfo.name,
                 email: userinfo.email,
@@ -70,7 +68,6 @@ router.post('/auth', (req, res) => {
             });
         }
         else {
-            console.log("User already exists!")
             res.status(200).send(user);
         }
     });
@@ -122,18 +119,13 @@ router.post("/uploadpicture", uploadStrategy, async (req, res) => {
         res.status(400).send("Make sure you upload a file that is an image");
     }
 
-    console.log("==== REQUEST =====");
-    console.log(req.body);
 
     const blobName = getBlobName(req.file.originalname);
     const stream = getStream(req.file.buffer);
-    // console.log(req.file);
     const containerClient = blobServiceClient.getContainerClient('images');
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
     User.findOne({auth0id: req.body.auth0id}).then((user) => {
-        console.log("User:");
-        console.log(user);
         if (!user) {
             return res.status(404).send("User not found");
         }
@@ -152,7 +144,6 @@ router.post("/uploadpicture", uploadStrategy, async (req, res) => {
                     imgUrl: `https://ltmsstore.blob.core.windows.net/images/${blobName}`
                 }
                 //user.auth0id = req.auth0id
-                console.log(user);
                 user.save().then(() => {
                     return res.status(200).send("File upload success")
                 }).catch((err) => {
@@ -173,7 +164,6 @@ router.post("/uploadpicture", uploadStrategy, async (req, res) => {
 router.post("/profilepic", (req, res) =>{
 
     User.findOne({auth0id: req.body.auth0id}).then((user) => {
-        console.log(user);
         if (!user) {
             return res.status(404).send("User was not found");
         }
@@ -187,7 +177,9 @@ router.post("/profilepic", (req, res) =>{
         else {
             return res.status(200).send(user.profilePic.url);
         }
-    }).catch((err) => {console.log(err)});
+    }).catch((err) => {
+        console.log(err);
+    });
 });
 
 //POST search for user by included values
@@ -215,7 +207,6 @@ router.post('/search', (req, res) => {
         if(!user) {
             return res.status(404).send("User not found");
         }
-        console.log("user:");
         return res.status(200).send({email: user.email, name: user.name, _id: user._id});
     });
 });
@@ -299,7 +290,6 @@ router.patch('/updateuser', (req, res) => {
             html: summaryOfChanges,
         };
 
-        // console.log(msg);
 
         sgMail.send(msg).then(() => {
             res.status(200).send("changes made successfully");
@@ -315,6 +305,9 @@ router.patch('/updateuser', (req, res) => {
 //DELETE user
 
 router.delete('/:id', (req, res) => {
+    if (!req.params.id) {
+        res.status(400).send("ID Required!!");
+    }
     User.findOneAndDelete({ _id: req.params.id }, (err) => {
         if (err) {
             res.status(501).send("Server error.");
