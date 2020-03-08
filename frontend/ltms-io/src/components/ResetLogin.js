@@ -38,6 +38,23 @@ class ResetLogin extends Component {
         console.log(error);
     });
 
+    await axios({
+      method: 'GET',
+      url: `https://dev-s68c-q-y.auth0.com/userinfo`,
+      headers: {
+        'content-type': 'application/json',
+        'authorization': 'Bearer ' + localStorage.getItem("access_token")
+      },
+      json: true
+    })
+    .then( (result) => {
+      this.state.authresults = result.data;
+      this.state.uid = this.state.authresults.sub;
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
+
     console.log("UPDATED STATE", this.state);
   }
 
