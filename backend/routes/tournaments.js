@@ -48,6 +48,47 @@ router.post('/user', (req, res) => {
     })
 });
 
+
+/* POST search for tournament via various outlets */
+router.post('/search', async(req, res) => {
+    console.log(req.body);
+    if (!req.body.tournament_name && !req.body.user_name && !(req.body.date)) {
+        return res.status(400).send("Please include");
+    }
+
+    var found_user;
+    if (req.body.user_name) {
+        await User.findOne({name: req.body.user_name}).then((user) => {
+            found_user = user;
+        }).catch((error) => {
+            found_user = null;
+        });
+    }
+
+    var query = {};
+
+    if (found_user) {
+        query.director = found_user._id;
+    };
+
+    if (req.body.tournament_name) {
+        query.name = req.body.tournament_name;
+    }
+
+    if (req.body.date) {
+        query.startDate = req.body.date;
+    }
+
+    Tournament.findOne(query).then((tournament) => {
+        if (!tournament) {
+            return res.status(404).send("No results found");
+        }
+        return res.status(200).send(tournament);
+    }).catch((error) => {
+        return res.status(500).send(error);
+    });
+});
+
 /* POST register new tournament */
 router.post('/register', (req, res) => {
     if (!req.body.auth0id || !req.body.fieldsCount) {
