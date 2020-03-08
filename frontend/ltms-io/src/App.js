@@ -8,7 +8,8 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import CreateTournament from "./components/CreateTournament";
 import Sheet from "./components/Scoresheet";
 import Callback from "./components/Callback";
-
+import Judge from "./components/Judge";
+import EditTournament from "./components/EditTournament";
 
 import "react-dates/initialize";
 import "react-dates/lib/css/_datepicker.css";
@@ -25,11 +26,15 @@ function App(props) {
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/login" component={() => <Login auth={props.auth} />} />
           <Route path="/createtournament" component={CreateTournament} />
-          <Route path="/accountdetails" component={() => <AccountDetails auth={props.auth} />} />
-          <Route path="/createscoresheet" component={ Sheet }/>
+          <Route
+            path="/accountdetails"
+            component={() => <AccountDetails auth={props.auth} />}
+          />
+          <Route path="/createscoresheet" component={Sheet} />
           <Route path="/callback" component={Callback} />
           <Route path="/pictureuploadtest" component={PictureUploadModalTest} />
-          <Route path="/volunteermodaltest" component={ VolunteerModalTest } />
+          <Route path="/Judge" component={Judge} />
+          <Route path="/Edit Tournament" component={EditTournament} />
         </Switch>
       </div>
     </Router>
