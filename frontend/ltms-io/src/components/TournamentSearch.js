@@ -104,7 +104,7 @@ export default class TournamentSearch extends Component {
         const searchDate = this.state.date;
         const searchUser = e.target.elements.user_name.value;
 
-        if (!searchName && searchDate != null && !searchUser) {
+        if (!searchName && searchDate == null && !searchUser) {
             this.setState({errMsg: "No search parameters!"});
             return;
         }

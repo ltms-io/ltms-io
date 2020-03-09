@@ -12,8 +12,8 @@ export default class TournamentCard extends Component {
     render() {
         return (
             <div>
-                <Card className="m-1">
-                    <ul>
+                <Card className="m-2">
+                    <ul className="m-2">
                         <li>{this.state.tournament.name}</li>
                         <li>{this.state.tournament.startDate}</li>
                         <li>{this.state.tournament.fieldsCount}</li>
