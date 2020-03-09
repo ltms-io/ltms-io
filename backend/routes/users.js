@@ -35,6 +35,8 @@ const getBlobName = originalName => {
 
 sgMail.setApiKey(dev_config.SENDGRID_API_KEY || process.env.SENDGRID_API_KEY);
 
+const axios = require('axios');
+
 /* GET */
 
 //GET all users listings
@@ -62,9 +64,9 @@ router.post('/auth', (req, res) => {
                 userAuthorizer: false
             });
             createdUser.save().then((user) => {
-                res.send(user)
+                res.send(user);
             }).catch((err) => {
-                console.log(err)
+                console.log(err);
             });
         }
         else {
@@ -73,17 +75,22 @@ router.post('/auth', (req, res) => {
     });
 });
 
-//GET specific user
-router.get('/:id', (req, res) => {
-    User.findById(req.params.id).then(user => {
-        if (!user) {
-            return res.status(404).send("user not found");
-        }
-
-        return res.status(200).send(user);
-    })
+//POST to get specific user using auth0id
+router.post('/getuser', (req, res) => {
+  const body = {};
+  if (req.body.auth0id) {
+      body.auth0id = req.body.auth0id;
+  }
+  else {
+      return res.status(400).send("no auth0id given");
+  }
+  User.findOne(body, (err, user) => {
+    if (!user) {
+        return res.status(404).send("user not found");
+    }
+    return res.status(200).send(user);
+  });
 });
-
 
 /* POST */
 
@@ -130,7 +137,7 @@ router.post("/uploadpicture", uploadStrategy, async (req, res) => {
             return res.status(404).send("User not found");
         }
 
-        
+
         blockBlobClient.uploadStream(stream,
             uploadOptions.bufferSize, uploadOptions.maxBuffers,
             {
@@ -149,7 +156,7 @@ router.post("/uploadpicture", uploadStrategy, async (req, res) => {
                 }).catch((err) => {
                     return res.status(500).send(err);
                 });
-                
+
             }).catch((err) => {
                 console.log(err);
                 return res.status(500).send(err);
@@ -203,7 +210,7 @@ router.post('/search', (req, res) => {
         if(err) {
             return res.status(500).send(err);
         }
-        
+
         if(!user) {
             return res.status(404).send("User not found");
         }
@@ -222,7 +229,14 @@ router.patch('/updateuser', (req, res) => {
         return res.status(400).send("body is empty");
     }
 
-    User.findOne({auth0id: req.body.auth0id}).then((user) => {
+    const body = {};
+    if (req.body.auth0id) {
+        body.auth0id = req.body.auth0id;
+    }
+    else {
+        return res.status(400).send("no auth0id given");
+    }
+    User.findOne(body, async (err, user) => {
         if (!user) {
             return res.status(404).send("user not found");
         }
@@ -257,6 +271,27 @@ router.patch('/updateuser', (req, res) => {
             //     console.log(error);
             //   });
             user.email = req.body.email;
+            var tempAccessToken = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlF6UTFPVVpGTTBRNFFUVTFRa1UyTmpJM05qQXpRMEpFUWpSR1JqZEJSRGhDTVRjeE5UZ3pSQSJ9.eyJpc3MiOiJodHRwczovL2Rldi1zNjhjLXEteS5hdXRoMC5jb20vIiwic3ViIjoib3JGbFVZTkdSNmZjV1ZweWU5a2dIdElOa2s3VFpoOWJAY2xpZW50cyIsImF1ZCI6Imh0dHBzOi8vZGV2LXM2OGMtcS15LmF1dGgwLmNvbS9hcGkvdjIvIiwiaWF0IjoxNTgzNjM1ODYyLCJleHAiOjE1ODQyNDA2NjAsImF6cCI6Im9yRmxVWU5HUjZmY1dWcHllOWtnSHRJTmtrN1RaaDliIiwic2NvcGUiOiJyZWFkOmNsaWVudF9ncmFudHMgY3JlYXRlOmNsaWVudF9ncmFudHMgZGVsZXRlOmNsaWVudF9ncmFudHMgdXBkYXRlOmNsaWVudF9ncmFudHMgcmVhZDp1c2VycyB1cGRhdGU6dXNlcnMgZGVsZXRlOnVzZXJzIGNyZWF0ZTp1c2VycyByZWFkOnVzZXJzX2FwcF9tZXRhZGF0YSB1cGRhdGU6dXNlcnNfYXBwX21ldGFkYXRhIGRlbGV0ZTp1c2Vyc19hcHBfbWV0YWRhdGEgY3JlYXRlOnVzZXJzX2FwcF9tZXRhZGF0YSBjcmVhdGU6dXNlcl90aWNrZXRzIHJlYWQ6Y2xpZW50cyB1cGRhdGU6Y2xpZW50cyBkZWxldGU6Y2xpZW50cyBjcmVhdGU6Y2xpZW50cyByZWFkOmNsaWVudF9rZXlzIHVwZGF0ZTpjbGllbnRfa2V5cyBkZWxldGU6Y2xpZW50X2tleXMgY3JlYXRlOmNsaWVudF9rZXlzIHJlYWQ6Y29ubmVjdGlvbnMgdXBkYXRlOmNvbm5lY3Rpb25zIGRlbGV0ZTpjb25uZWN0aW9ucyBjcmVhdGU6Y29ubmVjdGlvbnMgcmVhZDpyZXNvdXJjZV9zZXJ2ZXJzIHVwZGF0ZTpyZXNvdXJjZV9zZXJ2ZXJzIGRlbGV0ZTpyZXNvdXJjZV9zZXJ2ZXJzIGNyZWF0ZTpyZXNvdXJjZV9zZXJ2ZXJzIHJlYWQ6ZGV2aWNlX2NyZWRlbnRpYWxzIHVwZGF0ZTpkZXZpY2VfY3JlZGVudGlhbHMgZGVsZXRlOmRldmljZV9jcmVkZW50aWFscyBjcmVhdGU6ZGV2aWNlX2NyZWRlbnRpYWxzIHJlYWQ6cnVsZXMgdXBkYXRlOnJ1bGVzIGRlbGV0ZTpydWxlcyBjcmVhdGU6cnVsZXMgcmVhZDpydWxlc19jb25maWdzIHVwZGF0ZTpydWxlc19jb25maWdzIGRlbGV0ZTpydWxlc19jb25maWdzIHJlYWQ6aG9va3MgdXBkYXRlOmhvb2tzIGRlbGV0ZTpob29rcyBjcmVhdGU6aG9va3MgcmVhZDplbWFpbF9wcm92aWRlciB1cGRhdGU6ZW1haWxfcHJvdmlkZXIgZGVsZXRlOmVtYWlsX3Byb3ZpZGVyIGNyZWF0ZTplbWFpbF9wcm92aWRlciBibGFja2xpc3Q6dG9rZW5zIHJlYWQ6c3RhdHMgcmVhZDp0ZW5hbnRfc2V0dGluZ3MgdXBkYXRlOnRlbmFudF9zZXR0aW5ncyByZWFkOmxvZ3MgcmVhZDpzaGllbGRzIGNyZWF0ZTpzaGllbGRzIGRlbGV0ZTpzaGllbGRzIHJlYWQ6YW5vbWFseV9ibG9ja3MgZGVsZXRlOmFub21hbHlfYmxvY2tzIHVwZGF0ZTp0cmlnZ2VycyByZWFkOnRyaWdnZXJzIHJlYWQ6Z3JhbnRzIGRlbGV0ZTpncmFudHMgcmVhZDpndWFyZGlhbl9mYWN0b3JzIHVwZGF0ZTpndWFyZGlhbl9mYWN0b3JzIHJlYWQ6Z3VhcmRpYW5fZW5yb2xsbWVudHMgZGVsZXRlOmd1YXJkaWFuX2Vucm9sbG1lbnRzIGNyZWF0ZTpndWFyZGlhbl9lbnJvbGxtZW50X3RpY2tldHMgcmVhZDp1c2VyX2lkcF90b2tlbnMgY3JlYXRlOnBhc3N3b3Jkc19jaGVja2luZ19qb2IgZGVsZXRlOnBhc3N3b3Jkc19jaGVja2luZ19qb2IgcmVhZDpjdXN0b21fZG9tYWlucyBkZWxldGU6Y3VzdG9tX2RvbWFpbnMgY3JlYXRlOmN1c3RvbV9kb21haW5zIHJlYWQ6ZW1haWxfdGVtcGxhdGVzIGNyZWF0ZTplbWFpbF90ZW1wbGF0ZXMgdXBkYXRlOmVtYWlsX3RlbXBsYXRlcyByZWFkOm1mYV9wb2xpY2llcyB1cGRhdGU6bWZhX3BvbGljaWVzIHJlYWQ6cm9sZXMgY3JlYXRlOnJvbGVzIGRlbGV0ZTpyb2xlcyB1cGRhdGU6cm9sZXMgcmVhZDpwcm9tcHRzIHVwZGF0ZTpwcm9tcHRzIHJlYWQ6YnJhbmRpbmcgdXBkYXRlOmJyYW5kaW5nIHJlYWQ6bG9nX3N0cmVhbXMgY3JlYXRlOmxvZ19zdHJlYW1zIGRlbGV0ZTpsb2dfc3RyZWFtcyB1cGRhdGU6bG9nX3N0cmVhbXMiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMifQ.nCjALEIQumz-KFdeoSuh9DAE8fmQEFI5zSywUZYZOIi46w87wVsf2KjhAYBnK62FfbHEcn10wpnKpf0-fpWmmwOgO1ahqtI5qWXD79StLQp75vcTmdUp9wkgVG2qcEJAWoezTjY4_FVJ0ct2NVUmkfc4LJuPJ888yS59Nkcmdrvxs9AM9A2YQNlVAJKJ06hixX-aXV-GHBmO-uEvKGvUUQv8DnVSGfSZyJ06G_WKCHeJWgbf0F2vHWqBzCxD5JT7NZE_hYrncWjl3IimrhIRREZ_zgqIqtwIufmvx41nF-lIPlYw75FR0xfAERo-SwiwrsiM8u3J_j0ahmE0lRISEg";
+            await axios({
+              method: 'PATCH',
+              url: `https://dev-s68c-q-y.auth0.com/api/v2/users/${req.body.auth0id}`,
+              headers: {
+                'content-type': 'application/json',
+                'authorization': `Bearer ${tempAccessToken}`
+              },
+              data: {
+                email: req.body.email
+              },
+              json: true
+            })
+            .then( (result) => {
+              console.log("-----EMAIL PATCH AUTH0 RESULT------");
+              console.log(result);
+            })
+            .catch( (error) => {
+              console.log(error);
+            });
+
             summaryOfChanges += `•Email has been updated to ${req.body.email}\n` //TODO: maybe ask to confirm on old email if this is the case?
         }
 

@@ -5,26 +5,16 @@ import logo from '../ltmsio-logo-wide.png';
 import axios from 'axios';
 
 class LTMSNavbar extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      uid: "",
-      dbresults: {},
-      authresults: {}
-    };
-  }
-
   render() {
     return(
       <div>
         <Navbar bg="secondary" >
           <Navbar.Brand href="/">
-            <img src={logo} width="100" />
+            <img src={logo} alt="logo" width="100" />
           </Navbar.Brand>
           <Nav className="ml-auto">
             <Navbar.Brand href="/accountdetails">
-              <img src={sample} width="30" height="30"
+              <img src={sample} alt="profile" width="30" height="30"
                    className="d-inline-block align-top" />
             </Navbar.Brand>
             <NavDropdown alignRight title="Menu">
@@ -38,25 +28,6 @@ class LTMSNavbar extends Component {
   }
 
   async componentDidMount() {
-    // await axios({
-    //   method: 'GET',
-    //   url: `https://dev-s68c-q-y.auth0.com/userinfo`,
-    //   headers: {
-    //     'content-type': 'application/json',
-    //     'authorization': 'Bearer ' + localStorage.getItem("access_token")
-    //   },
-    //   json: true
-    // })
-    // .then( (result) => {
-    //   console.log("Auth info: ");
-    //   console.log(result);
-    //   this.setState({authresults: result.data});
-    //   this.setState({uid: this.state.authresults.sub});
-    // })
-    // .catch( (error) => {
-    //   console.log(error);
-    // });
-
     // Use this statement instead once backend Auth0 connection for register
     // is complete (5e54b2a86efec099146c054b is random test uid):
     //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)

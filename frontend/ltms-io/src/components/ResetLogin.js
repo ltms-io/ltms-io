@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
+import { connect } from 'react-redux';
 
 class ResetLogin extends Component {
   constructor(props) {
@@ -20,26 +21,40 @@ class ResetLogin extends Component {
     e.preventDefault();
     alert("Resetting email to: " + e.target.elements.email.value);
     this.state.dbresults.email = e.target.elements.email.value;
-    // Use this statement instead once backend Auth0 connection for register
-    // is complete (5e54b2a86efec099146c054b is random test uid):
-    //await axios.patch("http://localhost:5000/api/users/5e54b2a86efec099146c054b", {
-    await axios.patch(`http://localhost:5000/api/users/${this.state.dbresults._id}`, {
+
+    await axios.patch(`http://localhost:5000/api/users/updateuser`, {
+      auth0id: this.state.uid,
       email: this.state.dbresults.email
     })
     .catch( (error) => {
       console.log(error);
     });
 
-    // Use this statement instead once backend Auth0 connection for register
-    // is complete (5e54b2a86efec099146c054b is random test uid):
-    //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
-    await axios.get(`http://localhost:5000/api/users/${this.state.dbresults._id}`)
-      .then ( (result) => {
+
+    await axios.post(`http://localhost:5000/api/users/getuser`, {
+      auth0id: this.state.uid
+    }).then ( (result) => {
         this.state.dbresults = result.data;
-      })
-      .catch( (error) => {
+    }).catch( (error) => {
         console.log(error);
-      });
+    });
+
+    await axios({
+      method: 'GET',
+      url: `https://dev-s68c-q-y.auth0.com/userinfo`,
+      headers: {
+        'content-type': 'application/json',
+        'authorization': 'Bearer ' + localStorage.getItem("access_token")
+      },
+      json: true
+    })
+    .then( (result) => {
+      this.state.authresults = result.data;
+      this.state.uid = this.state.authresults.sub;
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
 
     console.log("UPDATED STATE", this.state);
   }
@@ -109,16 +124,13 @@ class ResetLogin extends Component {
     //   console.log(error);
     // });
 
-    // Use this statement instead once backend Auth0 connection for register
-    // is complete (5e54b2a86efec099146c054b is random test uid):
-    //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
-    await axios.post(`http://localhost:5000/api/users/auth`, {data: {sub: localStorage.getItem("auth0_id")}})
-      .then ( (result) => {
+    await axios.post(`http://localhost:5000/api/users/getuser`, {
+      auth0id: this.state.uid
+    }).then ( (result) => {
         this.state.dbresults = result.data;
-      })
-      .catch( (error) => {
+    }).catch( (error) => {
         console.log(error);
-      });
+    });
 
     this.setState(this.state);
 
@@ -126,4 +138,12 @@ class ResetLogin extends Component {
   }
 }
 
-export default ResetLogin;
+const mapStateToProps = (state) => {
+  return {
+    name: state.name,
+    email: state.email,
+    tournaments: state.tournaments
+  }
+};
+
+export default connect(mapStateToProps)(ResetLogin);

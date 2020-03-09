@@ -17,10 +17,6 @@ import PictureUploadModalTest from "./components/PictureUploadModalTest";
 import VolunteerModalTest from "./components/VolunteerModalTest";
 
 function App(props) {
-  //console.log(props);
-  if(props.auth.isAuthenticated()){
-    
-  }
   return (
     <Router>
       <div className="App">
