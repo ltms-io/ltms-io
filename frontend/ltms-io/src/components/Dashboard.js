@@ -31,15 +31,30 @@ class Dashboard extends Component {
           mongo-id: { this.state.dbresults._id }
         </div>
 
-        
+
       </div>
     );
   }
 
   async componentDidMount() {
+    await axios({
+      method: 'GET',
+      url: `https://dev-s68c-q-y.auth0.com/userinfo`,
+      headers: {
+        'content-type': 'application/json',
+        'authorization': 'Bearer ' + localStorage.getItem("access_token")
+      },
+      json: true
+    })
+    .then( (result) => {
+      this.state.authresults = result.data;
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
 
     await axios.post(`http://localhost:5000/api/users/getuser`, {
-      auth0id: this.state.uid
+      auth0id: this.state.authresults.sub
     }).then ( (result) => {
         this.state.dbresults = result.data;
     }).catch( (error) => {
