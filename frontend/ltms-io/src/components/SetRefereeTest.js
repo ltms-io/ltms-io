@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import { Form, Button } from 'react-bootstrap';
 
 class SetRefereeTest extends Component {
   constructor(props) {
@@ -12,10 +13,26 @@ class SetRefereeTest extends Component {
     };
   }
 
+  handleSubmit(e) {
+    alert(e.target.elements.users.value);
+  }
+
   render() {
     return(
       <div>
         <h1>Set Referee Test</h1>
+        <div>
+          <h3>Reset Email Address</h3>
+          <Form onSubmit={this.handleSubmit}>
+            <Form.Group controlId="users">
+              <Form.Label>Enter user(s) below (separated by commas)</Form.Label>
+              <Form.Control type="text" placeholder="Enter user(s)" />
+            </Form.Group>
+            <Button variant="outline-primary" type="submit">
+              Submit
+            </Button>
+          </Form>
+        </div>
       </div>
     );
   }
