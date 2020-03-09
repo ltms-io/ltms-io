@@ -22,7 +22,8 @@ const sharedKeyCredential = new StorageSharedKeyCredential(
     dev_config.AZURE_STORAGE_ACCOUNT_NAME || process.env.AZURE_STORAGE_ACCOUNT_NAME,
     dev_config.AZURE_STORAGE_ACCOUNT_ACCESS_KEY || process.env.AZURE_STORAGE_ACCOUNT_ACCESS_KEY);
 const pipeline = newPipeline(sharedKeyCredential);
-const jsonWeb = require('jsonwebtoken')
+const jsonWeb = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 
 const blobServiceClient = new BlobServiceClient(
     `https://${dev_config.AZURE_STORAGE_ACCOUNT_NAME || process.env.AZURE_STORAGE_ACCOUNT_NAME}.blob.core.windows.net`,
@@ -33,6 +34,8 @@ const getBlobName = originalName => {
     const ident = uuidv1();
     return `${ident}-${originalName}`;
 }
+
+router.use(cookieParser());
 
 sgMail.setApiKey(dev_config.SENDGRID_API_KEY || process.env.SENDGRID_API_KEY);
 
@@ -48,6 +51,15 @@ router.get('/', (req, res, next) => {
         res.send(users);
     })
 });
+
+router.post('/cookie', (req, res) => {
+    //console.log(req.body.jsonToken);
+    res.cookie('ident_cookie', req.body.jsonToken).send("Cookie is set");
+});
+
+router.get('/getCookie', (req, res) => {
+    console.log(req.signedCookies);
+})
 
 //POST specific user
 router.post('/auth', (req, res) => {
@@ -221,9 +233,9 @@ router.post('/search', (req, res) => {
         return res.status(200).send({email: user.email, name: user.name, _id: user._id});
     });
 });
-router.post('/login/:id', (req, res) => {
-    var authId = req.params.id;
-    User.findById(authId).then(user => {
+router.post('/login', (req, res) => {
+    var authId = req.body.data;
+    User.findOne({auth0id: authId.sub}).then(user => {
         if(!user) {
             return res.status(404).send("Not a user");
         }
@@ -235,14 +247,21 @@ router.post('/login/:id', (req, res) => {
             userAuthorizer: user.userAuthorizerh
         }
 
-        var tok = jsonWeb.sign(
+        jsonWeb.sign(
             payload,
             "123456",
+            (error, token) => {
+                res.json({
+                    success: true,
+                    token: "Bearer " + token
+                });
+                res.cookie("login_cookie", token)
+            }
         );
-        jsonWeb.verify(tok, "123456", function(err, decoded){
-            console.log(decoded.name);
-        })
-        return res.status(200).send(user);
+        // jsonWeb.verify(tok, "123456", function(err, decoded){
+        //     console.log(decoded.name);
+        // })
+        // return res.status(200).send(tok);
     })
 })
 
