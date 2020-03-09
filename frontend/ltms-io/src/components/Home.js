@@ -47,6 +47,10 @@ class Home extends Component {
             <a href="/tournamentsearch">Find a Tournament</a>
         </div>)}
         {this.props.auth.isAuthenticated() && (
+        <div>
+            <a href="/setrefereetest">Set Referee Test</a>
+        </div>)}
+        {this.props.auth.isAuthenticated() && (
           <button onClick={this.props.auth.logout}>Logout</button>
         )}
 

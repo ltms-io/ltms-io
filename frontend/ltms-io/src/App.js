@@ -15,6 +15,7 @@ import "react-dates/initialize";
 import "react-dates/lib/css/_datepicker.css";
 import PictureUploadModalTest from "./components/PictureUploadModalTest";
 import VolunteerModalTest from "./components/VolunteerModalTest";
+import SetRefereeTest from "./components/SetRefereeTest";
 
 function App(props) {
   return (
@@ -32,6 +33,7 @@ function App(props) {
           <Route path="/pictureuploadtest" component={PictureUploadModalTest} />
           <Route path="/volunteermodaltest" component={ VolunteerModalTest } />
           <Route path="/tournamentsearch" component={ TournamentSearch } />
+          <Route path="/setrefereetest" component={ SetRefereeTest } />
         </Switch>
       </div>
     </Router>
