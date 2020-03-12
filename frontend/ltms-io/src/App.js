@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import CreateTournament from "./components/CreateTournament";
 import Sheet from "./components/Scoresheet";
 import Callback from "./components/Callback";
+import { useCookies } from "react-cookie";
 
 
 import "react-dates/initialize";
@@ -19,14 +20,15 @@ const jsonWeb = require('jsonwebtoken')
 
 function App(props) {
   //console.log(props);
+  const [cookies, setCookie, removeCookie] = useCookies(['user']);
   if(props.auth.isAuthenticated()){
     axios.post('http://localhost:5000/api/users/login', {data: {sub: localStorage.getItem("auth0_id")}}).then( (result) => {
-      axios.post('http://localhost:5000/api/users/cookie', {jsonToken: result.data.token}).then( (res) => {
-        console.log(res);
-      });
-      axios.get('http://localhost:5000/api/users/getCookie').then((res)=>{
-        console.log(res);
-      })
+      setCookie('UserIdentity', result.data.token);
+      var token = cookies.UserIdentity;
+      var decoded = jsonWeb.verify(token.substring(7),"123456");
+      console.log(decoded.name);
+      removeCookie("UserIdentity");
+      console.log(cookies.UserIdentity);
       //console.log(response);
     }).catch(function(err){
       console.log(err);

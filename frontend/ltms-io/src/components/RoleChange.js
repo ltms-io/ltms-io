@@ -23,13 +23,10 @@ class RoleChange extends Component{
 
         this.setState({userEmail: email});
         this.setState({userEventRole: eventRole});
-<<<<<<< HEAD
 
         console.log(this.state.userEmail);
         console.log(this.state.userEventRole);
 
-=======
->>>>>>> 101-4-maintain-author
     }
 
     render(){

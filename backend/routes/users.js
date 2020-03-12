@@ -23,7 +23,6 @@ const sharedKeyCredential = new StorageSharedKeyCredential(
     dev_config.AZURE_STORAGE_ACCOUNT_ACCESS_KEY || process.env.AZURE_STORAGE_ACCOUNT_ACCESS_KEY);
 const pipeline = newPipeline(sharedKeyCredential);
 const jsonWeb = require('jsonwebtoken');
-const cookieParser = require('cookie-parser');
 
 const blobServiceClient = new BlobServiceClient(
     `https://${dev_config.AZURE_STORAGE_ACCOUNT_NAME || process.env.AZURE_STORAGE_ACCOUNT_NAME}.blob.core.windows.net`,
@@ -34,8 +33,6 @@ const getBlobName = originalName => {
     const ident = uuidv1();
     return `${ident}-${originalName}`;
 }
-
-router.use(cookieParser());
 
 sgMail.setApiKey(dev_config.SENDGRID_API_KEY || process.env.SENDGRID_API_KEY);
 
@@ -51,15 +48,6 @@ router.get('/', (req, res, next) => {
         res.send(users);
     })
 });
-
-router.post('/cookie', (req, res) => {
-    //console.log(req.body.jsonToken);
-    res.cookie('ident_cookie', req.body.jsonToken).send("Cookie is set");
-});
-
-router.get('/getCookie', (req, res) => {
-    console.log(req.signedCookies);
-})
 
 //POST specific user
 router.post('/auth', (req, res) => {
@@ -255,13 +243,12 @@ router.post('/login', (req, res) => {
                     success: true,
                     token: "Bearer " + token
                 });
-                res.cookie("login_cookie", token)
             }
         );
         // jsonWeb.verify(tok, "123456", function(err, decoded){
         //     console.log(decoded.name);
         // })
-        // return res.status(200).send(tok);
+        return res.status(200).send(tok);
     })
 })
 
