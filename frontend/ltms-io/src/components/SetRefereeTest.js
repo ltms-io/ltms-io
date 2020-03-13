@@ -14,7 +14,13 @@ class SetRefereeTest extends Component {
   }
 
   handleSubmit(e) {
+    e.preventDefault();
     alert(e.target.elements.users.value);
+    var strings = e.target.elements.users.value.split(",");
+    for (var i = 0; i < strings.length; i++) {
+      strings[i] = strings[i].trim();
+    }
+    console.log(strings);
   }
 
   render() {
