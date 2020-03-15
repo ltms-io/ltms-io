@@ -20,28 +20,30 @@ class ResetLogin extends Component {
     e.preventDefault();
     alert("Resetting email to: " + e.target.elements.email.value);
     this.state.dbresults.email = e.target.elements.email.value;
+    console.log(this.state.dbresults);
     // Use this statement instead once backend Auth0 connection for register
     // is complete (5e54b2a86efec099146c054b is random test uid):
     //await axios.patch("http://localhost:5000/api/users/5e54b2a86efec099146c054b", {
-    await axios.patch(`http://localhost:5000/api/users/${this.state.dbresults._id}`, {
-      email: this.state.dbresults.email
+    await axios.patch("http://localhost:5000/api/users/updateuser", {
+      email: this.state.dbresults.email,
+      auth0id: this.state.dbresults.auth0id
     })
     .catch( (error) => {
       console.log(error);
     });
 
-    // Use this statement instead once backend Auth0 connection for register
-    // is complete (5e54b2a86efec099146c054b is random test uid):
-    //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
-    await axios.get(`http://localhost:5000/api/users/${this.state.dbresults._id}`)
-      .then ( (result) => {
-        this.state.dbresults = result.data;
-      })
-      .catch( (error) => {
-        console.log(error);
-      });
+    // // Use this statement instead once backend Auth0 connection for register
+    // // is complete (5e54b2a86efec099146c054b is random test uid):
+    // //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
+    // await axios.get(`http://localhost:5000/api/users/${this.state.dbresults.auth0id}`)
+    //   .then ( (result) => {
+    //     this.state.dbresults = result.data;
+    //   })
+    //   .catch( (error) => {
+    //     console.log(error);
+    //   });
 
-    console.log("UPDATED STATE", this.state);
+    // console.log("UPDATED STATE", this.state);
   }
 
   async handlePassword(e) {
