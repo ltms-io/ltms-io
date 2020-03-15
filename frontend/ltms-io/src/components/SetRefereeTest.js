@@ -87,6 +87,9 @@ class SetRefereeTest extends Component {
         <h1>Set Referee Test</h1>
         <div>
           <h3>Reset Email Address</h3>
+          {this.state.dbtournresults != null && (
+            <div>You are authenticated to set referee!</div>
+          )}
           <Form onSubmit={this.handleSubmit}>
             <Form.Group controlId="users">
               <Form.Label>Enter user(s) below (separated by commas)</Form.Label>
