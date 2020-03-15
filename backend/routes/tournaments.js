@@ -29,23 +29,74 @@ router.get('/:id', (req, res) => {
 
 /* GET tournaments by user id */
 router.post('/user', (req, res) => {
-    User.findOne({ auth0id: req.body.auth0id })
-    .then((user) => {
-        if (user) {
-            Tournament.find({director: user._id})
-            .then((tournaments) => {
-                res.status(200).send(tournaments);
-            }).catch((err) => {
-                res.status(500).send(err);
-            })
-        }  
-        else {
-            res.status(404).send("No such user found");
-        } 
-    })
-    .catch((err) => {
-        res.status(500).send(err);
-    })
+    //TODO: find out why everything is being returned 
+
+    User.find({ auth0id: req.body.auth0id }).then(async function(user) {
+        if(!user) {
+            return res.status(404).send("user not found");
+        }
+
+        var results = {
+            director: [],
+            headReferee: [],
+            judgeAdvisor: [],
+            referee: [],
+            judge: [],
+            viewOnlyVol: []
+        }
+
+        //.@Hank: there are probably 8000 better ways to do this but I don't know them TODO
+        await Tournament.find({ director: user._id }, (err, tournaments) => {
+            if(err) {
+                return res.status(500).send(err);
+            }
+
+            results.director = tournaments
+        });
+
+        await Tournament.find({ headReferee: user._id }, (err, tournaments) => {
+            if(err) {
+                return res.status(500).send(err);
+            }
+
+            results.headReferee = tournaments
+        });
+
+        await Tournament.find({ judgeAdvisor: user._id }, (err, tournaments) => {
+            if(err) {
+                return res.status(500).send(err);
+            }
+
+            results.judgeAdvisor = tournaments
+        });
+
+        await Tournament.find({ referees: { "$in": [user._id] } }, (err, tournaments) => {
+            if(err) {
+                return res.status(500).send(err);
+            }
+
+            results.referee = tournaments
+        });
+
+        await Tournament.find({ judges: { "$in": [user._id] } }, (err, tournaments) => {
+            if(err) {
+                return res.status(500).send(err);
+            }
+
+            results.judge = tournaments
+        });
+
+        await Tournament.find({ viewOnlyVols: { "$in": [user._id] } }, (err, tournaments) => {
+            if(err) {
+                return res.status(500).send(err);
+            }
+
+            results.viewOnlyVol = tournaments
+            results.viewOnlyVol.push("123test")
+        });
+
+        res.status(200).send(results);
+    });
 });
 
 
