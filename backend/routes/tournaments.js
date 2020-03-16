@@ -58,12 +58,14 @@ router.post('/search', async(req, res) => {
 
     var found_user;
     if (req.body.user_name) {
-        await User.findOne({name: req.body.user_name}).then((user) => {
+        await User.findOne({name: {$regex: new RegExp(`^${req.body.user_name}$`, 'i')}}).then((user) => {
             found_user = user;
         }).catch((error) => {
             found_user = null;
         });
     }
+
+    // console.log(found_user);
 
     var query = {};
 
@@ -72,14 +74,15 @@ router.post('/search', async(req, res) => {
     };
 
     if (req.body.tournament_name) {
-        query.name = req.body.tournament_name;
+        query.name = {$regex: new RegExp(`^${req.body.tournament_name}$`, 'i')};
     }
 
     if (req.body.date) {
         query.startDate = req.body.date;
     }
 
-    Tournament.find(query).then((tournament) => {
+    Tournament.find(query)
+    .then((tournament) => {
         if (!tournament) {
             return res.status(404).send("No results found");
         }
