@@ -15,14 +15,14 @@ const TournamentSchema = new Schema({
     volunteers: [], //don't use anymore
 
     /* Volunteer Roles */
-    headReferee: {
+    headReferee: [{
         type: String,
         ref: 'User'
-    },
-    judgeAdvisor: {
+    }],
+    judgeAdvisor: [{
         type: String,
         ref: 'User'
-    },
+    }],
     referees: [{
         type: String,
         ref: 'User'
