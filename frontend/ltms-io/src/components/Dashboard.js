@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import { useCookies } from "react-cookie";
 
 class Dashboard extends Component {
   constructor(props) {
     super(props);
 
+    var token = document.cookie;
     this.state = {
       tournaments: [],
       dbresults: {},
@@ -14,7 +16,6 @@ class Dashboard extends Component {
   }
 
   render () {
-
   //  var tournaments = this.state.tournaments.map((x))
     return(
       <div>

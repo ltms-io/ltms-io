@@ -231,23 +231,19 @@ router.post('/login', (req, res) => {
         var payload = {
             name: user.name,
             email: user.email,
+            auth0id: user.auth0id,
             eventAuthorizer: user.eventAuthorizer,
-            userAuthorizer: user.userAuthorizerh
+            userAuthorizer: user.userAuthorizer
         }
 
-        jsonWeb.sign(
+        var tok = jsonWeb.sign(
             payload,
             "123456",
-            (error, token) => {
-                res.json({
-                    success: true,
-                    token: "Bearer " + token
-                });
-            }
         );
         // jsonWeb.verify(tok, "123456", function(err, decoded){
         //     console.log(decoded.name);
         // })
+        console.log(tok)
         return res.status(200).send(tok);
     })
 })

@@ -85,7 +85,7 @@ class Home extends Component {
     // Use this statement instead once backend Auth0 connection for register
     // is complete (5e54b2a86efec099146c054b is random test uid):
     //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
-    await axios.post(`http://localhost:5000/api/users/auth`, {data: {sub: localStorage.getItem("auth0_id")}})
+    await axios.post(`http://localhost:5000/api/users/auth`, {data: localStorage.getItem("auth0_id")})
       .then ((result) => {
         this.state.dbresults = result.data;
       })
