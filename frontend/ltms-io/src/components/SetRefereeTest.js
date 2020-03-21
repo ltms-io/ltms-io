@@ -10,7 +10,8 @@ class SetRefereeTest extends Component {
     this.state = {
       dbresults: {},
       dbtournresults: {},
-      authresults: {}
+      authresults: {},
+      isHeadReferee: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -96,17 +97,27 @@ class SetRefereeTest extends Component {
         <h1>Set Referee Test</h1>
         <div>
           <h3>Reset Email Address</h3>
-          {this.state.dbtournresults != null && (
+          {this.state.isHeadReferee && (
             <div>You are authenticated to set referee!</div>
+          )}
+          {!this.state.isHeadReferee && (
+            <div>You are not authenticated to set referee!</div>
           )}
           <Form onSubmit={this.handleSubmit}>
             <Form.Group controlId="users">
               <Form.Label>Enter user(s) below</Form.Label>
               <Form.Control type="text" placeholder="Enter user email(s) separated by commas" />
             </Form.Group>
-            <Button variant="outline-primary" type="submit">
-              Submit
-            </Button>
+            {this.state.isHeadReferee && (
+              <Button variant="outline-primary" type="submit">
+                Submit
+              </Button>
+            )}
+            {!this.state.isHeadReferee && (
+              <Button variant="outline-primary" type="submit" disabled>
+                Submit
+              </Button>
+            )}
           </Form>
         </div>
       </div>
@@ -120,8 +131,15 @@ class SetRefereeTest extends Component {
     }).catch( (error) => {
         console.log(error);
     });
-    this.updateState();
+    await this.updateState();
     console.log("INITIAL SET REFEREE TEST STATE", this.state);
+
+    if (this.state.dbtournresults.headReferee == this.state.dbresults._id) {
+      this.state.isHeadReferee = true;
+    }
+    else {
+      this.state.isHeadReferee = false;
+    }
   }
 }
 export default SetRefereeTest;
