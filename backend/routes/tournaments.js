@@ -38,10 +38,10 @@ router.post('/user', (req, res) => {
             }).catch((err) => {
                 res.status(500).send(err);
             })
-        }  
+        }
         else {
             res.status(404).send("No such user found");
-        } 
+        }
     })
     .catch((err) => {
         res.status(500).send(err);
@@ -151,7 +151,7 @@ router.patch('/:id', (req, res) => {
     //     res.status(401).send('Authorization invalid');
     //     return;
     // }
-    
+
     Tournament.findById(req.params.id).then((tournament) => {
         if (req.body.director /* && CURRENT USER IS DIRECTOR */) {
             tournament.director = req.body.director;

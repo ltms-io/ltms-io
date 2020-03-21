@@ -42,7 +42,10 @@ class SetRefereeTest extends Component {
         console.log(error);
     });
 
-    await axios.get(`http://localhost:5000/api/tournaments/5e654dab2050893113969494`)
+    // CURRENTLY USING A PLACEHOLDER TOURNAMENT FOR TESTING
+    // TODO: get the tournament id selected from dashboard and use this id in
+    // the get request
+    await axios.get(`http://localhost:5000/api/tournaments/5e6eba4ad1a3c152ba7bc99d`)
     .then ( (result) => {
         this.state.dbtournresults = result.data;
     }).catch( (error) => {
@@ -61,15 +64,16 @@ class SetRefereeTest extends Component {
       strings[i] = strings[i].trim();
       newUsers = [
         ...newUsers,
-        {
-          user: strings[i],
-          uRole: "referee"
-        }
+        strings[i],
       ];
     }
-    await axios.patch(`http://localhost:5000/api/tournaments/5e654dab2050893113969494`, {
-      volunteers: [
-        ...this.state.dbtournresults.volunteers,
+
+    // CURRENTLY USING A PLACEHOLDER TOURNAMENT FOR TESTING
+    // TODO: get the tournament id selected from dashboard and use this id in
+    // the get request
+    await axios.patch(`http://localhost:5000/api/tournaments/5e6eba4ad1a3c152ba7bc99d`, {
+      referee: [
+        ...this.state.dbtournresults.referees,
         ...newUsers
       ]
     })
@@ -104,7 +108,7 @@ class SetRefereeTest extends Component {
     );
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.updateState();
     console.log("INITIAL SET REFEREE TEST STATE", this.state);
   }
