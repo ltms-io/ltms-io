@@ -46,7 +46,7 @@ class SetRefereeTest extends Component {
     // TODO: get the tournament id selected from dashboard and use this id in
     // the get request
     await axios.get(`http://localhost:5000/api/tournaments/5e6eba4ad1a3c152ba7bc99d`)
-    .then ( (result) => {
+    .then( (result) => {
         this.state.dbtournresults = result.data;
     }).catch( (error) => {
         console.log(error);
@@ -59,13 +59,18 @@ class SetRefereeTest extends Component {
     e.preventDefault();
     alert(e.target.elements.users.value);
     var strings = e.target.elements.users.value.split(",");
-    var newUsers = [];
+    var ids = [];
     for (var i = 0; i < strings.length; i++) {
       strings[i] = strings[i].trim();
-      newUsers = [
-        ...newUsers,
-        strings[i],
-      ];
+      await axios.post(`http://localhost:5000/api/users/search`, {
+        email: strings[i]
+      })
+      .then( (result) => {
+        ids[i] = result.data._id;
+      })
+      .catch( (error) => {
+        console.log(error);
+      });
     }
 
     // CURRENTLY USING A PLACEHOLDER TOURNAMENT FOR TESTING
@@ -74,7 +79,7 @@ class SetRefereeTest extends Component {
     await axios.patch(`http://localhost:5000/api/tournaments/5e6eba4ad1a3c152ba7bc99d`, {
       referee: [
         ...this.state.dbtournresults.referees,
-        ...newUsers
+        ...ids
       ]
     })
     .catch( (error) => {
@@ -96,8 +101,8 @@ class SetRefereeTest extends Component {
           )}
           <Form onSubmit={this.handleSubmit}>
             <Form.Group controlId="users">
-              <Form.Label>Enter user(s) below (separated by commas)</Form.Label>
-              <Form.Control type="text" placeholder="Enter user(s)" />
+              <Form.Label>Enter user(s) below</Form.Label>
+              <Form.Control type="text" placeholder="Enter user email(s) separated by commas" />
             </Form.Group>
             <Button variant="outline-primary" type="submit">
               Submit
@@ -109,6 +114,12 @@ class SetRefereeTest extends Component {
   }
 
   async componentDidMount() {
+    await axios.get(`http://localhost:5000/api/users`)
+    .then ( (result) => {
+        console.log("USERS", result.data);
+    }).catch( (error) => {
+        console.log(error);
+    });
     this.updateState();
     console.log("INITIAL SET REFEREE TEST STATE", this.state);
   }
