@@ -10,6 +10,7 @@ class AccountDetails extends Component {
 
     this.state = {
       uid: "",
+      profilepic: "",
       dbresults: {},
       authresults: {}
     };
@@ -24,9 +25,14 @@ class AccountDetails extends Component {
     // Use this statement instead once backend Auth0 connection for register
     // is complete (5e54b2a86efec099146c054b is random test uid):
     //await axios.patch("http://localhost:5000/api/users/5e54b2a86efec099146c054b", {
-    await axios.patch(`http://localhost:5000/api/users/${this.state.uid}`, {
-      email: this.state.dbresults.email,
+    await axios.patch(`http://localhost:5000/api/users/updateuser`, {
+      auth0id: localStorage.getItem("auth0_id"),
+     // email: this.state.dbresults.email,
       name: e.target.elements.name.value
+    })
+    .then((res) => {
+      console.log(res.data);
+      this.setState({dbresutls: res.data});
     })
     .catch( (error) => {
       console.log(error);
@@ -35,13 +41,13 @@ class AccountDetails extends Component {
     // Use this statement instead once backend Auth0 connection for register
     // is complete (5e54b2a86efec099146c054b is random test uid):
     //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
-    await axios.get(`http://localhost:5000/api/users/${this.state.uid}`)
-      .then ( (result) => {
-        this.state.dbresults = result.data;
-      })
-      .catch( (error) => {
-        console.log(error);
-      });
+    // await axios.get(`http://localhost:5000/api/users/${this.state.uid}`)
+    //   .then ( (result) => {
+    //     this.state.dbresults = result.data;
+    //   })
+    //   .catch( (error) => {
+    //     console.log(error);
+    //   });
 
     console.log("UPDATED STATE", this.state);
   }
@@ -53,7 +59,7 @@ class AccountDetails extends Component {
     // Use this statement instead once backend Auth0 connection for register
     // is complete (5e54b2a86efec099146c054b is random test uid):
     //await axios.delete("http://localhost:5000/api/users/5e54b2a86efec099146c054b")
-    await axios.delete(`http://localhost:5000/api/users/${this.state.uid}`)
+    await axios.delete(`http://localhost:5000/api/users/${this.state.dbresults._id}`)
     .catch( (error) => {
       console.log(error);
     });
@@ -71,7 +77,7 @@ class AccountDetails extends Component {
               <Col>
                 <div>
                   <h3>Edit Profile Picture</h3>
-                  <img alt="profile" src={logo} />
+                  {this.state.profilepic ? <img src={this.state.profilepic.imgUrl} /> : <img src={logo} alt="account"/>}
                 </div>
                 <div>
                   <h3>Edit Name</h3>
@@ -104,6 +110,7 @@ class AccountDetails extends Component {
     );
   }
 
+
   async componentDidMount() {
     await axios({
       method: 'GET',
@@ -122,16 +129,14 @@ class AccountDetails extends Component {
       console.log(error);
     });
 
-    // Use this statement instead once backend Auth0 connection for register
-    // is complete (5e54b2a86efec099146c054b is random test uid):
-    //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
-    await axios.get(`http://localhost:5000/api/users/${this.state.uid.substring(6)}`)
-      .then ( (result) => {
+    await axios.post(`http://localhost:5000/api/users/getuser`, {
+      auth0id: this.state.uid
+    }).then ( (result) => {
         this.state.dbresults = result.data;
-      })
-      .catch( (error) => {
+    }).catch( (error) => {
+
         console.log(error);
-      });
+    });
 
     this.setState(this.state);
 

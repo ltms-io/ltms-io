@@ -4,6 +4,7 @@ import Home from "./components/Home";
 import Dashboard from "./components/Dashboard";
 import Login from "./components/Login";
 import AccountDetails from "./components/AccountDetails";
+import TournamentSearch from "./components/TournamentSearch"
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import CreateTournament from "./components/CreateTournament";
 import Sheet from "./components/Scoresheet";
@@ -14,9 +15,9 @@ import EditTournament from "./components/EditTournament";
 import "react-dates/initialize";
 import "react-dates/lib/css/_datepicker.css";
 import PictureUploadModalTest from "./components/PictureUploadModalTest";
+import VolunteerModalTest from "./components/VolunteerModalTest";
 
 function App(props) {
-  //console.log(props);
   return (
     <Router>
       <div className="App">
@@ -35,6 +36,8 @@ function App(props) {
           <Route path="/pictureuploadtest" component={PictureUploadModalTest} />
           <Route path="/Judge" component={Judge} />
           <Route path="/EditTournament" component={EditTournament} />
+          <Route path="/volunteermodaltest" component={ VolunteerModalTest } />
+          <Route path="/tournamentsearch" component={ TournamentSearch } />
         </Switch>
       </div>
     </Router>

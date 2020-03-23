@@ -36,7 +36,7 @@ export default class PictureUploadModal extends Component {
         data.set("username", this.props.name);
         data.append("file", this.state.selectedFile);
         //TODO: Replace with current user id
-        data.append("id", "5e54b2b96efec099146c054c");
+        data.append("auth0id", localStorage.getItem("auth0_id"));
 
         axios.post('http://localhost:5000/api/users/uploadpicture', data, {
             'Content-Type': 'multipart/form-data'

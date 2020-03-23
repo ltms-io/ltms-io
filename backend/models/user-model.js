@@ -11,7 +11,7 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
-    password: {
+    auth0id: {
         type: String,
         required: true,
     },
@@ -34,9 +34,11 @@ const UserSchema = new Schema({
         },
         imgUrl: {
             type: String,
+            default: '',
         },
         thumbUrl: {
             type: String,
+            default: '',
         },
     },
 });

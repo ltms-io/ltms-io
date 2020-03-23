@@ -1,19 +1,14 @@
-import React, { Component } from "react";
-import axios from "axios";
+
+=======
+import React, { Component } from 'react';
+//import axios from 'axios';
+
+
 
 class Home extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      uid: "",
-      dbresults: {},
-      authresults: {}
-    };
-  }
-
   render() {
     return (
+
       <div>
         <h1>Welcome!</h1>
 
@@ -38,6 +33,7 @@ class Home extends Component {
             <a href="/accountdetails">Edit Account Details</a>
           </div>
         )}
+
         {this.props.auth.isAuthenticated() && (
           <button onClick={this.props.auth.logout}>Logout</button>
         )}
@@ -60,6 +56,7 @@ class Home extends Component {
           <a href="/Judge">Judge</a>
         </div>
         <div>
+
           <a href="/EditTournament">Edit Tournament</a>
         </div>
       </div>
