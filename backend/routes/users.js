@@ -237,6 +237,7 @@ router.patch('/updateuser', (req, res) => {
         return res.status(400).send("no auth0id given");
     }
     User.findOne(body, async (err, user) => {
+
         if (!user) {
             return res.status(404).send("user not found");
         }
@@ -245,7 +246,7 @@ router.patch('/updateuser', (req, res) => {
 
         if (req.body.name) {
             user.name = req.body.name;
-            summaryOfChanges += `•Name has been updated to ${req.body.name}\n`
+            summaryOfChanges += `• Name has been updated to ${req.body.name}\n`
         }
 
         if (req.body.email) { //TODO add email validator
@@ -297,25 +298,23 @@ router.patch('/updateuser', (req, res) => {
 
         if (req.body.eventAuthorizer) { //TODO: add authorization to this
             user.eventAuthorizer = req.body.eventAuthorizer;
-            summaryOfChanges += "•You have been authorized to create official events.\n"
+            summaryOfChanges += "• You have been authorized to create official events.\n"
         }
 
         if (req.body.userAuthorizer) { //TODO: add authorization to this
             user.userAuthorizer = req.body.userAuthorizer;
-            summaryOfChanges += "•You have been authorized to authorize other users to create official events.\n"
+            summaryOfChanges += "• You have been authorized to authorize other users to create official events.\n"
         }
 
         if (req.body.picture) {
             user.profilePic.imgUrl = req.body.picture;
             user.is_azure = false;
-            summaryOfChanges += "•Your profile picture has set to an external source.\n"
+            summaryOfChanges += "• Your profile picture has set to an external source.\n"
         }
 
         if (req.body.thumb) {
             user.profilePic.thumbUrl = req.body.thumb;
         }
-
-        user.save().then((user) => res.send(user)).catch((err) => console.log(err)); //TODO: as a .then() or an await?
 
         const msg = {
             to: req.body.email,

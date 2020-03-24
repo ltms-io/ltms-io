@@ -56,7 +56,7 @@ class ResetLogin extends Component {
       console.log(error);
     });
 
-    console.log("UPDATED STATE", this.state);
+    // console.log("UPDATED STATE", this.state);
   }
 
   async handlePassword(e) {
