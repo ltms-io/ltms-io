@@ -37,6 +37,7 @@ class AccountDetails extends Component {
     .catch( (error) => {
       console.log(error);
     });
+    
 
     // Use this statement instead once backend Auth0 connection for register
     // is complete (5e54b2a86efec099146c054b is random test uid):
@@ -63,7 +64,8 @@ class AccountDetails extends Component {
     .catch( (error) => {
       console.log(error);
     });
-
+    var token = document.cookie.substring(13);
+    document.cookie = "UserIdentity=" + token + "; expires=Thu, 01 Jan 1970 00:00:00 UTC";
     this.props.auth.logout();
   }
 

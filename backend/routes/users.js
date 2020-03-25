@@ -233,7 +233,8 @@ router.post('/login', (req, res) => {
             email: user.email,
             auth0id: user.auth0id,
             eventAuthorizer: user.eventAuthorizer,
-            userAuthorizer: user.userAuthorizer
+            userAuthorizer: user.userAuthorizer,
+            _id: user._id
         }
 
         var tok = jsonWeb.sign(
