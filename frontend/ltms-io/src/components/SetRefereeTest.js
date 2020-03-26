@@ -46,7 +46,7 @@ class SetRefereeTest extends Component {
     // CURRENTLY USING A PLACEHOLDER TOURNAMENT FOR TESTING
     // TODO: get the tournament id selected from dashboard and use this id in
     // the get request
-    await axios.get(`http://localhost:5000/api/tournaments/5e6eba4ad1a3c152ba7bc99d`)
+    await axios.get(`http://localhost:5000/api/tournaments/5e7c53f30c6d5700d3701567`)
     .then( (result) => {
         this.state.dbtournresults = result.data;
     }).catch( (error) => {
@@ -77,15 +77,14 @@ class SetRefereeTest extends Component {
     // CURRENTLY USING A PLACEHOLDER TOURNAMENT FOR TESTING
     // TODO: get the tournament id selected from dashboard and use this id in
     // the get request
-    await axios.patch(`http://localhost:5000/api/tournaments/5e6eba4ad1a3c152ba7bc99d`, {
-      referee: [
-        ...this.state.dbtournresults.referees,
-        ...ids
-      ]
-    })
-    .catch( (error) => {
-      console.log(error);
-    });
+    for (var i = 0; i < ids.length; i++) {
+      await axios.patch(`http://localhost:5000/api/tournaments/5e7c53f30c6d5700d3701567`, {
+        referee: ids[i]
+      })
+      .catch( (error) => {
+        console.log(error);
+      });
+    }
 
     this.updateState();
     console.log("UPDATED STATE", this.state);
@@ -131,15 +130,24 @@ class SetRefereeTest extends Component {
     }).catch( (error) => {
         console.log(error);
     });
+    await axios.get(`http://localhost:5000/api/tournaments`)
+    .then ( (result) => {
+        console.log("TOURNAMENTS", result.data);
+    }).catch( (error) => {
+        console.log(error);
+    });
     await this.updateState();
     console.log("INITIAL SET REFEREE TEST STATE", this.state);
 
-    if (this.state.dbtournresults.headReferee == this.state.dbresults._id) {
+    if (this.state.dbtournresults.headReferee === this.state.dbresults._id ||
+        this.state.dbtournresults.director === this.state.dbresults._id) {
       this.state.isHeadReferee = true;
     }
     else {
       this.state.isHeadReferee = false;
     }
+
+    this.updateState();
   }
 }
 export default SetRefereeTest;
