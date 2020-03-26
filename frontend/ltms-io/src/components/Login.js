@@ -1,17 +1,6 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 
 class Login extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      uid: "",
-      dbresults: {},
-      authresults: {}
-    };
-  }
-
   render() {
     return (
       <div>
@@ -24,42 +13,6 @@ class Login extends Component {
         </div>
       </div>
     );
-  }
-
-  async componentDidMount() {
-    // await axios({
-    //   method: 'GET',
-    //   url: `https://dev-s68c-q-y.auth0.com/userinfo`,
-    //   headers: {
-    //     'content-type': 'application/json',
-    //     'authorization': 'Bearer ' + localStorage.getItem("access_token")
-    //   },
-    //   json: true
-    // })
-    // .then( (result) => {
-    //   console.log("Auth info: ");
-    //   console.log(result);
-    //   this.setState({authresults: result.data});
-    //   this.setState({uid: this.state.authresults.sub});
-    // })
-    // .catch( (error) => {
-    //   console.log(error);
-    // });
-
-    // Use this statement instead once backend Auth0 connection for register
-    // is complete (5e54b2a86efec099146c054b is random test uid):
-    //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
-    await axios.post(`http://localhost:5000/api/users/auth`, {data: {sub: localStorage.getItem("auth0_id")}})
-      .then ((result) => {
-        this.state.dbresults = result.data;
-      })
-      .catch( (error) => {
-        console.log(error);
-      });
-
-    this.setState(this.state);
-
-    console.log("INITIAL LOGIN STATE", this.state);
   }
 }
 

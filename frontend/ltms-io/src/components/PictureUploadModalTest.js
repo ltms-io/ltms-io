@@ -37,17 +37,17 @@ class PictureUploadModalTest extends Component {
     render() {
         return (
             <div>
-                <Button 
+                <Button
                     onClick={() => this.setState({addVolunteerShow: true})}
                     disabled={!this.props.name} >
                         Test out the modal!!
                     </Button>
-                <PictureUploadModal 
-                    show={this.state.addVolunteerShow} 
-                    handleClose={this.modalClose} 
+                <PictureUploadModal
+                    show={this.state.addVolunteerShow}
+                    handleClose={this.modalClose}
                     name={this.props.name}></PictureUploadModal>
-                    {this.state.thumbUrl ? <img src={this.state.thumbUrl}/> : null}
-                    {this.state.imgUrl ? <img src={this.state.imgUrl}/> : null}
+                    {this.state.thumbUrl ? <img alt="thumb" src={this.state.thumbUrl}/> : null}
+                    {this.state.imgUrl ? <img alt="img" src={this.state.imgUrl}/> : null}
             </div>
         )
     }
@@ -58,5 +58,5 @@ const mapStateToProps = (state) => {
       name: state.name,
     }
   };
-  
+
 export default connect(mapStateToProps)(PictureUploadModalTest);
