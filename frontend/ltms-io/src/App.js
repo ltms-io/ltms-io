@@ -1,21 +1,19 @@
 import React from "react";
+import "react-dates/initialize";
+import "react-dates/lib/css/_datepicker.css";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import LTMSNavbar from "./components/LTMSNavbar";
 import Home from "./components/Home";
 import Dashboard from "./components/Dashboard";
 import Login from "./components/Login";
 import AccountDetails from "./components/AccountDetails";
 import TournamentSearch from "./components/TournamentSearch"
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import CreateTournament from "./components/CreateTournament";
 import Sheet from "./components/Scoresheet";
 import Callback from "./components/Callback";
-
-
-import "react-dates/initialize";
-import "react-dates/lib/css/_datepicker.css";
 import PictureUploadModalTest from "./components/PictureUploadModalTest";
 import VolunteerModalTest from "./components/VolunteerModalTest";
-import SetRefereeTest from "./components/SetRefereeTest";
+import SetReferee from "./components/SetReferee";
 import MainDashboard from "./components/MainDashboard";
 import TournamentDashboard from "./components/TournamentDashboard";
 
@@ -35,7 +33,7 @@ function App(props) {
           <Route path="/pictureuploadtest" component={PictureUploadModalTest} />
           <Route path="/volunteermodaltest" component={ VolunteerModalTest } />
           <Route path="/tournamentsearch" component={ TournamentSearch } />
-          <Route path="/setrefereetest" component={ SetRefereeTest } />
+          <Route path="/setreferee/:tourneyId" component={ SetReferee } />
           <Route path="/maindashboard" component={ MainDashboard } />
           <Route path="/tournamentdashboard/:tourneyId" component={ TournamentDashboard } />
         </Switch>

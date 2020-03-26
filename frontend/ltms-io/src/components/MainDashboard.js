@@ -43,7 +43,7 @@ class MainDashboard extends Component {
             <div>
                 <h2 className="text-center pt-2">Your Tournaments</h2>
 
-                {this.state.director.length > 0 ? 
+                {this.state.director.length > 0 ?
                 <div>
                     <h3 className="pl-3">Tournament Director</h3>
                     <CardColumns className="pl-5 mt-3">
@@ -55,17 +55,17 @@ class MainDashboard extends Component {
                                         <p>Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}</p>
                                     </Card.Text>
                                     <Link>
-                                        <Button className="m-3">Access Tournament</Button>
+                                        <Button as="a" href={"/tournamentdashboard/:" + item._id} className="m-3">Access Tournament</Button>
                                     </Link>
                                 </Card>
                             );
                         })}
                     </CardColumns>
                     <hr />
-                </div> 
+                </div>
                 : <></>}
 
-                {this.state.headReferee.length > 0 ? 
+                {this.state.headReferee.length > 0 ?
                 <div>
                     <h3 className="pl-3">Head Referee</h3>
                     <CardColumns className="pl-5 mt-3">
@@ -84,10 +84,10 @@ class MainDashboard extends Component {
                         })}
                     </CardColumns>
                     <hr />
-                </div> 
+                </div>
                 : <></>}
 
-                {this.state.judgeAdvisor.length > 0 ? 
+                {this.state.judgeAdvisor.length > 0 ?
                 <div>
                     <h3 className="pl-3">Judge Advisor</h3>
                     <CardColumns className="pl-5 mt-3">
@@ -106,10 +106,10 @@ class MainDashboard extends Component {
                         })}
                     </CardColumns>
                     <hr />
-                </div> 
+                </div>
                 : <></>}
 
-                {this.state.referee.length > 0 ? 
+                {this.state.referee.length > 0 ?
                 <div>
                     <h3 className="pl-3">Referee</h3>
                     <CardColumns className="pl-5 mt-3">
@@ -128,10 +128,10 @@ class MainDashboard extends Component {
                         })}
                     </CardColumns>
                     <hr />
-                </div> 
+                </div>
                 : <></>}
 
-                {this.state.judge.length > 0 ? 
+                {this.state.judge.length > 0 ?
                 <div>
                     <h3 className="pl-3">Judge</h3>
                     <CardColumns className="pl-5 mt-3">
@@ -150,10 +150,10 @@ class MainDashboard extends Component {
                         })}
                     </CardColumns>
                     <hr />
-                </div> 
+                </div>
                 : <></>}
 
-                {this.state.viewOnlyVol.length > 0 ? 
+                {this.state.viewOnlyVol.length > 0 ?
                 <div>
                     <h3 className="pl-3">View Only</h3>
                     <CardColumns className="pl-5 mt-3">
@@ -172,7 +172,7 @@ class MainDashboard extends Component {
                         })}
                     </CardColumns>
                     <hr />
-                </div> 
+                </div>
                 : <></>}
             </div>
         )

@@ -3,11 +3,12 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { Form, Button } from 'react-bootstrap';
 
-class SetRefereeTest extends Component {
+class SetReferee extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      tourneyId: this.props.match.params.tourneyId.substring(1),
       dbresults: {},
       dbtournresults: {},
       authresults: {},
@@ -46,7 +47,7 @@ class SetRefereeTest extends Component {
     // CURRENTLY USING A PLACEHOLDER TOURNAMENT FOR TESTING
     // TODO: get the tournament id selected from dashboard and use this id in
     // the get request
-    await axios.get(`http://localhost:5000/api/tournaments/5e7c53f30c6d5700d3701567`)
+    await axios.get(`http://localhost:5000/api/tournaments/${this.state.tourneyId}`)
     .then( (result) => {
         this.state.dbtournresults = result.data;
     }).catch( (error) => {
@@ -78,7 +79,7 @@ class SetRefereeTest extends Component {
     // TODO: get the tournament id selected from dashboard and use this id in
     // the get request
     for (var i = 0; i < ids.length; i++) {
-      await axios.patch(`http://localhost:5000/api/tournaments/5e7c53f30c6d5700d3701567`, {
+      await axios.patch(`http://localhost:5000/api/tournaments/${this.state.tourneyId}`, {
         referee: ids[i]
       })
       .catch( (error) => {
@@ -93,7 +94,7 @@ class SetRefereeTest extends Component {
   render() {
     return(
       <div>
-        <h1>Set Referee Test</h1>
+        <h1>Set Referee for {this.state.dbtournresults.name}</h1>
         <div>
           <h3>Reset Email Address</h3>
           {this.state.isHeadReferee && (
@@ -137,7 +138,7 @@ class SetRefereeTest extends Component {
         console.log(error);
     });
     await this.updateState();
-    console.log("INITIAL SET REFEREE TEST STATE", this.state);
+    console.log("INITIAL SET REFEREE STATE", this.state);
 
     if (this.state.dbtournresults.headReferee === this.state.dbresults._id ||
         this.state.dbtournresults.director === this.state.dbresults._id) {
@@ -147,7 +148,8 @@ class SetRefereeTest extends Component {
       this.state.isHeadReferee = false;
     }
 
-    this.updateState();
+    this.setState(this.state);
   }
 }
-export default SetRefereeTest;
+
+export default SetReferee;
