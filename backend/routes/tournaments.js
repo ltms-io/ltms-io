@@ -230,7 +230,7 @@ router.patch('/:id', (req, res) => {
         }
 
         if (req.body.referee) {
-            if(req.body.referee === "DNE") {
+            if (req.body.referee === "DNE") {
                 return res.status(400).send("Invalid Referee User");
             }
             tournament.referees.push(req.body.referee);
