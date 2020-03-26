@@ -29,23 +29,75 @@ router.get('/:id', (req, res) => {
 
 /* GET tournaments by user id */
 router.post('/user', (req, res) => {
-    User.findOne({ auth0id: req.body.auth0id })
-    .then((user) => {
-        if (user) {
-            Tournament.find({director: user._id})
-            .then((tournaments) => {
-                res.status(200).send(tournaments);
-            }).catch((err) => {
-                res.status(500).send(err);
-            })
-        }  
-        else {
-            res.status(404).send("No such user found");
-        } 
-    })
-    .catch((err) => {
-        res.status(500).send(err);
-    })
+    User.findOne({ auth0id: req.body.auth0id }).then(async function(user) {
+        if(!user) {
+            return res.status(404).send("user not found");
+        }
+
+        console.log(user);
+
+        var results = {
+            director: [],
+            headReferee: [],
+            judgeAdvisor: [],
+            referee: [],
+            judge: [],
+            viewOnlyVol: []
+        }
+
+        //.@Hank: there are probably 8000 better ways to do this but I don't know them TODO
+        await Tournament.find({ director: user._id }, (err, tournaments) => {
+            if(err) {
+                return res.status(500).send(err);
+            }
+
+            results.director = tournaments
+        });
+
+        await Tournament.find({ headReferee: { "$in": [user._id] } }, (err, tournaments) => {
+            if(err) {
+                return res.status(500).send(err);
+            }
+
+            console.log(tournaments)
+
+            results.headReferee = tournaments
+        });
+
+        await Tournament.find({ judgeAdvisor: { "$in": [user._id] } }, (err, tournaments) => {
+            if(err) {
+                return res.status(500).send(err);
+            }
+
+            results.judgeAdvisor = tournaments
+        });
+
+        await Tournament.find({ referees: { "$in": [user._id] } }, (err, tournaments) => {
+            if(err) {
+                return res.status(500).send(err);
+            }
+
+            results.referee = tournaments
+        });
+
+        await Tournament.find({ judges: { "$in": [user._id] } }, (err, tournaments) => {
+            if(err) {
+                return res.status(500).send(err);
+            }
+
+            results.judge = tournaments
+        });
+
+        await Tournament.find({ viewOnlyVols: { "$in": [user._id] } }, (err, tournaments) => {
+            if(err) {
+                return res.status(500).send(err);
+            }
+
+            results.viewOnlyVol = tournaments
+        });
+
+        res.status(200).send(results);
+    });
 });
 
 
@@ -165,8 +217,28 @@ router.patch('/:id', (req, res) => {
             tournament.teams = req.body.teams;
         }
 
-        if (req.body.volunteers) {
+        if (req.body.volunteers) { //DO NOT USE
             tournament.volunteers = req.body.volunteers;
+        }
+
+        if (req.body.headReferee) {
+            tournament.headReferee.push(req.body.headReferee);
+        }
+
+        if (req.body.judgeAdvisor) {
+            tournament.judgeAdvisor.push(req.body.judgeAdvisor);
+        }
+
+        if (req.body.referee) {
+            tournament.referees.push(req.body.referee);
+        }
+
+        if (req.body.judge) {
+            tournament.referees.push(req.body.judge);
+        }
+
+        if (req.body.viewOnlyVol) {
+            tournament.viewOnlyVols.push(req.body.viewOnlyVol);
         }
 
         if (req.body.fieldsCount) {
@@ -184,6 +256,7 @@ router.patch('/:id', (req, res) => {
         if (req.body.endDate) {
             tournament.startDate = req.body.endDate;
         }
+
         tournament.save().then((tournament) => res.send(tournament)).catch((err) => console.log(err));
     });
 });
