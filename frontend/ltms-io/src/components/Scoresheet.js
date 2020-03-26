@@ -75,6 +75,11 @@ class Sheet extends React.Component{
   //   this.setState({finalscore: newScore});
 
   }
+
+  handleChange(e){
+    e.preventDefault();
+    console.log(e.target.value);
+  }
     
   render(){
 
@@ -100,9 +105,18 @@ class Sheet extends React.Component{
         </Form>
         <Form>
           {this.state.events.map(event => (
-            <Cate
-            categ = {event.categ}
-            />
+            <Row>
+              <Col>
+                <Form.Group controlId = "category">
+                  <Form.Control type = "text" placeholder = {event.categ} readOnly={true}/>
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group controlId = "score">
+                  <Form.Control type = "text" placeholder = "Score" onChange={this.handleChange.bind(this)}/>
+                </Form.Group>
+              </Col>
+            </Row>
           ))}
         </Form>
       </div>
@@ -249,10 +263,12 @@ class Sheet extends React.Component{
   }
 }
 
-class Cate extends Component{
+class Cate extends React.Component{
   render(){
     return(
-      {this.props.events}
+      <div>
+        {this.props.categ}
+      </div>
     );
   }
 }
