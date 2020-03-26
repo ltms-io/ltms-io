@@ -44,9 +44,6 @@ class SetReferee extends Component {
         console.log(error);
     });
 
-    // CURRENTLY USING A PLACEHOLDER TOURNAMENT FOR TESTING
-    // TODO: get the tournament id selected from dashboard and use this id in
-    // the get request
     await axios.get(`http://localhost:5000/api/tournaments/${this.state.tourneyId}`)
     .then( (result) => {
         this.state.dbtournresults = result.data;
@@ -62,6 +59,7 @@ class SetReferee extends Component {
     alert(e.target.elements.users.value);
     var strings = e.target.elements.users.value.split(",");
     var ids = [];
+    var message = "";
     for (var i = 0; i < strings.length; i++) {
       strings[i] = strings[i].trim();
       await axios.post(`http://localhost:5000/api/users/search`, {
@@ -69,26 +67,35 @@ class SetReferee extends Component {
       })
       .then( (result) => {
         ids[i] = result.data._id;
+        if (this.state.dbtournresults.referees.includes(ids[i])) {
+          message += ("User " + strings[i] + " already is a referee.\n");
+          ids[i] = "DNE";
+        }
       })
       .catch( (error) => {
+        message += ("There was an error finding user " + strings[i] + ".\n");
+        ids[i] = "DNE";
         console.log(error);
       });
     }
+    message += "\n";
 
-    // CURRENTLY USING A PLACEHOLDER TOURNAMENT FOR TESTING
-    // TODO: get the tournament id selected from dashboard and use this id in
-    // the get request
     for (var i = 0; i < ids.length; i++) {
       await axios.patch(`http://localhost:5000/api/tournaments/${this.state.tourneyId}`, {
         referee: ids[i]
       })
       .catch( (error) => {
+        if (ids[i] !== "DNE") {
+          message += ("There was an error adding user ID " + ids[i] + " to the database.\n");
+        }
         console.log(error);
       });
     }
 
     this.updateState();
     console.log("UPDATED STATE", this.state);
+
+    alert(message);
   }
 
   render() {
