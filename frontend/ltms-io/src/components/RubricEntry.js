@@ -130,7 +130,7 @@ class RubricEntry extends Component {
 
     this.updateState();
     console.log("UPDATED STATE", this.state);
-    
+
     alert("Submitted!");
   }
 
@@ -474,6 +474,15 @@ class RubricEntry extends Component {
   }
 
   async componentDidMount() {
+    await axios.post(`http://localhost:5000/api/teams/register`, {
+      teamNum: 5,
+      teamName: "testermen",
+      tournamentId: "5e7c53f30c6d5700d3701567"
+    })
+    .catch( (error) => {
+        console.log(error);
+    });
+
     await axios.get(`http://localhost:5000/api/users`)
     .then ( (result) => {
         console.log("USERS", result.data);

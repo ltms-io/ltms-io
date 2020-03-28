@@ -211,7 +211,7 @@ router.patch('/:id', (req, res) => {
             }
             tournament.referees.push(req.body.referee);
         }
-        
+
         if (req.body.director /* && CURRENT USER IS DIRECTOR */) {
             tournament.director = req.body.director;
         }
@@ -220,8 +220,8 @@ router.patch('/:id', (req, res) => {
             tournament.name = req.body.name;
         }
 
-        if (req.body.teams) {
-            tournament.teams = req.body.teams;
+        if (req.body.team) {
+            tournament.teams.push(req.body.team);
         }
 
         if (req.body.volunteers) { //DO NOT USE

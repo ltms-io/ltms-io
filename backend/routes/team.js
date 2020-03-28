@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Team = require('../models/team-model');
+const Tournament = require('../models/tournament-model');
 
 /* GET */
 
@@ -53,6 +54,13 @@ router.post('/register', (req, res) => {
         rubrics: []
       });
       createdTeam.save().then( (team) => {
+        Tournament.findById(team.tournamentId).then( (tournament) => {
+          if (!tournament) {
+            return res.status(404).send("No such tournament found");
+          }
+          tournament.teams.push(team._id);
+          tournament.save().then( (tournament) => res.send(tournament)).catch( (err) => console.log(err));
+        });
         res.send(team);
       }).catch( (err) => {
         console.log(err);

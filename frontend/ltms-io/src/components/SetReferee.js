@@ -153,7 +153,7 @@ class SetReferee extends Component {
     .catch( (error) => {
         console.log(error);
     });
-    await axios.get(`http://localhost:5000/api/teams/tournid/:5e7c53f30c6d5700d3701567`)
+    await axios.get(`http://localhost:5000/api/teams/tournid/5e7c53f30c6d5700d3701567`)
     .then ( (result) => {
         console.log("ALL TEAMS FROM 5e7c53f30c6d5700d3701567", result.data);
     })
