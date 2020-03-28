@@ -131,4 +131,21 @@ router.patch('/:id', (req, res) => {
     });
 });
 
+/* PATCH for rubric deletion */
+router.patch('/rubricdelete/:id', (req, res) => {
+    if(!req.body.index) {
+        return res.status(400).send("No index given");
+    }
+
+    Team.findById(req.params.id).then( (team) => {
+        if (!team) {
+            return res.status(404).send("team not found");
+        }
+
+        team.rubrics.splice(req.body.index, 1);
+
+        team.save().then( (team) => res.send(team)).catch( (err) => console.log(err));
+    });
+});
+
 module.exports = router;

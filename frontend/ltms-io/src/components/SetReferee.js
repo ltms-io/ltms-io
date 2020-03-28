@@ -19,41 +19,6 @@ class SetReferee extends Component {
     this.updateState = this.updateState.bind(this);
   }
 
-  async updateState() {
-    await axios({
-      method: 'GET',
-      url: `https://dev-s68c-q-y.auth0.com/userinfo`,
-      headers: {
-        'content-type': 'application/json',
-        'authorization': 'Bearer ' + localStorage.getItem("access_token")
-      },
-      json: true
-    })
-    .then( (result) => {
-      this.state.authresults = result.data;
-    })
-    .catch( (error) => {
-      console.log(error);
-    });
-
-    await axios.post(`http://localhost:5000/api/users/getuser`, {
-      auth0id: this.state.authresults.sub
-    }).then ( (result) => {
-        this.state.dbresults = result.data;
-    }).catch( (error) => {
-        console.log(error);
-    });
-
-    await axios.get(`http://localhost:5000/api/tournaments/${this.state.tourneyId}`)
-    .then( (result) => {
-        this.state.dbtournresults = result.data;
-    }).catch( (error) => {
-        console.log(error);
-    });
-
-    this.setState(this.state);
-  }
-
   async handleSubmit(e) {
     e.preventDefault();
     alert(e.target.elements.users.value);
@@ -96,6 +61,41 @@ class SetReferee extends Component {
     console.log("UPDATED STATE", this.state);
 
     alert(message);
+  }
+
+  async updateState() {
+    await axios({
+      method: 'GET',
+      url: `https://dev-s68c-q-y.auth0.com/userinfo`,
+      headers: {
+        'content-type': 'application/json',
+        'authorization': 'Bearer ' + localStorage.getItem("access_token")
+      },
+      json: true
+    })
+    .then( (result) => {
+      this.state.authresults = result.data;
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
+
+    await axios.post(`http://localhost:5000/api/users/getuser`, {
+      auth0id: this.state.authresults.sub
+    }).then ( (result) => {
+        this.state.dbresults = result.data;
+    }).catch( (error) => {
+        console.log(error);
+    });
+
+    await axios.get(`http://localhost:5000/api/tournaments/${this.state.tourneyId}`)
+    .then( (result) => {
+        this.state.dbtournresults = result.data;
+    }).catch( (error) => {
+        console.log(error);
+    });
+
+    this.setState(this.state);
   }
 
   render() {
