@@ -135,15 +135,54 @@ class SetReferee extends Component {
     await axios.get(`http://localhost:5000/api/users`)
     .then ( (result) => {
         console.log("USERS", result.data);
-    }).catch( (error) => {
+    })
+    .catch( (error) => {
         console.log(error);
     });
     await axios.get(`http://localhost:5000/api/tournaments`)
     .then ( (result) => {
         console.log("TOURNAMENTS", result.data);
-    }).catch( (error) => {
+    })
+    .catch( (error) => {
         console.log(error);
     });
+    await axios.post(`http://localhost:5000/api/teams/register`, {
+      teamNum: 69,
+      teamName: "The 69ers",
+      tournamentId: "4206969",
+    })
+    .catch( (error) => {
+        console.log(error);
+    });
+    await axios.post(`http://localhost:5000/api/teams/register`, {
+      teamNum: 1,
+      teamName: "The Bruh",
+      tournamentId: "4206969420",
+    })
+    .catch( (error) => {
+        console.log(error);
+    });
+    await axios.patch(`http://localhost:5000/api/teams/:5e7f14a2d85f3e00d1fc0d31`, {
+      teamName: "The 69er's"
+    })
+    .catch( (error) => {
+        console.log(error);
+    });
+    await axios.get(`http://localhost:5000/api/teams`)
+    .then ( (result) => {
+        console.log("ALL TEAMS", result.data);
+    })
+    .catch( (error) => {
+        console.log(error);
+    });
+    await axios.get(`http://localhost:5000/api/teams/tournid/:4206969`)
+    .then ( (result) => {
+        console.log("ALL TEAMS FROM 4206969", result.data);
+    })
+    .catch( (error) => {
+        console.log(error);
+    });
+
     await this.updateState();
     console.log("INITIAL SET REFEREE STATE", this.state);
 

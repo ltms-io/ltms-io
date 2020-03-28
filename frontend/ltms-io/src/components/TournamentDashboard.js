@@ -79,9 +79,6 @@ export default class TournamentDashboard extends Component {
           console.log(error);
       });
 
-      // CURRENTLY USING A PLACEHOLDER TOURNAMENT FOR TESTING
-      // TODO: get the tournament id selected from dashboard and use this id in
-      // the get request
       await axios.get(`http://localhost:5000/api/tournaments/${this.state.tourneyId}`)
       .then( (result) => {
           this.state.dbtournresults = result.data;

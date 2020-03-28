@@ -40,7 +40,10 @@ const TournamentSchema = new Schema({
         type: Boolean,
         default: false,
     },
-    teams: [],
+    teams: [{
+        type: String,
+        ref: 'Team'
+    }],
     fieldsCount: {
         type: Number,
         required: true,

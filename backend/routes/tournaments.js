@@ -205,6 +205,13 @@ router.patch('/:id', (req, res) => {
     // }
 
     Tournament.findById(req.params.id).then((tournament) => {
+        if (req.body.referee) {
+            if (req.body.referee === "DNE") {
+                return res.status(400).send("Invalid Referee User");
+            }
+            tournament.referees.push(req.body.referee);
+        }
+        
         if (req.body.director /* && CURRENT USER IS DIRECTOR */) {
             tournament.director = req.body.director;
         }
@@ -227,13 +234,6 @@ router.patch('/:id', (req, res) => {
 
         if (req.body.judgeAdvisor) {
             tournament.judgeAdvisor.push(req.body.judgeAdvisor);
-        }
-
-        if (req.body.referee) {
-            if (req.body.referee === "DNE") {
-                return res.status(400).send("Invalid Referee User");
-            }
-            tournament.referees.push(req.body.referee);
         }
 
         if (req.body.judge) {
