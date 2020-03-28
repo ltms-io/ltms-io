@@ -41,6 +41,18 @@ class ResetLogin extends Component {
         console.log(error);
       });
 
+    //This updates the json token saved as a cookie by creating a new token then saving it
+    var token = document.cookie.substring(13);
+    document.cookie = "UserIdentity=" + token + "; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+    
+    await axios.post('http://localhost:5000/api/users/login', {data: {sub: localStorage.getItem("auth0_id")}}).then( (result) => {
+      
+      document.cookie = "UserIdentity=" + result.data;
+
+    }).catch(function(err){
+      console.log(err);
+    });
+
     console.log("UPDATED STATE", this.state);
   }
 

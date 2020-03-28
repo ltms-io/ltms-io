@@ -27,10 +27,10 @@ function App(props) {
       //var token = cookies.UserIdentity;
       // var decoded = jsonWeb.verify(result.data,"123456");
       // console.log(decoded.name);
-      var token = document.cookie.substring(13);
-      console.log(token);
-      var decoded = jsonWeb.verify(token,"123456");
-      console.log(decoded.name);
+      // var token = document.cookie.substring(13);
+      // console.log(token);
+      // var decoded = jsonWeb.verify(token,"123456");
+      // console.log(decoded.name);
       //removeCookie("UserIdentity");
       //console.log(cookies.UserIdentity);
       //console.log(response);

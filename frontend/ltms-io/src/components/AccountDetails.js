@@ -3,6 +3,7 @@ import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import ResetLogin from './ResetLogin';
 import logo from '../logo.svg';
 import axios from 'axios';
+const jsonWeb = require("jsonwebtoken")
 
 class AccountDetails extends Component {
   constructor(props) {
@@ -36,6 +37,18 @@ class AccountDetails extends Component {
     })
     .catch( (error) => {
       console.log(error);
+    });
+    
+    //This updates the json token saved as a cookie by creating a new token then saving it
+    var token = document.cookie.substring(13);
+    document.cookie = "UserIdentity=" + token + "; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+    
+    await axios.post('http://localhost:5000/api/users/login', {data: {sub: localStorage.getItem("auth0_id")}}).then( (result) => {
+      
+      document.cookie = "UserIdentity=" + result.data;
+
+    }).catch(function(err){
+      console.log(err);
     });
     
 

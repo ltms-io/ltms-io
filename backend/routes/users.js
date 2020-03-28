@@ -221,6 +221,8 @@ router.post('/search', (req, res) => {
         return res.status(200).send({email: user.email, name: user.name, _id: user._id});
     });
 });
+
+//POST creates json token for cookie
 router.post('/login', (req, res) => {
     var authId = req.body.data;
     User.findOne({auth0id: authId.sub}).then(user => {
@@ -241,10 +243,7 @@ router.post('/login', (req, res) => {
             payload,
             "123456",
         );
-        // jsonWeb.verify(tok, "123456", function(err, decoded){
-        //     console.log(decoded.name);
-        // })
-        console.log(tok)
+        
         return res.status(200).send(tok);
     })
 })
