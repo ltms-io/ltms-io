@@ -12,7 +12,7 @@ class SetReferee extends Component {
       dbresults: {},
       dbtournresults: {},
       authresults: {},
-      isHeadReferee: false
+      isAuthorized: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -103,29 +103,18 @@ class SetReferee extends Component {
       <div>
         <h1>Set Referee for {this.state.dbtournresults.name}</h1>
         <div>
-          <h3>Reset Email Address</h3>
-          {this.state.isHeadReferee && (
-            <div>You are authenticated to set referee!</div>
+          {this.state.isAuthorized && (
+            <Form onSubmit={this.handleSubmit}>
+              <Form.Group controlId="users">
+                <Form.Label>Enter user(s) below</Form.Label>
+                <Form.Control type="text" placeholder="Enter user email(s) separated by commas" />
+              </Form.Group>
+              <Button variant="outline-primary" type="submit">Submit</Button>
+            </Form>
           )}
-          {!this.state.isHeadReferee && (
-            <div>You are not authenticated to set referee!</div>
+          {!this.state.isAuthorized && (
+            <h3>You are not authorized for set referee in this tournament.</h3>
           )}
-          <Form onSubmit={this.handleSubmit}>
-            <Form.Group controlId="users">
-              <Form.Label>Enter user(s) below</Form.Label>
-              <Form.Control type="text" placeholder="Enter user email(s) separated by commas" />
-            </Form.Group>
-            {this.state.isHeadReferee && (
-              <Button variant="outline-primary" type="submit">
-                Submit
-              </Button>
-            )}
-            {!this.state.isHeadReferee && (
-              <Button variant="outline-primary" type="submit" disabled>
-                Submit
-              </Button>
-            )}
-          </Form>
         </div>
       </div>
     );
@@ -166,10 +155,10 @@ class SetReferee extends Component {
 
     if (this.state.dbtournresults.headReferee === this.state.dbresults._id ||
         this.state.dbtournresults.director === this.state.dbresults._id) {
-      this.state.isHeadReferee = true;
+      this.state.isAuthorized = true;
     }
     else {
-      this.state.isHeadReferee = false;
+      this.state.isAuthorized = false;
     }
 
     this.setState(this.state);

@@ -27,15 +27,23 @@ export default class TournamentDashboard extends Component {
             this.state.dbtournresults.director === this.state.dbresults._id) {
           this.state.setRefereeAuthorized = true;
         }
-        else {
-          this.state.setRefereeAuthorized = false;
-        }
 
         if (this.state.dbtournresults.director === this.state.dbresults._id) {
           this.state.rubricEntryAuthorized = true;
         }
         else {
-          this.state.rubricEntryAuthorized = false;
+          for (var i = 0; i < this.state.dbtournresults.judgeAdvisor.length; i++) {
+            if (this.state.dbtournresults.judgeAdvisor[i] === this.state.dbresults._id) {
+              this.state.rubricEntryAuthorized = true;
+            }
+          }
+          if (!this.state.isAuthorized) {
+            for (var i = 0; i < this.state.dbtournresults.judges.length; i++) {
+              if (this.state.dbtournresults.judges[i] === this.state.dbresults._id) {
+                this.state.rubricEntryAuthorized = true;
+              }
+            }
+          }
         }
 
         this.setState(this.state);
@@ -57,7 +65,7 @@ export default class TournamentDashboard extends Component {
                         {!this.state.setRefereeAuthorized && (
                           <Button href={"/setreferee/" + this.state.tourneyId} disabled>Set Referee</Button>
                         )}
-                        {(this.state.dbtournresults.teams && this.state.rubricEntryAuthorized) ?
+                        {(this.state.dbtournresults.teams && this.state.rubricEntryAuthorized) && (
                           <div>
                             {this.state.dbtournresults.teams.map( (item, i) => {
                               return(
@@ -65,8 +73,8 @@ export default class TournamentDashboard extends Component {
                               );
                             })}
                           </div>
-                        : <></>}
-                        {(this.state.dbtournresults.teams && !this.state.rubricEntryAuthorized) ?
+                        )}
+                        {(this.state.dbtournresults.teams && !this.state.rubricEntryAuthorized) && (
                           <div>
                             {this.state.dbtournresults.teams.map( (item, i) => {
                               return(
@@ -74,7 +82,7 @@ export default class TournamentDashboard extends Component {
                               );
                             })}
                           </div>
-                        : <></>}
+                        )}
                     </Col>
                 </Row>
             </Container>
