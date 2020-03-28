@@ -3,6 +3,11 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 
+/*
+The rubric structure used here is based off of the Sep. 3 2019 (City Shaper 2019
+challenge) version of the official judging rubrics provided by FLL. It can be
+found here: https://www.firstinspires.org/resource-library/fll/judging-rubrics
+*/
 class RubricEntry extends Component {
   constructor(props) {
     super(props);

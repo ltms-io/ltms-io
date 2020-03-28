@@ -27,12 +27,12 @@ router.get('/tournid/:id', (req, res, next) => {
 
 /* GET team */
 router.get('/:id', (req, res) => {
-    Team.findById(req.params.id).then( (team) => {
-        if (!team) {
-            return res.status(404).send("No such team found");
-        }
-        return res.status(200).send(team);
-    });
+  Team.findById(req.params.id).then( (team) => {
+    if (!team) {
+      return res.status(404).send("No such team found");
+    }
+    return res.status(200).send(team);
+  });
 });
 
 /* POST */
@@ -73,79 +73,78 @@ router.post('/register', (req, res) => {
 });
 
 router.post("/score", (req,res) => {
-    if (!req.body.teamName || !req.body.teamNum) {
-        res.status(400).send("Bad request; please include team and num");
-        return;
+  if (!req.body.teamName || !req.body.teamNum) {
+    res.status(400).send("Bad request; please include team and num");
+    return;
+  }
+
+  Team.findOne({teamName: req.body.teamName, teamNum: req.body.teamNum}).then((team) => {
+    if (!team) {
+      res.status(400).send("Team didn't exist");
+      return;
     }
 
-    Team.findOne({teamName: req.body.teamName, teamNum: req.body.teamNum}).then((team) => {
-        if (!team) {
-            res.status(400).send("Team didn't exist");
-            return;
-        }
-
-        if (req.body.scoreType === 'Judgment') {
-            team.judgingScores.append(req.body.score);
-        }
-        else {
-            team.matchScores.append(req.body.score);
-        }
-    });
-    createdTeam.save().then((team) => res.send(tournament));
-
+    if (req.body.scoreType === 'Judgment') {
+      team.judgingScores.append(req.body.score);
+    }
+    else {
+      team.matchScores.append(req.body.score);
+    }
+  });
+  createdTeam.save().then((team) => res.send(tournament));
 });
 
 /* PATCH */
 
 /* PATCH team */
 router.patch('/:id', (req, res) => {
-    if(Object.keys(req.body).length == 0) {
-        return res.status(400).send("body is empty");
+  if(Object.keys(req.body).length == 0) {
+    return res.status(400).send("body is empty");
+  }
+
+  Team.findById(req.params.id).then( (team) => {
+    if (!team) {
+      return res.status(404).send("team not found");
     }
 
-    Team.findById(req.params.id).then( (team) => {
-        if (!team) {
-            return res.status(404).send("team not found");
-        }
+    if (req.body.teamNum) {
+      team.teamNum = req.body.teamNum;
+    }
+    if (req.body.teamName) {
+      team.teamName = req.body.teamName;
+    }
+    if (req.body.tournamentId) {
+      team.tournamentId = req.body.tournamentId;
+    }
+    if (req.body.judgingScore) {
+      team.judgingScores.push(req.body.judgingScore);
+    }
+    if (req.body.matchScore) {
+      team.matchScores.push(req.body.matchScore);
+    }
+    if (req.body.rubric) {
+      team.rubrics.push(req.body.rubric);
+    }
 
-        if (req.body.teamNum) {
-            team.teamNum = req.body.teamNum;
-        }
-        if (req.body.teamName) {
-            team.teamName = req.body.teamName;
-        }
-        if (req.body.tournamentId) {
-            team.tournamentId = req.body.tournamentId;
-        }
-        if (req.body.judgingScore) {
-            team.judgingScores.push(req.body.judgingScore);
-        }
-        if (req.body.matchScore) {
-            team.matchScores.push(req.body.matchScore);
-        }
-        if (req.body.rubric) {
-            team.rubrics.push(req.body.rubric);
-        }
-
-        team.save().then( (team) => res.send(team)).catch( (err) => console.log(err));
-    });
+    team.save().then( (team) => res.send(team)).catch( (err) => console.log(err));
+  });
 });
 
 /* PATCH for rubric deletion */
 router.patch('/rubricdelete/:id', (req, res) => {
-    if(!req.body.index) {
-        return res.status(400).send("No index given");
+  if(!req.body.index) {
+    return res.status(400).send("No index given");
+  }
+
+  Team.findById(req.params.id).then( (team) => {
+    if (!team) {
+      return res.status(404).send("team not found");
     }
 
-    Team.findById(req.params.id).then( (team) => {
-        if (!team) {
-            return res.status(404).send("team not found");
-        }
+    team.rubrics.splice(req.body.index, 1);
 
-        team.rubrics.splice(req.body.index, 1);
-
-        team.save().then( (team) => res.send(team)).catch( (err) => console.log(err));
-    });
+    team.save().then( (team) => res.send(team)).catch( (err) => console.log(err));
+  });
 });
 
 module.exports = router;
