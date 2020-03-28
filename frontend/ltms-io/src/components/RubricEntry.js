@@ -3,14 +3,16 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { Form, Button } from 'react-bootstrap';
 
-class SetReferee extends Component {
+class RubricEntry extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      tourneyId: this.props.match.params.tourneyId.substring(1),
+      tourneyId: "5e7c53f30c6d5700d3701567",
+      teamId: "5e7f18462b37260116171336",
       dbresults: {},
       dbtournresults: {},
+      dbteamresults: {},
       authresults: {},
       isHeadReferee: false
     };
@@ -51,81 +53,25 @@ class SetReferee extends Component {
         console.log(error);
     });
 
+    await axios.get(`http://localhost:5000/api/teams/${this.state.teamId}`)
+    .then( (result) => {
+        this.state.dbteamresults = result.data;
+    }).catch( (error) => {
+        console.log(error);
+    });
+
     this.setState(this.state);
   }
 
   async handleSubmit(e) {
     e.preventDefault();
-    alert(e.target.elements.users.value);
-    var strings = e.target.elements.users.value.split(",");
-    var ids = [];
-    var message = "";
-    for (var i = 0; i < strings.length; i++) {
-      strings[i] = strings[i].trim();
-      await axios.post(`http://localhost:5000/api/users/search`, {
-        email: strings[i]
-      })
-      .then( (result) => {
-        ids[i] = result.data._id;
-        if (this.state.dbtournresults.referees.includes(ids[i])) {
-          message += ("User " + strings[i] + " already is a referee.\n");
-          ids[i] = "DNE";
-        }
-      })
-      .catch( (error) => {
-        message += ("There was an error finding user " + strings[i] + ".\n");
-        ids[i] = "DNE";
-        console.log(error);
-      });
-    }
-    message += "\n";
-
-    for (var i = 0; i < ids.length; i++) {
-      await axios.patch(`http://localhost:5000/api/tournaments/${this.state.tourneyId}`, {
-        referee: ids[i]
-      })
-      .catch( (error) => {
-        if (ids[i] !== "DNE") {
-          message += ("There was an error adding user ID " + ids[i] + " to the database.\n");
-        }
-        console.log(error);
-      });
-    }
-
-    this.updateState();
-    console.log("UPDATED STATE", this.state);
-
-    alert(message);
   }
 
   render() {
     return(
       <div>
-        <h1>Set Referee for {this.state.dbtournresults.name}</h1>
+        <h1>Rubric Entry for {this.state.dbteamresults.teamName} in {this.state.dbtournresults.name}</h1>
         <div>
-          <h3>Reset Email Address</h3>
-          {this.state.isHeadReferee && (
-            <div>You are authenticated to set referee!</div>
-          )}
-          {!this.state.isHeadReferee && (
-            <div>You are not authenticated to set referee!</div>
-          )}
-          <Form onSubmit={this.handleSubmit}>
-            <Form.Group controlId="users">
-              <Form.Label>Enter user(s) below</Form.Label>
-              <Form.Control type="text" placeholder="Enter user email(s) separated by commas" />
-            </Form.Group>
-            {this.state.isHeadReferee && (
-              <Button variant="outline-primary" type="submit">
-                Submit
-              </Button>
-            )}
-            {!this.state.isHeadReferee && (
-              <Button variant="outline-primary" type="submit" disabled>
-                Submit
-              </Button>
-            )}
-          </Form>
         </div>
       </div>
     );
@@ -153,16 +99,16 @@ class SetReferee extends Component {
     .catch( (error) => {
         console.log(error);
     });
-    await axios.get(`http://localhost:5000/api/teams/tournid/:5e7c53f30c6d5700d3701567`)
+    await axios.get(`http://localhost:5000/api/teams/tournid/:${this.state.tourneyId}`)
     .then ( (result) => {
-        console.log("ALL TEAMS FROM 5e7c53f30c6d5700d3701567", result.data);
+        console.log(`ALL TEAMS FROM ${this.state.tourneyId}`, result.data);
     })
     .catch( (error) => {
         console.log(error);
     });
 
     await this.updateState();
-    console.log("INITIAL SET REFEREE STATE", this.state);
+    console.log("INITIAL RUBRIC ENTRY STATE", this.state);
 
     if (this.state.dbtournresults.headReferee === this.state.dbresults._id ||
         this.state.dbtournresults.director === this.state.dbresults._id) {
@@ -176,4 +122,4 @@ class SetReferee extends Component {
   }
 }
 
-export default SetReferee;
+export default RubricEntry;
