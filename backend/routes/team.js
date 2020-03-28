@@ -16,7 +16,7 @@ router.get('/', (req, res, next) => {
 
 /* GET all teams from a given tournament */
 router.get('/tournid/:id', (req, res, next) => {
-  Team.find({tournamentId: req.params.id.substring(1)}, (err, teams) => {
+  Team.find({tournamentId: req.params.id}, (err, teams) => {
     if (err) {
       res.status(500).send(err);
     }
@@ -95,7 +95,7 @@ router.patch('/:id', (req, res) => {
         return res.status(400).send("body is empty");
     }
 
-    Team.findById(req.params.id.substring(1)).then( (team) => {
+    Team.findById(req.params.id).then( (team) => {
         if (!team) {
             return res.status(404).send("team not found");
         }
@@ -109,14 +109,14 @@ router.patch('/:id', (req, res) => {
         if (req.body.tournamentId) {
             team.tournamentId = req.body.tournamentId;
         }
-        if (req.body.judgingScores) {
-            team.judgingScores.push(req.body.judgingScores);
+        if (req.body.judgingScore) {
+            team.judgingScores.push(req.body.judgingScore);
         }
-        if (req.body.tournamentId) {
-            team.matchScores.push(req.body.matchScores);
+        if (req.body.matchScore) {
+            team.matchScores.push(req.body.matchScore);
         }
-        if (req.body.rubrics) {
-            team.rubrics.push(req.body.rubrics);
+        if (req.body.rubric) {
+            team.rubrics.push(req.body.rubric);
         }
 
         team.save().then( (team) => res.send(team)).catch( (err) => console.log(err));

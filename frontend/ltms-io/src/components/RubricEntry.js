@@ -65,8 +65,73 @@ class RubricEntry extends Component {
 
   async handleSubmit(e) {
     e.preventDefault();
+    var rubric = {
+      coreValues: {
+        inspiration: {
+          discovery: e.target.elements.formDiscovery.value,
+          teamIdentity: e.target.elements.formTeamIdentity.value,
+          impact: e.target.elements.formImpact.value
+        },
+        teamwork: {
+          effectiveness: e.target.elements.formEffectiveness.value,
+          efficiency: e.target.elements.formEfficiency.value,
+          kidsDoTheWork: e.target.elements.formKidsDoTheWork.value
+        },
+        graciousProfessionalism: {
+          inclusion: e.target.elements.formInclusion.value,
+          respect: e.target.elements.formRespect.value,
+          coopertition: e.target.elements.formCoopertition.value
+        },
+        comments: e.target.elements.formCoreValuesComments.value
+      },
+      innovationProject: {
+        research: {
+          problemIdentificaton: e.target.elements.formProblemIdentification.value,
+          sourcesOfInformation: e.target.elements.formSourcesOfInformation.value,
+          problemAnalysis: e.target.elements.formProblemAnalysis.value
+        },
+        innovativeSolution: {
+          teamSolution: e.target.elements.formTeamSolution.value,
+          innovation: e.target.elements.formInnovation1.value,
+          solutionDevelopment: e.target.elements.formSolutionDevelopment.value
+        },
+        presentation: {
+          sharing: e.target.elements.formSharing.value,
+          creativity: e.target.elements.formCreativity.value,
+          presentationEffectiveness: e.target.elements.formPresentationEffectiveness.value
+        },
+        comments: e.target.elements.formInnovationProjectComments.value
+      },
+      robotDesign: {
+        mechanicalDesign: {
+          durability: e.target.elements.formDurability.value,
+          mechanicalEfficiency: e.target.elements.formMechanicalEfficiency.value,
+          mechanization: e.target.elements.formMechanization.value
+        },
+        programming: {
+          programmingQuality: e.target.elements.formProgrammingQuality.value,
+          programmingEfficiency: e.target.elements.formProgrammingEfficiency.value,
+          automationNavigation: e.target.elements.formAutomationNavigation.value
+        },
+        strategyInnovation: {
+          designProcess: e.target.elements.formDesignProcess.value,
+          missionStrategy: e.target.elements.formMissionStrategy.value,
+          innovation: e.target.elements.formInnovation2.value
+        },
+        comments: e.target.elements.formRobotDesignComments.value
+      }
+    };
+    await axios.patch(`http://localhost:5000/api/teams/${this.state.teamId}`, {
+      rubric: rubric
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
+
+    this.updateState();
+    console.log("UPDATED STATE", this.state);
+    
     alert("Submitted!");
-    console.log(e.target.elements);
   }
 
   render() {
@@ -84,63 +149,63 @@ class RubricEntry extends Component {
                     <Form.Label>Discovery</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                   <Form.Group as="Col" controlId="formTeamIdentity">
                     <Form.Label>Team Identity</Form.Label>
                     <Form.Control required  as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                   <Form.Group as="Col" controlId="formImpact">
                     <Form.Label>Impact</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                 </Row>
                 <Row>
                   <h6>Teamwork</h6>
-                  <Form.Group as="Col" controlId="formEfficiency">
+                  <Form.Group as="Col" controlId="formEffectiveness">
                     <Form.Label>Effectiveness</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                   <Form.Group as="Col" controlId="formEfficiency">
                     <Form.Label>Efficiency</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                   <Form.Group as="Col" controlId="formKidsDoTheWork">
                     <Form.Label>Kids Do the Work</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                 </Row>
@@ -150,30 +215,30 @@ class RubricEntry extends Component {
                     <Form.Label>Inclusion</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                   <Form.Group as="Col" controlId="formRespect">
                     <Form.Label>Respect</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                   <Form.Group as="Col" controlId="formCoopertition">
                     <Form.Label>Coopertition®</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                 </Row>
@@ -192,30 +257,30 @@ class RubricEntry extends Component {
                     <Form.Label>Problem Identification</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                   <Form.Group as="Col" controlId="formSourcesOfInformation">
                     <Form.Label>Sources of Information</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                   <Form.Group as="Col" controlId="formProblemAnalysis">
                     <Form.Label>Problem Analysis</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                 </Row>
@@ -225,30 +290,30 @@ class RubricEntry extends Component {
                     <Form.Label>Team Solution</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
-                  <Form.Group as="Col" controlId="formInnovation">
+                  <Form.Group as="Col" controlId="formInnovation1">
                     <Form.Label>Innovation</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                   <Form.Group as="Col" controlId="formSolutionDevelopment">
                     <Form.Label>Solution Development</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                 </Row>
@@ -258,30 +323,30 @@ class RubricEntry extends Component {
                     <Form.Label>Sharing</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                   <Form.Group as="Col" controlId="formCreativity">
                     <Form.Label>Creativity</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                   <Form.Group as="Col" controlId="formPresentationEffectiveness">
                     <Form.Label>Presentation Effectiveness</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                 </Row>
@@ -300,30 +365,30 @@ class RubricEntry extends Component {
                     <Form.Label>Durability</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                   <Form.Group as="Col" controlId="formMechanicalEfficiency">
                     <Form.Label>Mechanical Efficiency</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                   <Form.Group as="Col" controlId="formMechanization">
                     <Form.Label>Mechanization</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                 </Row>
@@ -333,30 +398,30 @@ class RubricEntry extends Component {
                     <Form.Label>Programming Quality</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                   <Form.Group as="Col" controlId="formProgrammingEfficiency">
                     <Form.Label>Programming Efficiency</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                   <Form.Group as="Col" controlId="formAutomationNavigation">
                     <Form.Label>Automation/Navigation</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                 </Row>
@@ -366,30 +431,30 @@ class RubricEntry extends Component {
                     <Form.Label>Design Process</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                   <Form.Group as="Col" controlId="formMissionStrategy">
                     <Form.Label>Mission Strategy</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
-                  <Form.Group as="Col" controlId="formInnovation">
+                  <Form.Group as="Col" controlId="formInnovation2">
                     <Form.Label>Innovation</Form.Label>
                     <Form.Control required as="select">
                       <option></option>
-                      <option>Beginning</option>
-                      <option>Developing</option>
-                      <option>Accomplished</option>
-                      <option>Exemplary</option>
+                      <option value="1">Beginning</option>
+                      <option value="2">Developing</option>
+                      <option value="3">Accomplished</option>
+                      <option value="4">Exemplary</option>
                     </Form.Control>
                   </Form.Group>
                 </Row>
@@ -430,7 +495,7 @@ class RubricEntry extends Component {
     .catch( (error) => {
         console.log(error);
     });
-    await axios.get(`http://localhost:5000/api/teams/tournid/:${this.state.tourneyId}`)
+    await axios.get(`http://localhost:5000/api/teams/tournid/${this.state.tourneyId}`)
     .then ( (result) => {
         console.log(`ALL TEAMS FROM ${this.state.tourneyId}`, result.data);
     })
