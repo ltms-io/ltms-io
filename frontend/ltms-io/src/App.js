@@ -37,7 +37,7 @@ function App(props) {
           <Route path="/setreferee/:tourneyId" component={ SetReferee } />
           <Route path="/maindashboard" component={ MainDashboard } />
           <Route path="/tournamentdashboard/:tourneyId" component={ TournamentDashboard } />
-          <Route path="/rubricentry" component={ RubricEntry } />
+          <Route path="/rubricentry/:tourneyId/:teamId" component={ RubricEntry } />
         </Switch>
       </div>
     </Router>

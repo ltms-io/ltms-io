@@ -8,7 +8,7 @@ class SetReferee extends Component {
     super(props);
 
     this.state = {
-      tourneyId: this.props.match.params.tourneyId.substring(1),
+      tourneyId: this.props.match.params.tourneyId,
       dbresults: {},
       dbtournresults: {},
       authresults: {},

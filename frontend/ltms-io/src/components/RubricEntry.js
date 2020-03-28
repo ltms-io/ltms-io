@@ -8,13 +8,13 @@ class RubricEntry extends Component {
     super(props);
 
     this.state = {
-      tourneyId: "5e7c53f30c6d5700d3701567",
-      teamId: "5e7f18462b37260116171336",
+      tourneyId: this.props.match.params.tourneyId,
+      teamId: this.props.match.params.teamId,
       dbresults: {},
       dbtournresults: {},
       dbteamresults: {},
       authresults: {},
-      isHeadReferee: false
+      isAuthorized: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -137,7 +137,7 @@ class RubricEntry extends Component {
   render() {
     return(
       <div>
-        <h1>Rubric Entry for {this.state.dbteamresults.teamName} in {this.state.dbtournresults.name}</h1>
+        <h1>Rubric Entry for Team "{this.state.dbteamresults.teamName}" in Tournament "{this.state.dbtournresults.name}"</h1>
         <div>
           <Form onSubmit={this.handleSubmit}>
             <div>
@@ -474,15 +474,6 @@ class RubricEntry extends Component {
   }
 
   async componentDidMount() {
-    await axios.post(`http://localhost:5000/api/teams/register`, {
-      teamNum: 5,
-      teamName: "testermen",
-      tournamentId: "5e7c53f30c6d5700d3701567"
-    })
-    .catch( (error) => {
-        console.log(error);
-    });
-
     await axios.get(`http://localhost:5000/api/users`)
     .then ( (result) => {
         console.log("USERS", result.data);
@@ -515,12 +506,11 @@ class RubricEntry extends Component {
     await this.updateState();
     console.log("INITIAL RUBRIC ENTRY STATE", this.state);
 
-    if (this.state.dbtournresults.headReferee === this.state.dbresults._id ||
-        this.state.dbtournresults.director === this.state.dbresults._id) {
-      this.state.isHeadReferee = true;
+    if (this.state.dbtournresults.director === this.state.dbresults._id) {
+      this.state.isAuthorized = true;
     }
     else {
-      this.state.isHeadReferee = false;
+      this.state.isAuthorized = false;
     }
 
     this.setState(this.state);

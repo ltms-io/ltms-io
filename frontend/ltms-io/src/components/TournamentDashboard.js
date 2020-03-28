@@ -7,11 +7,13 @@ export default class TournamentDashboard extends Component {
         super(props)
 
         this.state = {
-            tourneyId: this.props.match.params.tourneyId.substring(1),
+            tourneyId: this.props.match.params.tourneyId,
             dbresults: {},
             dbtournresults: {},
+            dbteamnames: [],
             authresults: {},
-            setRefereeAuthorized: false
+            setRefereeAuthorized: false,
+            rubricEntryAuthorized: false
         }
 
         this.updateState = this.updateState.bind(this);
@@ -29,6 +31,13 @@ export default class TournamentDashboard extends Component {
           this.state.setRefereeAuthorized = false;
         }
 
+        if (this.state.dbtournresults.director === this.state.dbresults._id) {
+          this.state.rubricEntryAuthorized = true;
+        }
+        else {
+          this.state.rubricEntryAuthorized = false;
+        }
+
         this.setState(this.state);
     }
 
@@ -43,11 +52,29 @@ export default class TournamentDashboard extends Component {
 
                     <Col>
                         {this.state.setRefereeAuthorized && (
-                          <Button href={"/setreferee/:" + this.state.tourneyId}>Set Referee</Button>
+                          <Button href={"/setreferee/" + this.state.tourneyId}>Set Referee</Button>
                         )}
                         {!this.state.setRefereeAuthorized && (
-                          <Button href={"/setreferee/:" + this.state.tourneyId} disabled>Set Referee</Button>
+                          <Button href={"/setreferee/" + this.state.tourneyId} disabled>Set Referee</Button>
                         )}
+                        {(this.state.dbtournresults.teams && this.state.rubricEntryAuthorized) ?
+                          <div>
+                            {this.state.dbtournresults.teams.map( (item, i) => {
+                              return(
+                                <Button href={"/rubricentry/" + this.state.tourneyId + "/" + item}>Rubric Entry for {this.state.dbteamnames[i]}</Button>
+                              );
+                            })}
+                          </div>
+                        : <></>}
+                        {(this.state.dbtournresults.teams && !this.state.rubricEntryAuthorized) ?
+                          <div>
+                            {this.state.dbtournresults.teams.map( (item, i) => {
+                              return(
+                                <Button href={"/rubricentry/" + this.state.tourneyId + "/" + item} disabled>Rubric Entry for {this.state.dbteamnames[i]}</Button>
+                              );
+                            })}
+                          </div>
+                        : <></>}
                     </Col>
                 </Row>
             </Container>
@@ -85,6 +112,15 @@ export default class TournamentDashboard extends Component {
       }).catch( (error) => {
           console.log(error);
       });
+
+      for (var i = 0; i < this.state.dbtournresults.teams.length; i++) {
+        await axios.get(`http://localhost:5000/api/teams/${this.state.dbtournresults.teams[i]}`)
+        .then( (result) => {
+            this.state.dbteamnames[i] = result.data.teamName;
+        }).catch( (error) => {
+            console.log(error);
+        });
+      }
 
       this.setState(this.state);
     }
