@@ -110,37 +110,33 @@ class AccountDetails extends Component {
     );
   }
 
-  async componentDidMount() {
-    // await axios({
-    //   method: 'GET',
-    //   url: `https://dev-s68c-q-y.auth0.com/userinfo`,
-    //   headers: {
-    //     'content-type': 'application/json',
-    //     'authorization': 'Bearer ' + localStorage.getItem("access_token")
-    //   },
-    //   json: true
-    // })
-    // .then( (result) => {
-    //   console.log("Auth info: ");
-    //   console.log(result);
-    //   this.setState({authresults: result.data});
-    //   this.setState({uid: this.state.authresults.sub});
-    // })
-    // .catch( (error) => {
-    //   console.log(error);
-    // });
 
-    // Use this statement instead once backend Auth0 connection for register
-    // is complete (5e54b2a86efec099146c054b is random test uid):
-    //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
-    await axios.post(`http://localhost:5000/api/users/auth`, {data: {sub: localStorage.getItem("auth0_id")}})
-      .then ( (result) => {
+  async componentDidMount() {
+    await axios({
+      method: 'GET',
+      url: `https://dev-s68c-q-y.auth0.com/userinfo`,
+      headers: {
+        'content-type': 'application/json',
+        'authorization': 'Bearer ' + localStorage.getItem("access_token")
+      },
+      json: true
+    })
+    .then( (result) => {
+      this.state.authresults = result.data;
+      this.state.uid = this.state.authresults.sub;
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
+
+    await axios.post(`http://localhost:5000/api/users/getuser`, {
+      auth0id: this.state.uid
+    }).then ( (result) => {
         this.state.dbresults = result.data;
-        this.state.profilepic = result.data.profilepic.imgUrl;
-      })
-      .catch( (error) => {
+    }).catch( (error) => {
+
         console.log(error);
-      });
+    });
 
     this.setState(this.state);
 

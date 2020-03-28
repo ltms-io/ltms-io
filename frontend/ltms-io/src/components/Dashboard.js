@@ -5,7 +5,7 @@ import axios from 'axios';
 class Dashboard extends Component {
   constructor(props) {
     super(props);
-
+    console.log(props);
     this.state = {
       tournaments: [],
       dbresults: {},
@@ -31,41 +31,35 @@ class Dashboard extends Component {
           mongo-id: { this.state.dbresults._id }
         </div>
 
-        
+
       </div>
     );
   }
 
   async componentDidMount() {
-    // await axios({
-    //   method: 'GET',
-    //   url: `https://dev-s68c-q-y.auth0.com/userinfo`,
-    //   headers: {
-    //     'content-type': 'application/json',
-    //     'authorization': 'Bearer ' + localStorage.getItem("access_token")
-    //   },
-    //   json: true
-    // })
-    // .then( (result) => {
-    //   console.log("Auth info: ");
-    //   console.log(result);
-    //   this.setState({authresults: result.data});
-    //   this.setState({uid: this.state.authresults.sub});
-    // })
-    // .catch( (error) => {
-    //   console.log(error);
-    // });
+    await axios({
+      method: 'GET',
+      url: `https://dev-s68c-q-y.auth0.com/userinfo`,
+      headers: {
+        'content-type': 'application/json',
+        'authorization': 'Bearer ' + localStorage.getItem("access_token")
+      },
+      json: true
+    })
+    .then( (result) => {
+      this.state.authresults = result.data;
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
 
-    // Use this statement instead once backend Auth0 connection for register
-    // is complete (5e54b2a86efec099146c054b is random test uid):
-    //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
-    await axios.post(`http://localhost:5000/api/users/auth`, {data: {sub: localStorage.getItem("auth0_id")}})
-      .then ( (result) => {
+    await axios.post(`http://localhost:5000/api/users/getuser`, {
+      auth0id: this.state.authresults.sub
+    }).then ( (result) => {
         this.state.dbresults = result.data;
-      })
-      .catch( (error) => {
+    }).catch( (error) => {
         console.log(error);
-      });
+    });
 
     await axios.post("http://localhost:5000/api/tournaments/user", {data: {auth0id: localStorage.getItem("auth0_id")}})
       .then((result) => {
