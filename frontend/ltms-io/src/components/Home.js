@@ -1,11 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 //import axios from 'axios';
-
 
 class Home extends Component {
   render() {
     return (
-
       <div>
         <h1>Welcome!</h1>
 
@@ -27,34 +25,42 @@ class Home extends Component {
         )}
         {this.props.auth.isAuthenticated() && (
           <div>
+            <a href="/createteam">Create A Team</a>
+          </div>
+        )}
+        {this.props.auth.isAuthenticated() && (
+          <div>
             <a href="/accountdetails">Edit Account Details</a>
           </div>
         )}
-{this.props.auth.isAuthenticated() && (
-        <div>
-          <a href="/pictureuploadtest">Picture Upload Test</a>
-        </div>)}
-  {this.props.auth.isAuthenticated() && (
-        <div>
-          <a href="/createscoresheet">Create A Scoresheet</a>
-        </div>)}
-  {this.props.auth.isAuthenticated() && (
-        <div>
+        {this.props.auth.isAuthenticated() && (
+          <div>
+            <a href="/pictureuploadtest">Picture Upload Test</a>
+          </div>
+        )}
+        {this.props.auth.isAuthenticated() && (
+          <div>
+            <a href="/createscoresheet">Create A Scoresheet</a>
+          </div>
+        )}
+        {this.props.auth.isAuthenticated() && (
+          <div>
             <a href="/volunteermodaltest">Volunteer Assignment Modal Test</a>
-        </div>)}
+          </div>
+        )}
         {this.props.auth.isAuthenticated() && (
-        <div>
+          <div>
             <a href="/tournamentsearch">Find a Tournament</a>
-        </div>)}
+          </div>
+        )}
         {this.props.auth.isAuthenticated() && (
-        <div>
+          <div>
             <a href="/maindashboard">The Real Dashboard</a>
-        </div>)}
+          </div>
+        )}
         {this.props.auth.isAuthenticated() && (
           <button onClick={this.props.auth.logout}>Logout</button>
         )}
-
-
       </div>
     );
   }
