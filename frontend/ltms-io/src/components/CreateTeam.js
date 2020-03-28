@@ -25,25 +25,50 @@ export default class CreateTeam extends Component {
     console.log(this.state.tourneyID);
     console.log(this.state.teamNum);
     console.log(this.state.teamName);
+    axios
+      .post("http://localhost:5000/api/team/score", {
+        tourneyID: this.state.tourneyID,
+        teamNum: this.state.teamNum,
+        teamName: this.state.teamName
+      })
+      .then(res => {
+        console.log(res);
+        window.location = "/dashboard";
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
   render() {
     return (
       <div>
         <Form onSubmit={this.handleSubmit}>
-          <Form.Group controlId="exampleForm.ID">
-            <Form.Label>Enter Tournament ID</Form.Label>
-            <Form.Control as="textarea" rows="1" />
-          </Form.Group>
-          <Form.Group controlId="exampleForm.TeamNum">
-            <Form.Label>Enter Team Number</Form.Label>
-            <Form.Control as="textarea" rows="1" />
-          </Form.Group>
-          <Form.Group controlId="exampleForm.TeamName">
-            <Form.Label>Enter Team Name</Form.Label>
-            <Form.Control as="textarea" rows="1" />
-          </Form.Group>
-          <Button variant="primary" type="submit">
-            Submit
+          <h3>Team Creation</h3>
+          <Form.Label>Tournament ID</Form.Label>
+          <Form.Control
+            required
+            placeholder="tourneyID"
+            name="tourneyID"
+            onChange={this.handleChange}
+          />
+          <h3>Team Number</h3>
+          <Form.Label>Team Number</Form.Label>
+          <Form.Control
+            required
+            placeholder="teamNum"
+            name="teamNum"
+            onChange={this.handleChange}
+          />
+          <h3>Team Name</h3>
+          <Form.Label>Team Name</Form.Label>
+          <Form.Control
+            required
+            placeholder="teamName"
+            name="teamName"
+            onChange={this.handleChange}
+          />
+          <Button className="mt-5" type="submit">
+            Create Team
           </Button>
         </Form>
       </div>
