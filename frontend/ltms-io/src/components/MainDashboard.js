@@ -54,8 +54,8 @@ class MainDashboard extends Component {
                                     <Card.Text className="m-3">
                                         <p>Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}</p>
                                     </Card.Text>
-                                    <Link>
-                                        <Button as="a" href={"/tournamentdashboard/" + item._id} className="m-3">Access Tournament</Button>
+                                    <Link to={"/tournamentdashboard/" + item._id} >
+                                        <Button className="m-3">Access Tournament</Button>
                                     </Link>
                                 </Card>
                             );
@@ -76,8 +76,8 @@ class MainDashboard extends Component {
                                     <Card.Text className="m-3">
                                         <p>Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}</p>
                                     </Card.Text>
-                                    <Link>
-                                        <Button href={"/tournamentdashboard/" + item._id} className="m-3">Access Tournament</Button>
+                                    <Link to={"/tournamentdashboard/" + item._id} >
+                                        <Button className="m-3">Access Tournament</Button>
                                     </Link>
                                 </Card>
                             );
@@ -98,8 +98,8 @@ class MainDashboard extends Component {
                                     <Card.Text className="m-3">
                                         <p>Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}</p>
                                     </Card.Text>
-                                    <Link>
-                                        <Button href={"/tournamentdashboard/" + item._id} className="m-3">Access Tournament</Button>
+                                    <Link to={"/tournamentdashboard/" + item._id} >
+                                        <Button className="m-3">Access Tournament</Button>
                                     </Link>
                                 </Card>
                             );
@@ -120,8 +120,8 @@ class MainDashboard extends Component {
                                     <Card.Text className="m-3">
                                         <p>Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}</p>
                                     </Card.Text>
-                                    <Link>
-                                        <Button href={"/tournamentdashboard/" + item._id} className="m-3">Access Tournament</Button>
+                                    <Link to={"/tournamentdashboard/" + item._id} >
+                                        <Button className="m-3">Access Tournament</Button>
                                     </Link>
                                 </Card>
                             );
@@ -142,8 +142,8 @@ class MainDashboard extends Component {
                                     <Card.Text className="m-3">
                                         <p>Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}</p>
                                     </Card.Text>
-                                    <Link>
-                                        <Button href={"/tournamentdashboard/" + item._id} className="m-3">Access Tournament</Button>
+                                    <Link to={"/tournamentdashboard/" + item._id} >
+                                        <Button className="m-3">Access Tournament</Button>
                                     </Link>
                                 </Card>
                             );
@@ -164,8 +164,8 @@ class MainDashboard extends Component {
                                     <Card.Text className="m-3">
                                         <p>Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}</p>
                                     </Card.Text>
-                                    <Link>
-                                        <Button href={"/tournamentdashboard/" + item._id} className="m-3">Access Tournament</Button>
+                                    <Link to={"/tournamentdashboard/" + item._id} >
+                                        <Button className="m-3">Access Tournament</Button>
                                     </Link>
                                 </Card>
                             );
