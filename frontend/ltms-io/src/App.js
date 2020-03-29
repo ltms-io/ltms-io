@@ -30,7 +30,7 @@ function App(props) {
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/login" component={() => <Login auth={props.auth} />} />
           <Route path="/createtournament" component={CreateTournament} />
-          <Route path="/createteam" component={CreateTeam} />
+          <Route path="/createteam/:tourneyId" component={CreateTeam} />
           <Route path="/viewrubrics" component={viewRubric} />
 
           <Route

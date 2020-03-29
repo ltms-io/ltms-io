@@ -8,7 +8,7 @@ export default class CreateTeam extends Component {
     super(props);
 
     this.state = {
-      tourneyID: null,
+      tourneyID: this.props.match.params.tourneyId,
       teamNum: null,
       teamName: null
     };
@@ -44,13 +44,7 @@ export default class CreateTeam extends Component {
       <div>
         <Form onSubmit={this.handleSubmit}>
           <h3>Team Creation</h3>
-          <Form.Label>Tournament ID</Form.Label>
-          <Form.Control
-            required
-            placeholder="tourneyID"
-            name="tourneyID"
-            onChange={this.handleChange}
-          />
+    <Form.Label>Tournament ID: {this.state.tourneyID}</Form.Label>
           <h3>Team Number</h3>
           <Form.Label>Team Number</Form.Label>
           <Form.Control
