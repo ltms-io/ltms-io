@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
-var jsonWeb = require('jsonwebtoken');
+const jsonWeb = require('jsonwebtoken');
 
 class Dashboard extends Component {
   constructor(props) {
     super(props);
-    
+    console.log(props);
     this.state = {
       tournaments: [],
       dbresults: {},
@@ -15,6 +15,7 @@ class Dashboard extends Component {
   }
 
   render () {
+
   //  var tournaments = this.state.tournaments.map((x))
     return(
       <div>
@@ -31,57 +32,43 @@ class Dashboard extends Component {
           mongo-id: { this.state.dbresults._id }
         </div>
 
-        
+
       </div>
     );
   }
 
   async componentDidMount() {
-//     // await axios({
-//     //   method: 'GET',
-//     //   url: `https://dev-s68c-q-y.auth0.com/userinfo`,
-//     //   headers: {
-//     //     'content-type': 'application/json',
-//     //     'authorization': 'Bearer ' + localStorage.getItem("access_token")
-//     //   },
-//     //   json: true
-//     // })
-//     // .then( (result) => {
-//     //   console.log("Auth info: ");
-//     //   console.log(result);
-//     //   this.setState({authresults: result.data});
-//     //   this.setState({uid: this.state.authresults.sub});
-//     // })
-//     // .catch( (error) => {
-//     //   console.log(error);
-//     // });
+    await axios({
+      method: 'GET',
+      url: `https://dev-s68c-q-y.auth0.com/userinfo`,
+      headers: {
+        'content-type': 'application/json',
+        'authorization': 'Bearer ' + localStorage.getItem("access_token")
+      },
+      json: true
+    })
+    .then( (result) => {
+      this.state.authresults = result.data;
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
 
-//     // Use this statement instead once backend Auth0 connection for register
-//     // is complete (5e54b2a86efec099146c054b is random test uid):
-//     //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
-//     await axios.post(`http://localhost:5000/api/users/auth`, {data: {sub: localStorage.getItem("auth0_id")}})
-//       .then ( (result) => {
-//         this.state.dbresults = result.data;
-//       })
-//       .catch( (error) => {
-//         console.log(error);
-//       });
-
-//     await axios.post("http://localhost:5000/api/tournaments/user", {data: {auth0id: localStorage.getItem("auth0_id")}})
-//       .then((result) => {
-//         this.state.tournaments = result.data;
-//       })
-//       .catch((error) => {
-//         console.log(error);
-//       })
-
-    // Using this so that we don't need to access the database every time a 
-    // component is mounted
     var token = document.cookie.substring(13);
     var decoded = jsonWeb.verify(token, "123456");
 
     this.state.dbresults = decoded;
     
+    this.setState(this.state);
+
+    await axios.post("http://localhost:5000/api/tournaments/user", {data: {auth0id: decoded.auth0id}})
+      .then((result) => {
+        this.state.tournaments = result.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+
     this.setState(this.state);
 
     console.log("INITIAL DASHBOARD STATE", this.state);
@@ -96,5 +83,5 @@ const mapStateToProps = (state) => {
   }
 };
 
-// export default connect(mapStateToProps)(Dashboard);
-export default Dashboard;
+export default connect(mapStateToProps)(Dashboard);
+
