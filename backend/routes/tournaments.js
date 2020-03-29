@@ -161,6 +161,10 @@ router.post('/register', (req, res) => {
                 tournamentDetails.name = req.body.name;
             }
 
+            if (req.body.location) {
+                tournamentDetails.location = req.body.location;
+            }
+
             if (req.body.teams) {
                 tournamentDetails.teams = req.body.teams;
             }

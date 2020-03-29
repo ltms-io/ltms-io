@@ -6,18 +6,18 @@ import { SingleDatePicker } from 'react-dates'
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 
-export default class CreateEvent extends Component {
+export default class EditTournament extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            date: null,
+            date: this.props.tournament.startDate,
             focused: false,
-            tourneyName: null,
-            tourneyLocation: null,
-            numMatches: null,
-            numTables: null,
-            numJudgeRooms: null,
+            tourneyName: this.props.tournament.name,
+            tourneyLocation: this.props.tournament.location,
+            numMatches: this.props.tournament.matchesPerTeam,
+            numTables: this.props.tournament.fieldsCount,
+            numJudgeRooms: this.props.tournament.numJudgeRooms,
             judgeAdvisor: null,
             headReferee: null,
             validated: false,
@@ -42,7 +42,7 @@ export default class CreateEvent extends Component {
         } else {
             event.preventDefault();
             
-            axios.post("http://localhost:5000/api/tournaments/register", {
+            axios.patch(`http://localhost:5000/api/tournaments/${this.props.id}`, {
                 auth0id: localStorage.getItem("auth0_id"), //TODO: add director from authed user
                 name: this.state.tourneyName,
                 teams: "",
