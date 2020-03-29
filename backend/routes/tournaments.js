@@ -73,12 +73,14 @@ router.post('/addvolunteer', (req, res) => {
         if (!tournament) {
             return res.status(500).send("An error occured with the specified tournament")
         }
-        let result = tournament.volunteers.find((vol) => vol.user.equals(idToAdd));
-        console.log("Result from volunteer check");
-        console.log(result);
+        // console.log(tournament.viewOnlyVols);
+        // console.log(idToAdd);
+        let result = tournament.viewOnlyVols.find((vol) => vol === idToAdd.toString());
+        // console.log("Result from volunteer check");
+        // console.log(result);
         if (!result || result === null) {
             console.log("Volunteer added");
-            tournament.volunteers.push({user: idToAdd, role: "Unassigned"});
+            tournament.viewOnlyVols.push(idToAdd);
         }   
         else {
             console.log("Volunteer exists already");
@@ -111,7 +113,7 @@ router.post('/search', async(req, res) => {
 
     var query = {};
 
-    if (found_user && found_user != null) {
+    if (found_user && found_user !== null) {
         console.log("=== ASSIGNING QUERY FOR DIRECTOR ===");
         query.director = found_user._id;
     };
@@ -125,7 +127,7 @@ router.post('/search', async(req, res) => {
     }
     console.log(query);
 
-    if (!query.director && !query.tournament_name && !query.startDate) {
+    if (!query.director && !query.name && !query.startDate) {
         console.log("Returning empty");
         return res.status(404).send([]);
     }
@@ -215,6 +217,10 @@ router.patch('/:id', (req, res) => {
 
         if (req.body.name) {
             tournament.name = req.body.name;
+        }
+
+        if (req.body.location) {
+            tournamentDetails.location = req.body.location;
         }
 
         if (req.body.teams) {
