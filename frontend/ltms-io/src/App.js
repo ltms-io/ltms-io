@@ -31,7 +31,7 @@ function App(props) {
           <Route path="/login" component={() => <Login auth={props.auth} />} />
           <Route path="/createtournament" component={CreateTournament} />
           <Route path="/createteam/:tourneyId" component={CreateTeam} />
-          <Route path="/viewrubrics" component={viewRubric} />
+          <Route path="/viewrubrics/:tourneyId" component={viewRubric} />
 
           <Route
             path="/accountdetails"

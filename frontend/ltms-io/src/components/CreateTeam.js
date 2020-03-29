@@ -33,7 +33,6 @@ export default class CreateTeam extends Component {
       })
       .then(res => {
         console.log(res);
-        window.location = "/dashboard";
       })
       .catch(err => {
         console.log(err);
