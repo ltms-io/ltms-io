@@ -21,9 +21,10 @@ const jsonWeb = require('jsonwebtoken')
 function App(props) {
   //console.log(props);
   const [cookies, setCookie, removeCookie] = useCookies(['user']);
-  if(props.auth.isAuthenticated()){
+  if(!document.cookie){
     axios.post('http://localhost:5000/api/users/login', {data: localStorage.getItem("auth0_id")}).then( (result) => {
-      setCookie('UserIdentity', result.data);
+      document.cookie = "UserIdentity=" + result.data;
+      localStorage.removeItem("auth0_id");
       //var token = cookies.UserIdentity;
       // var decoded = jsonWeb.verify(result.data,"123456");
       // console.log(decoded.name);

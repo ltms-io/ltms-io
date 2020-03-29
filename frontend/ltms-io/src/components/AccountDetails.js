@@ -160,6 +160,8 @@ class AccountDetails extends Component {
     //     console.log(error);
     //   });
 
+    // Using this so that we don't need to access the database every time a 
+    // component is mounted
     var token = document.cookie.substring(13);
     var decoded = jsonWeb.verify(token, "123456");
 

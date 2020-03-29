@@ -86,19 +86,25 @@ class Home extends Component {
     // Use this statement instead once backend Auth0 connection for register
     // is complete (5e54b2a86efec099146c054b is random test uid):
     //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
-    await axios.post(`http://localhost:5000/api/users/auth`, {data: localStorage.getItem("auth0_id")})
-      .then ((result) => {
-        this.state.dbresults = result.data;
-      })
-      .catch( (error) => {
-        console.log(error);
-      });
+   
+    // Using this so that we don't need to access the database every time a 
+    // component is mounted
+    if(!localStorage.getItem("auth0_id") && document.cookie){
+      console.log("HERE!!!");
+      var token = document.cookie.substring(13);
+      var decoded = jsonWeb.verify(token, "123456");
 
-    // var token = document.cookie.substring(13);
-    // var decoded = jsonWeb.verify(token, "123456");
-
-    // this.state.dbresults = decoded;
-    
+      this.state.dbresults = decoded;
+    }else{
+      console.log("AXIOS!!!");
+      await axios.post(`http://localhost:5000/api/users/auth`, {data: localStorage.getItem("auth0_id")})
+        .then ((result) => {
+          this.state.dbresults = result.data;
+        })
+        .catch( (error) => {
+          console.log(error);
+        });
+    }
     this.setState(this.state);
 
     console.log("INITIAL HOME STATE", this.state);

@@ -1,61 +1,34 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import { useCookies } from "react-cookie";
 var jsonWeb = require('jsonwebtoken');
 
 class Dashboard extends Component {
   constructor(props) {
     super(props);
-
-    var token = document.cookie.substring(13);
-    var decoded = jsonWeb.verify(token,"123456");
-
+    
     this.state = {
-      email: decoded.email,
-      name: decoded.name,
-      auth0id: decoded.auth0id,
-      _id: decoded._id
+      tournaments: [],
+      dbresults: {},
+      authresults: {}
     };
-
-    // this.state = {
-    //   tournaments: [],
-    //   dbresults: {},
-    //   authresults: {}
-    // };
   }
 
   render () {
   //  var tournaments = this.state.tournaments.map((x))
     return(
-      // <div>
-      //   <div>
-      //     Email: { this.state.dbresults.email }
-      //   </div>
-      //   <div>
-      //     Name: { this.state.dbresults.name }
-      //   </div>
-      //   <div>
-      //     Auth-UID: { this.state.dbresults.auth0id }
-      //   </div>
-      //   <div>
-      //     mongo-id: { this.state.dbresults._id }
-      //   </div>
-
-        
-      // </div>
       <div>
         <div>
-          Email: { this.state.email }
+          Email: { this.state.dbresults.email }
         </div>
         <div>
-          Name: { this.state.name }
+          Name: { this.state.dbresults.name }
         </div>
         <div>
-          Auth-UID: { this.state.auth0id }
+          Auth-UID: { this.state.dbresults.auth0id }
         </div>
         <div>
-          mongo0id: { this.state._id }
+          mongo-id: { this.state.dbresults._id }
         </div>
 
         
@@ -63,7 +36,7 @@ class Dashboard extends Component {
     );
   }
 
-//   async componentDidMount() {
+  async componentDidMount() {
 //     // await axios({
 //     //   method: 'GET',
 //     //   url: `https://dev-s68c-q-y.auth0.com/userinfo`,
@@ -102,19 +75,26 @@ class Dashboard extends Component {
 //         console.log(error);
 //       })
 
-//     this.setState(this.state);
+    // Using this so that we don't need to access the database every time a 
+    // component is mounted
+    var token = document.cookie.substring(13);
+    var decoded = jsonWeb.verify(token, "123456");
 
-//     console.log("INITIAL DASHBOARD STATE", this.state);
-//   }
+    this.state.dbresults = decoded;
+    
+    this.setState(this.state);
+
+    console.log("INITIAL DASHBOARD STATE", this.state);
+  }
 }
 
-// const mapStateToProps = (state) => {
-//   return {
-//     name: state.name,
-//     email: state.email,
-//     tournaments: state.tournaments
-//   }
-// };
+const mapStateToProps = (state) => {
+  return {
+    name: state.name,
+    email: state.email,
+    tournaments: state.tournaments
+  }
+};
 
 // export default connect(mapStateToProps)(Dashboard);
 export default Dashboard;
