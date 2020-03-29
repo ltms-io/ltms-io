@@ -30,6 +30,11 @@ class Home extends Component {
         )}
         {this.props.auth.isAuthenticated() && (
           <div>
+            <a href="/viewrubrics">View Rubrics</a>
+          </div>
+        )}
+        {this.props.auth.isAuthenticated() && (
+          <div>
             <a href="/accountdetails">Edit Account Details</a>
           </div>
         )}

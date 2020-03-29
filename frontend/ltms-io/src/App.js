@@ -18,6 +18,7 @@ import MainDashboard from "./components/MainDashboard";
 import TournamentDashboard from "./components/TournamentDashboard";
 import CreateTeam from "./components/CreateTeam";
 import RubricEntry from "./components/RubricEntry";
+import viewRubric from "./components/ViewRubrics";
 
 function App(props) {
   return (
@@ -30,6 +31,7 @@ function App(props) {
           <Route path="/login" component={() => <Login auth={props.auth} />} />
           <Route path="/createtournament" component={CreateTournament} />
           <Route path="/createteam" component={CreateTeam} />
+          <Route path="/viewrubrics" component={viewRubric} />
 
           <Route
             path="/accountdetails"
