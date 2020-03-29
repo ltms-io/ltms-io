@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+const jsonWeb = require('jsonwebtoken')
 
 
 class Home extends Component {
@@ -93,6 +94,11 @@ class Home extends Component {
         console.log(error);
       });
 
+    // var token = document.cookie.substring(13);
+    // var decoded = jsonWeb.verify(token, "123456");
+
+    // this.state.dbresults = decoded;
+    
     this.setState(this.state);
 
     console.log("INITIAL HOME STATE", this.state);

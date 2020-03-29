@@ -5,6 +5,7 @@ import { Container, Button, Modal } from 'react-bootstrap'
 import axios from 'axios';
 import { Pacman } from 'react-pure-loaders';
 import LoadingOverlay from 'react-loading-overlay';
+const jsonWeb = require('jsonwebtoken');
 
 
 export default class PictureUploadModal extends Component {
@@ -36,7 +37,9 @@ export default class PictureUploadModal extends Component {
         data.set("username", this.props.name);
         data.append("file", this.state.selectedFile);
         //TODO: Replace with current user id
-        data.append("auth0id", localStorage.getItem("auth0_id"));
+        var token = document.cookie.substring(13);
+        var decoded = jsonWeb.verify(token, "123456");
+        data.append("auth0id", decoded.auth0Id);
 
         axios.post('http://localhost:5000/api/users/uploadpicture', data, {
             'Content-Type': 'multipart/form-data'

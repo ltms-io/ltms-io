@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
+const jsonWeb = require('jsonwebtoken');
 
 class ResetLogin extends Component {
   constructor(props) {
@@ -41,12 +42,12 @@ class ResetLogin extends Component {
         console.log(error);
       });
 
-    //This updates the json token saved as a cookie by creating a new token then saving it
     var token = document.cookie.substring(13);
-    document.cookie = "UserIdentity=" + token + "; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-    
-    await axios.post('http://localhost:5000/api/users/login', {data: {sub: localStorage.getItem("auth0_id")}}).then( (result) => {
-      
+    var decoded = jsonWeb.verify(token, "123456");
+
+    //This updates the json token saved as a cookie by creating a new token then saving it    
+    await axios.post('http://localhost:5000/api/users/login', {data: {sub: decoded.auth0Id}}).then( (result) => {
+      document.cookie = "UserIdentity=" + token + "; expires=Thu, 01 Jan 1970 00:00:00 UTC";
       document.cookie = "UserIdentity=" + result.data;
 
     }).catch(function(err){
@@ -124,14 +125,20 @@ class ResetLogin extends Component {
     // Use this statement instead once backend Auth0 connection for register
     // is complete (5e54b2a86efec099146c054b is random test uid):
     //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
-    await axios.post(`http://localhost:5000/api/users/auth`, {data: {sub: localStorage.getItem("auth0_id")}})
-      .then ( (result) => {
-        this.state.dbresults = result.data;
-      })
-      .catch( (error) => {
-        console.log(error);
-      });
+    // await axios.post(`http://localhost:5000/api/users/auth`, {data: {sub: localStorage.getItem("auth0_id")}})
+    //   .then ( (result) => {
+    //     this.state.dbresults = result.data;
+    //   })
+    //   .catch( (error) => {
+    //     console.log(error);
+    //   });
 
+    var token = document.cookie.substring(13);
+    var decoded = jsonWeb.verify(token, "123456");
+
+    this.state.dbresults = decoded;
+    this.state.profilepic = decoded.profilePic.imgUrl;
+    
     this.setState(this.state);
 
     console.log("INITIAL RESET LOGIN STATE", this.state);

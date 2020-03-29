@@ -22,7 +22,7 @@ function App(props) {
   //console.log(props);
   const [cookies, setCookie, removeCookie] = useCookies(['user']);
   if(props.auth.isAuthenticated()){
-    axios.post('http://localhost:5000/api/users/login', {data: {sub: localStorage.getItem("auth0_id")}}).then( (result) => {
+    axios.post('http://localhost:5000/api/users/login', {data: localStorage.getItem("auth0_id")}).then( (result) => {
       setCookie('UserIdentity', result.data);
       //var token = cookies.UserIdentity;
       // var decoded = jsonWeb.verify(result.data,"123456");

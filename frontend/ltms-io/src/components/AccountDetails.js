@@ -26,8 +26,11 @@ class AccountDetails extends Component {
     // Use this statement instead once backend Auth0 connection for register
     // is complete (5e54b2a86efec099146c054b is random test uid):
     //await axios.patch("http://localhost:5000/api/users/5e54b2a86efec099146c054b", {
+
+    var token = document.cookie.substring(13);
+    var decoded = jsonWeb.verify(token, "123456");
     await axios.patch(`http://localhost:5000/api/users/updateuser`, {
-      auth0id: localStorage.getItem("auth0_id"),
+      auth0id: decoded.auth0id,
      // email: this.state.dbresults.email,
       name: e.target.elements.name.value
     })
@@ -40,11 +43,10 @@ class AccountDetails extends Component {
     });
     
     //This updates the json token saved as a cookie by creating a new token then saving it
-    var token = document.cookie.substring(13);
-    document.cookie = "UserIdentity=" + token + "; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-    
-    await axios.post('http://localhost:5000/api/users/login', {data: {sub: localStorage.getItem("auth0_id")}}).then( (result) => {
-      
+    await axios.post('http://localhost:5000/api/users/login', {data: {sub: decoded.auth0id}}).then( (result) => {
+      var token = document.cookie.substring(13);
+      document.cookie = "UserIdentity=" + token + "; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+
       document.cookie = "UserIdentity=" + result.data;
 
     }).catch(function(err){
@@ -148,15 +150,21 @@ class AccountDetails extends Component {
     // Use this statement instead once backend Auth0 connection for register
     // is complete (5e54b2a86efec099146c054b is random test uid):
     //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
-    await axios.post(`http://localhost:5000/api/users/auth`, {data: {sub: localStorage.getItem("auth0_id")}})
-      .then ( (result) => {
-        this.state.dbresults = result.data;
-        this.state.profilepic = result.data.profilepic.imgUrl;
-      })
-      .catch( (error) => {
-        console.log(error);
-      });
+    
+    // await axios.post(`http://localhost:5000/api/users/auth`, {data: {sub: localStorage.getItem("auth0_id")}})
+    //   .then ( (result) => {
+    //     this.state.dbresults = result.data;
+    //     this.state.profilepic = result.data.profilepic.imgUrl;
+    //   })
+    //   .catch( (error) => {
+    //     console.log(error);
+    //   });
 
+    var token = document.cookie.substring(13);
+    var decoded = jsonWeb.verify(token, "123456");
+
+    this.state.dbresults = decoded;
+    this.state.profilepic = decoded.profilePic.imgUrl;
     this.setState(this.state);
 
     console.log("INITIAL ACCOUNT DETAILS STATE", this.state);
