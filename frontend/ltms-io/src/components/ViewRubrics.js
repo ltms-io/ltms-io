@@ -13,7 +13,7 @@ export default class ViewRubrics extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     handleSubmit = event => {
-        axios.get("http://localhost:5000/api/team/")
+        axios.get("http://localhost:5000/api/teams/")
           .then(res => {
             console.log(res);
             window.location = "/dashboard";
