@@ -16,6 +16,7 @@ import VolunteerModalTest from "./components/VolunteerModalTest";
 import SetReferee from "./components/SetReferee";
 import MainDashboard from "./components/MainDashboard";
 import TournamentDashboard from "./components/TournamentDashboard";
+import RubricEntry from "./components/RubricEntry";
 
 function App(props) {
   return (
@@ -36,6 +37,7 @@ function App(props) {
           <Route path="/setreferee/:tourneyId" component={ SetReferee } />
           <Route path="/maindashboard" component={ MainDashboard } />
           <Route path="/tournamentdashboard/:tourneyId" component={ TournamentDashboard } />
+          <Route path="/rubricentry/:tourneyId/:teamId" component={ RubricEntry } />
         </Switch>
       </div>
     </Router>

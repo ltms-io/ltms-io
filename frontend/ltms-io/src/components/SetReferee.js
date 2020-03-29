@@ -8,50 +8,15 @@ class SetReferee extends Component {
     super(props);
 
     this.state = {
-      tourneyId: this.props.match.params.tourneyId.substring(1),
+      tourneyId: this.props.match.params.tourneyId,
       dbresults: {},
       dbtournresults: {},
       authresults: {},
-      isHeadReferee: false
+      isAuthorized: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.updateState = this.updateState.bind(this);
-  }
-
-  async updateState() {
-    await axios({
-      method: 'GET',
-      url: `https://dev-s68c-q-y.auth0.com/userinfo`,
-      headers: {
-        'content-type': 'application/json',
-        'authorization': 'Bearer ' + localStorage.getItem("access_token")
-      },
-      json: true
-    })
-    .then( (result) => {
-      this.state.authresults = result.data;
-    })
-    .catch( (error) => {
-      console.log(error);
-    });
-
-    await axios.post(`http://localhost:5000/api/users/getuser`, {
-      auth0id: this.state.authresults.sub
-    }).then ( (result) => {
-        this.state.dbresults = result.data;
-    }).catch( (error) => {
-        console.log(error);
-    });
-
-    await axios.get(`http://localhost:5000/api/tournaments/${this.state.tourneyId}`)
-    .then( (result) => {
-        this.state.dbtournresults = result.data;
-    }).catch( (error) => {
-        console.log(error);
-    });
-
-    this.setState(this.state);
   }
 
   async handleSubmit(e) {
@@ -98,34 +63,58 @@ class SetReferee extends Component {
     alert(message);
   }
 
+  async updateState() {
+    await axios({
+      method: 'GET',
+      url: `https://dev-s68c-q-y.auth0.com/userinfo`,
+      headers: {
+        'content-type': 'application/json',
+        'authorization': 'Bearer ' + localStorage.getItem("access_token")
+      },
+      json: true
+    })
+    .then( (result) => {
+      this.state.authresults = result.data;
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
+
+    await axios.post(`http://localhost:5000/api/users/getuser`, {
+      auth0id: this.state.authresults.sub
+    }).then ( (result) => {
+        this.state.dbresults = result.data;
+    }).catch( (error) => {
+        console.log(error);
+    });
+
+    await axios.get(`http://localhost:5000/api/tournaments/${this.state.tourneyId}`)
+    .then( (result) => {
+        this.state.dbtournresults = result.data;
+    }).catch( (error) => {
+        console.log(error);
+    });
+
+    this.setState(this.state);
+  }
+
   render() {
     return(
       <div>
         <h1>Set Referee for {this.state.dbtournresults.name}</h1>
         <div>
-          <h3>Reset Email Address</h3>
-          {this.state.isHeadReferee && (
-            <div>You are authenticated to set referee!</div>
+          {this.state.isAuthorized && (
+            <Form onSubmit={this.handleSubmit}>
+              <Form.Group controlId="users">
+                <Form.Label>Enter user(s) below</Form.Label>
+                <Form.Control type="text" placeholder="Enter user email(s) separated by commas" />
+              </Form.Group>
+              <Button variant="outline-primary" type="submit">Submit</Button>
+            </Form>
           )}
-          {!this.state.isHeadReferee && (
-            <div>You are not authenticated to set referee!</div>
+          {!this.state.isAuthorized && (
+            <h3>You are not authorized for set referee in this tournament.</h3>
           )}
-          <Form onSubmit={this.handleSubmit}>
-            <Form.Group controlId="users">
-              <Form.Label>Enter user(s) below</Form.Label>
-              <Form.Control type="text" placeholder="Enter user email(s) separated by commas" />
-            </Form.Group>
-            {this.state.isHeadReferee && (
-              <Button variant="outline-primary" type="submit">
-                Submit
-              </Button>
-            )}
-            {!this.state.isHeadReferee && (
-              <Button variant="outline-primary" type="submit" disabled>
-                Submit
-              </Button>
-            )}
-          </Form>
         </div>
       </div>
     );
@@ -135,24 +124,41 @@ class SetReferee extends Component {
     await axios.get(`http://localhost:5000/api/users`)
     .then ( (result) => {
         console.log("USERS", result.data);
-    }).catch( (error) => {
+    })
+    .catch( (error) => {
         console.log(error);
     });
     await axios.get(`http://localhost:5000/api/tournaments`)
     .then ( (result) => {
         console.log("TOURNAMENTS", result.data);
-    }).catch( (error) => {
+    })
+    .catch( (error) => {
         console.log(error);
     });
+    await axios.get(`http://localhost:5000/api/teams`)
+    .then ( (result) => {
+        console.log("ALL TEAMS", result.data);
+    })
+    .catch( (error) => {
+        console.log(error);
+    });
+    await axios.get(`http://localhost:5000/api/teams/tournid/5e7c53f30c6d5700d3701567`)
+    .then ( (result) => {
+        console.log("ALL TEAMS FROM 5e7c53f30c6d5700d3701567", result.data);
+    })
+    .catch( (error) => {
+        console.log(error);
+    });
+
     await this.updateState();
     console.log("INITIAL SET REFEREE STATE", this.state);
 
     if (this.state.dbtournresults.headReferee === this.state.dbresults._id ||
         this.state.dbtournresults.director === this.state.dbresults._id) {
-      this.state.isHeadReferee = true;
+      this.state.isAuthorized = true;
     }
     else {
-      this.state.isHeadReferee = false;
+      this.state.isAuthorized = false;
     }
 
     this.setState(this.state);
