@@ -17,6 +17,7 @@ import SetReferee from "./components/SetReferee";
 import MainDashboard from "./components/MainDashboard";
 import TournamentDashboard from "./components/TournamentDashboard";
 import CreateTeam from "./components/CreateTeam";
+import RubricEntry from "./components/RubricEntry";
 
 function App(props) {
   return (
@@ -37,14 +38,12 @@ function App(props) {
           <Route path="/createscoresheet" component={Sheet} />
           <Route path="/callback" component={Callback} />
           <Route path="/pictureuploadtest" component={PictureUploadModalTest} />
-          <Route path="/volunteermodaltest" component={VolunteerModalTest} />
-          <Route path="/tournamentsearch" component={TournamentSearch} />
-          <Route path="/setreferee/:tourneyId" component={SetReferee} />
-          <Route path="/maindashboard" component={MainDashboard} />
-          <Route
-            path="/tournamentdashboard/:tourneyId"
-            component={TournamentDashboard}
-          />
+          <Route path="/volunteermodaltest" component={ VolunteerModalTest } />
+          <Route path="/tournamentsearch" component={ TournamentSearch } />
+          <Route path="/setreferee/:tourneyId" component={ SetReferee } />
+          <Route path="/maindashboard" component={ MainDashboard } />
+          <Route path="/tournamentdashboard/:tourneyId" component={ TournamentDashboard } />
+          <Route path="/rubricentry/:tourneyId/:teamId" component={ RubricEntry } />
         </Switch>
       </div>
     </Router>
