@@ -48,12 +48,54 @@ router.post('/user', (req, res) => {
     })
 });
 
+router.post('/addvolunteer', (req, res) => {
+    console.log(req.body);
+
+    if (!req.body.user_id && !req.body.auth_id) {
+        return res.status(400).send("Bad Request: User must be identified in some manner");
+    }
+
+    var idToAdd;
+    if (req.body.auth_id) {
+        User.findOne({ auth0id: req.body.auth_id })
+        .then((user) => {
+            if (user) {
+                idToAdd = user._id;
+            }
+
+        })
+    }
+    else {
+        idToAdd = req.body.user_id;
+    }
+
+    Tournament.findById(req.body.tournament_id).then((tournament) => {
+        if (!tournament) {
+            return res.status(500).send("An error occured with the specified tournament")
+        }
+        let result = tournament.volunteers.find((vol) => vol.user.equals(idToAdd));
+        console.log("Result from volunteer check");
+        console.log(result);
+        if (!result || result === null) {
+            console.log("Volunteer added");
+            tournament.volunteers.push({user: idToAdd, role: "Unassigned"});
+        }   
+        else {
+            console.log("Volunteer exists already");
+        }
+        tournament.save().then((tournament) => res.send(tournament)).catch((err) => console.log(err));
+    }).catch((err) => {
+        console.log(err);
+    })
+
+})
+
 
 /* POST search for tournament via various outlets */
 router.post('/search', async(req, res) => {
     console.log(req.body);
     if (!req.body.tournament_name && !req.body.user_name && !(req.body.date)) {
-        return res.status(400).send("Please include");
+        return res.status(400).send("Bad request: no searchable fields included.");
     }
 
     var found_user;
@@ -65,11 +107,12 @@ router.post('/search', async(req, res) => {
         });
     }
 
-    // console.log(found_user);
+    console.log(found_user);
 
     var query = {};
 
-    if (found_user) {
+    if (found_user && found_user != null) {
+        console.log("=== ASSIGNING QUERY FOR DIRECTOR ===");
         query.director = found_user._id;
     };
 
@@ -79,6 +122,12 @@ router.post('/search', async(req, res) => {
 
     if (req.body.date) {
         query.startDate = req.body.date;
+    }
+    console.log(query);
+
+    if (!query.director && !query.tournament_name && !query.startDate) {
+        console.log("Returning empty");
+        return res.status(404).send([]);
     }
 
     Tournament.find(query)

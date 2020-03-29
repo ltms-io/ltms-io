@@ -45,7 +45,7 @@ export default class TournamentSearch extends Component {
                         <Col>
                         <Alert
                             variant="danger"
-                            show={this.state.errMsg != ''}
+                            show={this.state.errMsg !== ''}
                             dismissible
                             onClose={() => {this.setState({errMsg: ''})}}>
                             {this.state.errMsg}</Alert>
@@ -55,29 +55,40 @@ export default class TournamentSearch extends Component {
                         <Col>
                             <Form onSubmit={this.handleSearch}>
                                 <Row>
-                                    <Col>
+                                    <Col md={4}>
                                         <Form.Group controlId="tournament_name">
                                         <Form.Control placeholder="Tournament Name"/>
                                         </Form.Group>
                                     </Col>
-                                    <Col>
+                                    <Col md={4}>
                                         <Form.Group controlId="user_name">
                                         <Form.Control placeholder="Director Name"/>
                                         </Form.Group>
                                     </Col>
-                                    <Col>
+                                    <Col md={2}>
                                         {/* <Form.Group controlId="date">
                                         <Form.Control type="date" placeholder="date"/>
                                         </Form.Group> */}
                                         <SingleDatePicker
                                             showClearDate
-                                            numberOfMonths="1"
+                                            numberOfMonths={1}
                                             date={this.state.date}
                                             onDateChange={date => this.setState({ date })}
                                             focused={this.state.focused}
                                             onFocusChange={({ focused }) => this.setState({ focused })}
                                             id="tourneyCreateDatePicker"
                                         />
+                                    </Col>
+                                    <Col md={2}>
+                                        {/* <SingleDatePicker
+                                            showClearDate
+                                            numberOfMonths={1}
+                                            date={this.state.date}
+                                            onDateChange={date => this.setState({ date })}
+                                            focused={this.state.focused}
+                                            onFocusChange={({ focused }) => this.setState({ focused })}
+                                            id="tourneyCreateDatePicker"
+                                        /> */}
                                     </Col>
                                 </Row>
                                 <Button variant="primary" type="submit">
@@ -104,9 +115,12 @@ export default class TournamentSearch extends Component {
         const searchDate = this.state.date;
         const searchUser = e.target.elements.user_name.value;
 
-        if (!searchName && searchDate == null && !searchUser) {
+        if (!searchName && searchDate === null && !searchUser) {
             this.setState({errMsg: "No search parameters!"});
             return;
+        }
+        else {
+            this.setState({errMsg: ''});
         }
 
         console.log(`tourneyname: ${searchName}`);
@@ -130,9 +144,13 @@ export default class TournamentSearch extends Component {
         await axios.post('http://localhost:5000/api/tournaments/search', req).then((res) => {
             console.log(res.data);
             this.setState({results: res.data});
-        }).then((err) => {
-            if (err)
+        }).catch((err) => {
+            if (err) {
+                if (err.response.status === 404) {
+                    this.setState({results: []})
+                }
                 console.log(err);
+            }
         });
     }
 }
