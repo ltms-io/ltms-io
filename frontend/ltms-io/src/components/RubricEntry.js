@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
+import PropTypes from "prop-types";
 
 /*
 The rubric structure used here is based off of the Sep. 3 2019 (City Shaper 2019
@@ -162,13 +163,13 @@ class RubricEntry extends Component {
 
   render() {
     return(
-      <div>
-        <h1>Rubric Entry for Team "{this.state.dbteamresults.teamName}" in Tournament "{this.state.dbtournresults.name}"</h1>
+      <div data-test="theComponent">
+        <h1 data-test="theMainHeader">Rubric Entry for Team "{this.state.dbteamresults.teamName}" in Tournament "{this.state.dbtournresults.name}"</h1>
         {this.state.isAuthorized && (
           <div>
             <div>
               <h3>Rubric Deletion</h3>
-              <Form onSubmit={this.handleDelete}>
+              <Form data-test="theDeleteForm" onSubmit={this.handleDelete}>
                 <Form.Group controlId="deleteInd">
                   <Form.Label>Which rubric do you want to delete?</Form.Label>
                   <Form.Control placeholder="Enter the zero-based index # of the rubric" />
@@ -180,14 +181,14 @@ class RubricEntry extends Component {
             </div>
             <div>
               <h3>Rubric Submission</h3>
-              <Form onSubmit={this.handleSubmit}>
+              <Form data-test="theSubmitForm" onSubmit={this.handleSubmit}>
                 <div>
                   <h4>Core Values</h4>
                   <Container>
                     <Row>
                       <h6>Inspiration</h6>
                       <Col>
-                        <Form.Group controlId="formDiscovery">
+                        <Form.Group data-test="anInput" controlId="formDiscovery">
                           <Form.Label>Discovery</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -199,7 +200,7 @@ class RubricEntry extends Component {
                         </Form.Group>
                       </Col>
                       <Col>
-                        <Form.Group controlId="formTeamIdentity">
+                        <Form.Group data-test="anInput" controlId="formTeamIdentity">
                           <Form.Label>Team Identity</Form.Label>
                           <Form.Control required  as="select">
                             <option></option>
@@ -211,7 +212,7 @@ class RubricEntry extends Component {
                         </Form.Group>
                       </Col>
                       <Col>
-                        <Form.Group controlId="formImpact">
+                        <Form.Group data-test="anInput" controlId="formImpact">
                           <Form.Label>Impact</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -226,7 +227,7 @@ class RubricEntry extends Component {
                     <Row>
                       <h6>Teamwork</h6>
                       <Col>
-                        <Form.Group controlId="formEffectiveness">
+                        <Form.Group data-test="anInput" controlId="formEffectiveness">
                           <Form.Label>Effectiveness</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -238,7 +239,7 @@ class RubricEntry extends Component {
                         </Form.Group>
                       </Col>
                       <Col>
-                        <Form.Group controlId="formEfficiency">
+                        <Form.Group data-test="anInput" controlId="formEfficiency">
                           <Form.Label>Efficiency</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -250,7 +251,7 @@ class RubricEntry extends Component {
                         </Form.Group>
                       </Col>
                       <Col>
-                        <Form.Group controlId="formKidsDoTheWork">
+                        <Form.Group data-test="anInput" controlId="formKidsDoTheWork">
                           <Form.Label>Kids Do the Work</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -265,7 +266,7 @@ class RubricEntry extends Component {
                     <Row>
                       <h6>Gracious Professionalism®</h6>
                       <Col>
-                        <Form.Group controlId="formInclusion">
+                        <Form.Group data-test="anInput" controlId="formInclusion">
                           <Form.Label>Inclusion</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -277,7 +278,7 @@ class RubricEntry extends Component {
                         </Form.Group>
                       </Col>
                       <Col>
-                        <Form.Group controlId="formRespect">
+                        <Form.Group data-test="anInput" controlId="formRespect">
                           <Form.Label>Respect</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -289,7 +290,7 @@ class RubricEntry extends Component {
                         </Form.Group>
                       </Col>
                       <Col>
-                        <Form.Group controlId="formCoopertition">
+                        <Form.Group data-test="anInput" controlId="formCoopertition">
                           <Form.Label>Coopertition®</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -301,7 +302,7 @@ class RubricEntry extends Component {
                         </Form.Group>
                       </Col>
                     </Row>
-                    <Form.Group controlId="formCoreValuesComments">
+                    <Form.Group data-test="aCommentInput" controlId="formCoreValuesComments">
                       <Form.Label>Comments</Form.Label>
                       <Form.Control as="textarea" />
                     </Form.Group>
@@ -313,7 +314,7 @@ class RubricEntry extends Component {
                     <Row>
                       <h6>Research</h6>
                       <Col>
-                        <Form.Group controlId="formProblemIdentification">
+                        <Form.Group data-test="anInput" controlId="formProblemIdentification">
                           <Form.Label>Problem Identification</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -325,7 +326,7 @@ class RubricEntry extends Component {
                         </Form.Group>
                       </Col>
                       <Col>
-                        <Form.Group controlId="formSourcesOfInformation">
+                        <Form.Group data-test="anInput" controlId="formSourcesOfInformation">
                           <Form.Label>Sources of Information</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -337,7 +338,7 @@ class RubricEntry extends Component {
                         </Form.Group>
                       </Col>
                       <Col>
-                        <Form.Group controlId="formProblemAnalysis">
+                        <Form.Group data-test="anInput" controlId="formProblemAnalysis">
                           <Form.Label>Problem Analysis</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -352,7 +353,7 @@ class RubricEntry extends Component {
                     <Row>
                       <h6>Innovative Solution</h6>
                       <Col>
-                        <Form.Group controlId="formTeamSolution">
+                        <Form.Group data-test="anInput" controlId="formTeamSolution">
                           <Form.Label>Team Solution</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -364,7 +365,7 @@ class RubricEntry extends Component {
                         </Form.Group>
                       </Col>
                       <Col>
-                        <Form.Group controlId="formInnovation1">
+                        <Form.Group data-test="anInput" controlId="formInnovation1">
                           <Form.Label>Innovation</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -376,7 +377,7 @@ class RubricEntry extends Component {
                         </Form.Group>
                       </Col>
                       <Col>
-                        <Form.Group controlId="formSolutionDevelopment">
+                        <Form.Group data-test="anInput" controlId="formSolutionDevelopment">
                           <Form.Label>Solution Development</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -391,7 +392,7 @@ class RubricEntry extends Component {
                     <Row>
                       <h6>Presentation</h6>
                       <Col>
-                        <Form.Group controlId="formSharing">
+                        <Form.Group data-test="anInput" controlId="formSharing">
                           <Form.Label>Sharing</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -403,7 +404,7 @@ class RubricEntry extends Component {
                         </Form.Group>
                       </Col>
                       <Col>
-                        <Form.Group controlId="formCreativity">
+                        <Form.Group data-test="anInput" controlId="formCreativity">
                           <Form.Label>Creativity</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -415,7 +416,7 @@ class RubricEntry extends Component {
                         </Form.Group>
                       </Col>
                       <Col>
-                        <Form.Group controlId="formPresentationEffectiveness">
+                        <Form.Group data-test="anInput" controlId="formPresentationEffectiveness">
                           <Form.Label>Presentation Effectiveness</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -427,7 +428,7 @@ class RubricEntry extends Component {
                         </Form.Group>
                       </Col>
                     </Row>
-                    <Form.Group controlId="formInnovationProjectComments">
+                    <Form.Group data-test="aCommentInput" controlId="formInnovationProjectComments">
                       <Form.Label>Comments</Form.Label>
                       <Form.Control as="textarea" />
                     </Form.Group>
@@ -439,7 +440,7 @@ class RubricEntry extends Component {
                     <Row>
                       <h6>Mechanical Design</h6>
                       <Col>
-                        <Form.Group controlId="formDurability">
+                        <Form.Group data-test="anInput" controlId="formDurability">
                           <Form.Label>Durability</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -451,7 +452,7 @@ class RubricEntry extends Component {
                         </Form.Group>
                       </Col>
                       <Col>
-                        <Form.Group controlId="formMechanicalEfficiency">
+                        <Form.Group data-test="anInput" controlId="formMechanicalEfficiency">
                           <Form.Label>Mechanical Efficiency</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -463,7 +464,7 @@ class RubricEntry extends Component {
                         </Form.Group>
                       </Col>
                       <Col>
-                        <Form.Group controlId="formMechanization">
+                        <Form.Group data-test="anInput" controlId="formMechanization">
                           <Form.Label>Mechanization</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -478,7 +479,7 @@ class RubricEntry extends Component {
                     <Row>
                       <h6>Programming</h6>
                       <Col>
-                        <Form.Group controlId="formProgrammingQuality">
+                        <Form.Group data-test="anInput" controlId="formProgrammingQuality">
                           <Form.Label>Programming Quality</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -490,7 +491,7 @@ class RubricEntry extends Component {
                         </Form.Group>
                       </Col>
                       <Col>
-                        <Form.Group controlId="formProgrammingEfficiency">
+                        <Form.Group data-test="anInput" controlId="formProgrammingEfficiency">
                           <Form.Label>Programming Efficiency</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -502,7 +503,7 @@ class RubricEntry extends Component {
                         </Form.Group>
                       </Col>
                       <Col>
-                        <Form.Group controlId="formAutomationNavigation">
+                        <Form.Group data-test="anInput" controlId="formAutomationNavigation">
                           <Form.Label>Automation/Navigation</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -517,7 +518,7 @@ class RubricEntry extends Component {
                     <Row>
                       <h6>Strategy & Innovation</h6>
                       <Col>
-                        <Form.Group controlId="formDesignProcess">
+                        <Form.Group data-test="anInput" controlId="formDesignProcess">
                           <Form.Label>Design Process</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -529,7 +530,7 @@ class RubricEntry extends Component {
                         </Form.Group>
                       </Col>
                       <Col>
-                        <Form.Group controlId="formMissionStrategy">
+                        <Form.Group data-test="anInput" controlId="formMissionStrategy">
                           <Form.Label>Mission Strategy</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -541,7 +542,7 @@ class RubricEntry extends Component {
                         </Form.Group>
                       </Col>
                       <Col>
-                        <Form.Group controlId="formInnovation2">
+                        <Form.Group data-test="anInput" controlId="formInnovation2">
                           <Form.Label>Innovation</Form.Label>
                           <Form.Control required as="select">
                             <option></option>
@@ -553,7 +554,7 @@ class RubricEntry extends Component {
                         </Form.Group>
                       </Col>
                     </Row>
-                    <Form.Group controlId="formRobotDesignComments">
+                    <Form.Group data-test="aCommentInput" controlId="formRobotDesignComments">
                       <Form.Label>Comments</Form.Label>
                       <Form.Control as="textarea" />
                     </Form.Group>
@@ -567,7 +568,7 @@ class RubricEntry extends Component {
           </div>
         )}
         {!this.state.isAuthorized && (
-          <h3>You are not authorized for rubric entry in this tournament.</h3>
+          <h3 data-test="noAuthMsg">You are not authorized for rubric entry in this tournament.</h3>
         )}
       </div>
     );
@@ -626,6 +627,15 @@ class RubricEntry extends Component {
 
     this.setState(this.state);
   }
+}
+
+RubricEntry.propTypes = {
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      tourneyId: PropTypes.string,
+      teamId: PropTypes.string
+    })
+  })
 }
 
 export default RubricEntry;
