@@ -21,7 +21,7 @@ import RubricEntry from "./components/RubricEntry";
 function App(props) {
   return (
     <Router>
-      <div className="App">
+      <div data-test="theApp" className="App">
         <LTMSNavbar />
         <Switch>
           <Route path="/" exact component={() => <Home auth={props.auth} />} />

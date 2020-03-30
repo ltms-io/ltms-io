@@ -1,5 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { shallow } from "enzyme";
+import { findByTestAttr } from "./../utils"
 import App from './App';
 
 // test('renders learn react link', () => {
@@ -8,6 +10,6 @@ import App from './App';
 //   expect(linkElement).toBeInTheDocument();
 // });
 
-test("Fake Test", () => {
-  expect(true).toBeTruthy();
+it("Base App Test", () => {
+  expect(findByTestAttr(shallow(<App />), "theApp").length).toBe(1);
 });
