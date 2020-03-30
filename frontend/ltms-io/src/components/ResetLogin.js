@@ -31,13 +31,11 @@ class ResetLogin extends Component {
     });
 
 
-    await axios.post(`http://localhost:5000/api/users/getuser`, {
-      auth0id: this.state.uid
-    }).then ( (result) => {
-        this.state.dbresults = result.data;
-    }).catch( (error) => {
-        console.log(error);
-    });
+    var token = document.cookie.substring(13);
+    var decoded = jsonWeb.verify(token, "123456");
+
+    this.state.dbresults = decoded;
+    this.state.uid = decoded.auth0id;
 
     await axios({
       method: 'GET',
@@ -124,14 +122,12 @@ class ResetLogin extends Component {
     //   console.log(error);
     // });
 
-    await axios.post(`http://localhost:5000/api/users/getuser`, {
-      auth0id: this.state.uid
-    }).then ( (result) => {
-        this.state.dbresults = result.data;
-    }).catch( (error) => {
-        console.log(error);
-    });
+    var token = document.cookie.substring(13);
+    var decoded = jsonWeb.verify(token, "123456");
 
+    this.state.dbresults = decoded;
+    this.state.uid = decoded.auth0id;
+    
     this.setState(this.state);
 
     console.log("INITIAL RESET LOGIN STATE", this.state);

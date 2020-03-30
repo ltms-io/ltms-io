@@ -53,13 +53,12 @@ class Dashboard extends Component {
       console.log(error);
     });
 
-    await axios.post(`http://localhost:5000/api/users/getuser`, {
-      auth0id: this.state.authresults.sub
-    }).then ( (result) => {
-        this.state.dbresults = result.data;
-    }).catch( (error) => {
-        console.log(error);
-    });
+    var token = document.cookie.substring(13);
+    var decoded = jsonWeb.verify(token, "123456");
+
+    this.state.dbresults = decoded;
+    
+    this.setState(this.state);
 
     await axios.post("http://localhost:5000/api/tournaments/user", {data: {auth0id: localStorage.getItem("auth0_id")}})
       .then((result) => {

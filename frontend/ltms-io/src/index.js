@@ -7,6 +7,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import { createStore } from "redux";
 import { Provider } from "react-redux";
+import { CookiesProvider } from "react-cookie";
 import rootReducer from "./reducers/rootReducer";
 
 import Auth from "./Auth";
@@ -20,7 +21,9 @@ window.setState = changes => {
 
   ReactDOM.render(
     <Provider store={store}>
-      <App {...state} />
+      <CookiesProvider>
+        <App {...state} />
+      </CookiesProvider>
     </Provider>,
     document.getElementById("root")
   );

@@ -31,14 +31,36 @@ class LTMSNavbar extends Component {
     // Use this statement instead once backend Auth0 connection for register
     // is complete (5e54b2a86efec099146c054b is random test uid):
     //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
-    await axios.post(`http://localhost:5000/api/users/auth`, {data: {sub: localStorage.getItem("auth0_id")}})
-      .then((result) => {
-        this.setState({dbresults: result.data});
-      })
-      .catch( async (error) => {
-          console.log(error);
-      });
 
+    if(localStorage.getItem("auth0_id") || !document.cookie.length){
+      
+      console.log("AXIOS!!!");
+      await axios.post(`http://localhost:5000/api/users/auth`, {data: localStorage.getItem("auth0_id")})
+        .then ((result) => {
+          this.state.dbresults = result.data;
+        })
+        .catch( (error) => {
+          console.log(error);
+        });
+      
+    }else{
+      console.log("HERE!!!");
+      var token = document.cookie.substring(13);
+      var state = jsonWeb.verify(token, "123456", async function(err, decoded) {
+        if(err){
+          await axios.post(`http://localhost:5000/api/users/auth`, {data: localStorage.getItem("auth0_id")})
+          .then ((result) => {
+            this.state.dbresults = result.data;
+          })
+          .catch( (error) => {
+            console.log(error);
+          });
+        }else{
+          return decoded;
+        }
+      });
+    }
+    this.state.dbresults = state;
     this.setState(this.state);
 
     console.log("INITIAL NAVBAR STATE", this.state);
