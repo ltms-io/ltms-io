@@ -36,6 +36,7 @@ const getBlobName = originalName => {
 sgMail.setApiKey(dev_config.SENDGRID_API_KEY || process.env.SENDGRID_API_KEY);
 
 const axios = require('axios');
+const jsonWeb = require('jsonwebtoken');
 
 /* GET */
 
@@ -220,7 +221,6 @@ router.post('/search', (req, res) => {
 
 //POST creates json token for cookie
 router.post('/login', (req, res) => {
-    console.log(req);
     if(!req.body.data){
         return res.status(400).send("Body is empty")
     }
@@ -388,4 +388,3 @@ router.delete('/:id', (req, res) => {
 });
 
 module.exports = router;
-

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { connect } from 'react-redux';
+const jsonWeb = require('jsonwebtoken');
 
 class ResetLogin extends Component {
   constructor(props) {
@@ -30,25 +31,33 @@ class ResetLogin extends Component {
       console.log(error);
     });
 
-
-    await axios.post(`http://localhost:5000/api/users/getuser`, {
-      auth0id: this.state.uid
-    }).then ( (result) => {
-        this.state.dbresults = result.data;
-    }).catch( (error) => {
-        console.log(error);
-    });
-    
-    //This updates the json token saved as a cookie by creating a new token then saving it    
     await axios.post('http://localhost:5000/api/users/login', {data: {sub: decoded.auth0id}}).then( (result) => {
       document.cookie = "UserIdentity=" + token + "; expires=Thu, 01 Jan 1970 00:00:00 UTC";
       document.cookie = "UserIdentity=" + result.data;
       
-      var dec = jsonWeb.verify(result.data, "123456");
-      this.state.dbresults = dec;
+    });
 
-    }).catch(function(err){
-      console.log(err);
+    var token = document.cookie.substring(13);
+    var decoded = jsonWeb.verify(token, "123456");
+
+    this.state.dbresults = decoded;
+    this.state.uid = decoded.auth0id;
+
+    await axios({
+      method: 'GET',
+      url: `https://dev-s68c-q-y.auth0.com/userinfo`,
+      headers: {
+        'content-type': 'application/json',
+        'authorization': 'Bearer ' + localStorage.getItem("access_token")
+      },
+      json: true
+    })
+    .then( (result) => {
+      this.state.authresults = result.data;
+      this.state.uid = this.state.authresults.sub;
+    })
+    .catch( (error) => {
+      console.log(error);
     });
     
     
@@ -142,8 +151,8 @@ class ResetLogin extends Component {
     var decoded = jsonWeb.verify(token, "123456");
 
     this.state.dbresults = decoded;
-
-    this.setState({uid: decoded.auth0id});
+    this.state.uid = decoded.auth0id;
+    
     this.setState(this.state);
 
     console.log("INITIAL RESET LOGIN STATE", this.state);

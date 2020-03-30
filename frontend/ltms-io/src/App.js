@@ -18,7 +18,7 @@ import MainDashboard from "./components/MainDashboard";
 import TournamentDashboard from "./components/TournamentDashboard";
 import RubricEntry from "./components/RubricEntry";
 import axios from 'axios';
-
+const jsonWeb = require('jsonwebtoken');
 
 function App(props) {
   if(!document.cookie){

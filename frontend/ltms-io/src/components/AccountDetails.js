@@ -26,23 +26,26 @@ class AccountDetails extends Component {
     // Use this statement instead once backend Auth0 connection for register
     // is complete (5e54b2a86efec099146c054b is random test uid):
     //await axios.patch("http://localhost:5000/api/users/5e54b2a86efec099146c054b", {
-    var token = document.cookie.substring(13);
-    var decoded = jsonWeb.verify(token, "123456");
-    await axios.patch(`http://localhost:5000/api/users/updateuser`, {
-      auth0id: decoded.auth0id,
      // email: this.state.dbresults.email,
-      name: e.target.elements.name.value
-    })
-    .then((res) => {
-      console.log(res.data);
-      this.setState({dbresutls: res.data});
-    })
-    .catch( (error) => {
-      console.log(error);
+    // })
+    // .then((res) => {
+    //   console.log(res.data);
+    //   this.setState({dbresutls: res.data});
+    // })
+    // .catch( (error) => {
+    //   console.log(error);
+    // });
+    await axios.post('http://localhost:5000/api/users/login', {data: {sub: decoded.auth0id}}).then( (result) => {
+      var token = document.cookie.substring(13);
+      document.cookie = "UserIdentity=" + token + "; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+
+      document.cookie = "UserIdentity=" + result.data;
+
+    }).catch(function(err){
+      console.log(err);
     });
 
     // Use this statement instead once backend Auth0 connection for register
-    // is complete (5e54b2a86efec099146c054b is random test uid):
     //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
     // await axios.get(`http://localhost:5000/api/users/${this.state.uid}`)
     //   .then ( (result) => {
@@ -77,8 +80,6 @@ class AccountDetails extends Component {
     .catch( (error) => {
       console.log(error);
     });
-    
-    
 
     this.props.auth.logout();
   }
@@ -145,11 +146,11 @@ class AccountDetails extends Component {
       console.log(error);
     });
 
-    // Using this so that we don't need to access the database every time a 
-    // component is mounted
+    var token = document.cookie.substring(13);
+    var decoded = jsonWeb.verify(token, "123456");
 
     this.state.dbresults = decoded;
-    this.state.profilepic = decoded.profilePic.imgUrl;
+    this.state.uid = decoded.auth0id;
 
     this.setState(this.state);
 
@@ -158,4 +159,3 @@ class AccountDetails extends Component {
 }
 
 export default AccountDetails;
-

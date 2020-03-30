@@ -46,11 +46,11 @@ class LTMSNavbar extends Component {
     }else{
       console.log("HERE!!!");
       var token = document.cookie.substring(13);
-      var stat = jsonWeb.verify(token, "123456", async function(err, decoded) {
+      var stat = jsonWeb.verify(token, "123456", function(err, decoded) {
         if(err){
-          await axios.post(`http://localhost:5000/api/users/auth`, {data: localStorage.getItem("auth0_id")})
+          axios.post(`http://localhost:5000/api/users/auth`, {data: localStorage.getItem("auth0_id")})
           .then ((result) => {
-            this.setState({dbresults: result.data});
+            return result.data;
           })
           .catch( (error) => {
             console.log(error);
@@ -59,13 +59,16 @@ class LTMSNavbar extends Component {
           return decoded;
         }
       });
+
+      if(stat){
+        this.setState({dbresults: stat});
+      }
     }
-    this.setState({dbresults: stat.data});
     this.setState(this.state);
 
     console.log("INITIAL NAVBAR STATE", this.state);
+
   }
 }
 
 export default LTMSNavbar;
-
