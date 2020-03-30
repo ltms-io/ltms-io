@@ -36,6 +36,7 @@ const getBlobName = originalName => {
 sgMail.setApiKey(dev_config.SENDGRID_API_KEY || process.env.SENDGRID_API_KEY);
 
 const axios = require('axios');
+const jsonWeb = require('jsonwebtoken');
 
 /* GET */
 
@@ -217,6 +218,40 @@ router.post('/search', (req, res) => {
         return res.status(200).send({email: user.email, name: user.name, _id: user._id});
     });
 });
+
+//POST creates json token for cookie
+router.post('/login', (req, res) => {
+    if(!req.body.data){
+        return res.status(400).send("Body is empty")
+    }
+    var authId = req.body.data;
+    User.findOne({auth0id: authId}).then(user => {
+        if(!user) {
+            return res.status(404).send("Not a user");
+        }
+
+        var payload = {
+            name: user.name,
+            email: user.email,
+            auth0id: user.auth0id,
+            eventAuthorizer: user.eventAuthorizer,
+            userAuthorizer: user.userAuthorizer,
+            _id: user._id,
+            profilePic: {
+                is_azure: user.profilePic.is_azure,
+                imgUrl: user.profilePic.imgUrl,
+                thumbUrl: user.profilePic.thumUrl
+            },
+        }
+
+        var tok = jsonWeb.sign(
+            payload,
+            "123456",
+        );
+        
+        return res.status(200).send(tok);
+    })
+})
 
 /* PATCH */
 
