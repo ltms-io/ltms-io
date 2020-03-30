@@ -21,6 +21,7 @@ class AccountDetails extends Component {
 
   async handleName(e) {
     e.preventDefault();
+    console.log(localStorage.getItem("auth0_id"));
     alert("Resetting name to: " + e.target.elements.name.value);
     // Use this statement instead once backend Auth0 connection for register
     // is complete (5e54b2a86efec099146c054b is random test uid):
