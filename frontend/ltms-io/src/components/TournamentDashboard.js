@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Container, Row, Col, Button } from 'react-bootstrap'
 import axios from 'axios'
+import jsonWeb from 'jsonwebtoken';
 
 export default class TournamentDashboard extends Component {
     constructor(props) {
@@ -106,13 +107,12 @@ export default class TournamentDashboard extends Component {
         console.log(error);
       });
 
-      await axios.post(`http://localhost:5000/api/users/getuser`, {
-        auth0id: this.state.authresults.sub
-      }).then ( (result) => {
-          this.state.dbresults = result.data;
-      }).catch( (error) => {
-          console.log(error);
-      });
+      var token = document.cookie.substring(13);
+    var decoded = jsonWeb.verify(token, "123456");
+
+    this.state.dbresults = decoded;
+    
+    this.setState(this.state)
 
       await axios.get(`http://localhost:5000/api/tournaments/${this.state.tourneyId}`)
       .then( (result) => {

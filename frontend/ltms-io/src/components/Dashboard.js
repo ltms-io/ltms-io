@@ -61,7 +61,7 @@ class Dashboard extends Component {
     
     this.setState(this.state);
 
-    await axios.post("http://localhost:5000/api/tournaments/user", {data: {auth0id: localStorage.getItem("auth0_id")}})
+    await axios.post("http://localhost:5000/api/tournaments/user", {data: {auth0id: decoded.auth0id}})
       .then((result) => {
         this.state.tournaments = result.data;
       })

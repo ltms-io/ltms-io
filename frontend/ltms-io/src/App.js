@@ -21,7 +21,6 @@ import axios from 'axios';
 const jsonWeb = require('jsonwebtoken');
 
 function App(props) {
-  console.log(localStorage.getItem("auth0_id"));
   if(!document.cookie){
     axios.post('http://localhost:5000/api/users/login', {data: localStorage.getItem("auth0_id")}).then( (result) => {
       document.cookie = "UserIdentity=" + result.data;

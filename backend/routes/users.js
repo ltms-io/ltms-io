@@ -36,6 +36,7 @@ const getBlobName = originalName => {
 sgMail.setApiKey(dev_config.SENDGRID_API_KEY || process.env.SENDGRID_API_KEY);
 
 const axios = require('axios');
+const jsonWeb = require('jsonwebtoken');
 
 /* GET */
 
