@@ -168,7 +168,7 @@ class Sheet extends React.Component{
       fieldValues: fixedScores,
       teamNum: this.state.team,
       scoreType: "match",
-      finalScore: this.state.finalscore,
+      finalScore: score,
       rawData: JSON.stringify(this.state.events)
     }).then(res => {
       alert("done submitting");

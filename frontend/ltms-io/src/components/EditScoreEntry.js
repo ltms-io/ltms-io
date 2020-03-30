@@ -87,8 +87,10 @@ export default class EditScoreEntry extends Component {
 
         var index = this.state.events.length;
         var score = 0;
+        console.log(`index: ${index}`)
 
         for (var i = 0; i < index; i++) {
+            console.log(`score: ${score}`)
             if (this.state.events[i].tempScore === "Yes") {
                 score += 5;
             } else if (this.state.events[i].tempScore === "No") {
@@ -99,6 +101,7 @@ export default class EditScoreEntry extends Component {
         }
 
         this.setState({ finalscore: score });
+        console.log(`FINALSCORE: ${this.state.finalscore} OR ${score}`)
 
         var fixedCats = [];
         var fixedScores = [];
@@ -115,7 +118,7 @@ export default class EditScoreEntry extends Component {
             fieldValues: fixedScores,
             teamNum: this.state.team,
             scoreType: "match",
-            finalScore: this.state.finalscore,
+            finalScore: score,
             rawData: JSON.stringify(this.state.events),
             changeNotes: this.state.notesBox
         }).then(res => {
