@@ -23,6 +23,7 @@ const sharedKeyCredential = new StorageSharedKeyCredential(
 const pipeline = newPipeline(sharedKeyCredential);
 
 const blobServiceClient = new BlobServiceClient(
+    `https://${dev_config.AZURE_STORAGE_ACCOUNT_NAME || process.env.AZURE_STORAGE_ACCOUNT_NAME}.blob.core.windows.net`,
     pipeline
 )
 
@@ -368,18 +369,18 @@ router.patch('/updateuser', (req, res) => {
 });
 
 //PATCH request to give users authorizations
-router.patch('/authorization/:id', (req, res) => {
+router.patch('/authorization', (req, res) => {
     if(Object.keys(req.body).length == 0) {
         return res.status(400).send("body is empty");
     }
 
     console.log(req.body);
-    User.findById(req.params.id).then((user) => {
+    User.findOne({email: req.body.data.email}).then((user) => {
         if(!user) {
             return res.status(404).send("user not found");
         }
         summaryOfChanges = '';
-        user.userAuthorizer = !user.userAuthorizer;
+        user.userAuthorizer = true;
         summaryOfChanges += "•You have been authorized to authorize other users to create official events.\n";
         user.save().then((user) => res.send("Changes made successfully")).catch((err) => console.log(err));
 

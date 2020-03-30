@@ -18,9 +18,8 @@ import MainDashboard from "./components/MainDashboard";
 import TournamentDashboard from "./components/TournamentDashboard";
 import RubricEntry from "./components/RubricEntry";
 import axios from 'axios';
+import RoleChange from './components/RoleChange';
 const jsonWeb = require('jsonwebtoken');
-
-const axios = require('axios');
 
 function App(props) {
   if(!document.cookie){
@@ -50,6 +49,7 @@ function App(props) {
           <Route path="/maindashboard" component={ MainDashboard } />
           <Route path="/tournamentdashboard/:tourneyId" component={ TournamentDashboard } />
           <Route path="/rubricentry/:tourneyId/:teamId" component={ RubricEntry } />
+          <Route path="/rolechange" component={ RoleChange }/>
         </Switch>
       </div>
     </Router>
