@@ -1,24 +1,25 @@
 import React from "react";
 import { shallow } from "enzyme";
 import { findByTestAttr, checkProps } from "./../../utils"
-import SetReferee from "./SetReferee";
+import RubricEntry from "./RubricEntry";
 
 const setUp = (props = {}) => {
-  const component = shallow(<SetReferee {...props} />);
+  const component = shallow(<RubricEntry {...props} />);
   return component;
 };
 
-describe("SetReferee Component", () => {
+describe("RubricEntry Component", () => {
   describe("Checking PropTypes", () => {
     it("Should not throw a warning", () => {
       const expectedProps = {
         match: {
           params: {
-            tourneyId: "Test tourneyId"
+            tourneyId: "Test tourneyId",
+            teamId: "Test teamId"
           }
         }
       };
-      const propsErr = checkProps(SetReferee, expectedProps);
+      const propsErr = checkProps(RubricEntry, expectedProps);
       expect(propsErr).toBeUndefined();
     });
   });
@@ -29,7 +30,8 @@ describe("SetReferee Component", () => {
       const props = {
         match: {
           params: {
-            tourneyId: "Test tourneyId"
+            tourneyId: "Test tourneyId",
+            teamId: "Test teamId"
           }
         }
       };
@@ -47,28 +49,33 @@ describe("SetReferee Component", () => {
     });
   });
 
-  describe("Authorization", () => {
+  describe("Authorization Rendering", () => {
     let component;
     beforeEach( () => {
       const props = {
         match: {
           params: {
-            tourneyId: "Test tourneyId"
+            tourneyId: "Test tourneyId",
+            teamId: "Test teamId"
           }
         }
       };
       component = setUp(props);
     });
 
-    it("Should render only the form if authorized", () => {
+    it("Should render only the rubric submission and deletion forms if authorized", () => {
       component.setState({
         tourneyId: component.state().tourneyId,
+        teamId: component.state().teamId,
         dbresults: component.state().dbresults,
         dbtournresults: component.state().dbtournresults,
+        dbteamresults: component.state().dbtournresults,
         authresults: component.state().authresults,
         isAuthorized: true
       });
-      var element = findByTestAttr(component, "theForm");
+      var element = findByTestAttr(component, "theSubmitForm");
+      expect(element.length).toBe(1);
+      element = findByTestAttr(component, "theDeleteForm");
       expect(element.length).toBe(1);
       element = findByTestAttr(component, "noAuthMsg");
       expect(element.length).toBe(0);
@@ -82,10 +89,43 @@ describe("SetReferee Component", () => {
         authresults: component.state().authresults,
         isAuthorized: false
       });
-      var element = findByTestAttr(component, "theForm");
+      var element = findByTestAttr(component, "theSubmitForm");
+      expect(element.length).toBe(0);
+      element = findByTestAttr(component, "theDeleteForm");
       expect(element.length).toBe(0);
       element = findByTestAttr(component, "noAuthMsg");
       expect(element.length).toBe(1);
+    });
+  });
+
+  describe("Rubric Submission Form Rendering", () => {
+    let component;
+    beforeEach( () => {
+      const props = {
+        match: {
+          params: {
+            tourneyId: "Test tourneyId",
+            teamId: "Test teamId"
+          }
+        }
+      };
+      component = setUp(props);
+    });
+
+    it("Should render the correct amount of the different types of rubric inputs", () => {
+      component.setState({
+        tourneyId: component.state().tourneyId,
+        teamId: component.state().teamId,
+        dbresults: component.state().dbresults,
+        dbtournresults: component.state().dbtournresults,
+        dbteamresults: component.state().dbtournresults,
+        authresults: component.state().authresults,
+        isAuthorized: true
+      });
+      var element = findByTestAttr(component, "anInput");
+      expect(element.length).toBe(27);
+      element = findByTestAttr(component, "aCommentInput");
+      expect(element.length).toBe(3);
     });
   });
 });
