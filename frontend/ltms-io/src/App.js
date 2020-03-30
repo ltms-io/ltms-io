@@ -17,6 +17,8 @@ import SetReferee from "./components/SetReferee";
 import MainDashboard from "./components/MainDashboard";
 import TournamentDashboard from "./components/TournamentDashboard";
 import RubricEntry from "./components/RubricEntry";
+import MatchScoreListing from "./components/MatchScoreListing";
+import EditScoreEntry from "./components/EditScoreEntry";
 
 function App(props) {
   return (
@@ -38,6 +40,8 @@ function App(props) {
           <Route path="/maindashboard" component={ MainDashboard } />
           <Route path="/tournamentdashboard/:tourneyId" component={ TournamentDashboard } />
           <Route path="/rubricentry/:tourneyId/:teamId" component={ RubricEntry } />
+          <Route path="/t/:tourneyId/mscores" component={ MatchScoreListing } />
+          <Route path="/t/:tourneyId/editscore/:scoreId" component={ EditScoreEntry } />
         </Switch>
       </div>
     </Router>

@@ -1,6 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Form, Button, Col, Row, DropdownButton, Dropdown} from 'react-bootstrap';
+import axios from 'axios';
 
 class Sheet extends React.Component{
 
@@ -151,13 +152,37 @@ class Sheet extends React.Component{
 
     this.setState({finalscore: score});
 
+    var fixedCats = [];
+    var fixedScores = [];
+    this.state.events.forEach(event => {
+      fixedCats.push(event.categ.props.value);
+      fixedScores.push(event.tempScore);
+    });
+
+    alert("submitting");
+
+    axios.post("http://localhost:5000/api/tournaments/score", {
+      id: "5e7a5410be7af1ae4acc6314",
+      fieldTypes: fixedCats,
+      fieldValues: fixedScores,
+      teamNum: this.state.team,
+      scoreType: "match",
+      finalScore: this.state.finalscore,
+      rawData: this.state.events
+    }).then(res => {
+      alert("done submitting");
+    }).catch(err => {
+      console.log(err);
+    })
   }
     
   //render function
   render(){
+    console.log(this.state);
 
     return(
       <div>
+        <h2>NOTE: All scores are entered into event 5e7a5410be7af1ae4acc6314 for use in testing modify scores UI</h2>
         <h3>Enter Team</h3>
         <Form onSubmit={this.handleTeam}>
           <Row>

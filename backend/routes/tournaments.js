@@ -100,6 +100,27 @@ router.post('/user', (req, res) => {
     });
 });
 
+/* GET all scores for tournament given tourney id */
+router.get('/:id/scores', (req, res) => {
+    Tournament.findById(req.params.id).then(tournament => {
+        if(!tournament) {
+            return res.status(404).send("tournament not found");
+        }
+
+        return res.status(200).send(tournament.scores);
+    })
+})
+
+/* GET SPECIFIC score for tournament given tourney id and score id */
+router.get('/:id/scores/:scoreid', (req, res) => {
+    Tournament.findById(req.params.id).then(tournament => {
+        if(!tournament) {
+            return res.status(404).send("tournament not found");
+        }
+
+        return res.status(200).send(tournament.scores.id(req.params.scoreid));
+    })
+})
 
 /* POST search for tournament via various outlets */
 router.post('/search', async(req, res) => {
@@ -196,6 +217,31 @@ router.post('/register', (req, res) => {
         res.status(404).send("Your user id was invalid!");
     })
 });
+
+/* POST score */
+router.post('/score', (req, res) => {
+    Tournament.findById(req.body.id).then((tournament) => {
+        if(!tournament) {
+            return res.status(404).send("tourney not found");
+        }
+        
+        tournament.scores.push({
+            fieldTypes: req.body.fieldTypes,
+            fieldValues: req.body.fieldValues,
+            teamNum: req.body.teamNum,
+            scoreType: req.body.scoreType,
+            finalScore: req.body.finalScore,
+            rawData: req.body.rawData
+        });
+
+        tournament.save().then(tourney => {
+            res.status(200).send(tourney);
+        }).catch(err => {
+            console.log(err);
+            res.status(500).send(err);
+        })
+    })
+})
 
 /* PATCH specific tournament. */
 router.patch('/:id', (req, res) => {

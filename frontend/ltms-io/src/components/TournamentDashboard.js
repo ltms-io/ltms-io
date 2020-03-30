@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Container, Row, Col, Button } from 'react-bootstrap'
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 export default class TournamentDashboard extends Component {
     constructor(props) {
@@ -83,6 +84,11 @@ export default class TournamentDashboard extends Component {
                             })}
                           </div>
                         )}
+                        {true && (
+                          <Link to={"/t/" + this.state.tourneyId + "/mscores"}>
+                            <Button>See Scores</Button>
+                          </Link>
+                        )}
                     </Col>
                 </Row>
             </Container>
@@ -131,5 +137,6 @@ export default class TournamentDashboard extends Component {
       }
 
       this.setState(this.state);
+      console.log(this.state);
     }
 }
