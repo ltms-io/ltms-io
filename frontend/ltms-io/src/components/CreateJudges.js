@@ -24,6 +24,7 @@ export default class CreateJudges extends Component {
             console.log(err);
           });
           this.setState(this.state)
+          console.log(this.state.users)
         }
     render() {
         return (
@@ -36,7 +37,11 @@ export default class CreateJudges extends Component {
             Users:
             <div>
             {this.state.users.map((item, i) => {
-                {item.name}
+                return(
+                    <div>
+                        {item.name}
+                        </div>
+                )
             })}
             </div>
           </div>

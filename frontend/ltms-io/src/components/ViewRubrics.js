@@ -24,6 +24,7 @@ export default class ViewRubrics extends Component {
             console.log(err);
           });
           this.setState(this.state)
+          console.log(this.state.teams)
         }
     render() {
         return (
