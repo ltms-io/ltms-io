@@ -8,13 +8,37 @@ export default class CreateJudges extends Component {
       super(props);
   
       this.state = {
-        tourneyID: this.props.match.params.tourneyId
+        tourneyID: this.props.match.params.tourneyId,
+        users: []
       };
+      this.handleSubmit = this.handleSubmit.bind(this);
     }
+    handleSubmit = async event => {
+        event.preventDefault()
+        await axios.get("http://localhost:5000/api/users/")
+          .then(res => {
+            console.log(res);
+            this.state.users = res.data
+          })
+          .catch(err => {
+            console.log(err);
+          });
+          this.setState(this.state)
+        }
     render() {
         return (
           <div>
-            Hello
+            <Form onSubmit={this.handleSubmit}>
+                <Button className="mt-5" type="submit" >
+                    Display Users
+                </Button>
+            </Form>
+            Users:
+            <div>
+            {this.state.users.map((item, i) => {
+                {item.name}
+            })}
+            </div>
           </div>
         );
       }

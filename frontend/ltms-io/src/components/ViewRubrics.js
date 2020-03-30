@@ -15,10 +15,6 @@ export default class ViewRubrics extends Component {
     }
     handleSubmit = async event => {
         event.preventDefault()
-        const elements = ['one','two','three'];
-        for(const [i,v] of elements.entries()){
-            this.state.teams.push(<li key={i}>{v}</li>)
-        }
         await axios.get("http://localhost:5000/api/teams/tournid/" + this.state.tourneyId)
           .then(res => {
             console.log(res);
