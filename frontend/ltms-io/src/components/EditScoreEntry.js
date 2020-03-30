@@ -118,9 +118,29 @@ export default class EditScoreEntry extends Component {
                                     </Col>
                                 </Row>
                             ))}
+                            <hr />
+                            <Row>
+                                <Col>
+                                    <h5>Notes</h5>
+                                    <ul>
+                                        {this.state.scoreResults.changeNotes &&
+                                            this.state.scoreResults.changeNotes.map((item, i) => {
+                                                return (
+                                                    <li key={i}>
+                                                        {item}
+                                                    </li>
+                                                );
+                                            })
+                                        }
+                                    </ul>
+                                    <Form.Group controlId="notes">
+                                        <Form.Control as="textarea" />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
                     </Form>
                     <Button variant="outline-primary" onClick={this.handleCalculate}>
-                        Calculate Score
+                        Submit Changes
                     </Button>
                 </Container>
             </div>

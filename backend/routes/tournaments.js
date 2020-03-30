@@ -323,6 +323,16 @@ router.patch('/setofficialevent/:id', (req, res) => {
     });
 });
 
+//update a score given tourney and score ids
+router.patch('/:id/scores/:scoreid', (req, res) => {
+    Tournament.findById(req.params.id).then(tournament => {
+        if(!tournament) {
+            return res.status(404).send("tournament not found");
+        }
+
+        //STOP HERE
+    })
+})
 
 /* DELETE */
 

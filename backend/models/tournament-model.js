@@ -19,7 +19,10 @@ const SchoresheetSchema = new Schema({
     rawData: {
         type: Array,
         required: true
-    }
+    },
+    changeNotes: [{
+        type: String
+    }]
 });
 
 //Create Tournament Schema
