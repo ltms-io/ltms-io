@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
+const jsonWeb = require('jsonwebtoken');
 
 class Dashboard extends Component {
   constructor(props) {

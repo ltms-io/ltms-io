@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { connect } from 'react-redux';
+const jsonWeb = require('jsonwebtoken');
 
 class ResetLogin extends Component {
   constructor(props) {

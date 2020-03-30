@@ -3,6 +3,7 @@ import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import ResetLogin from './ResetLogin';
 import logo from '../logo.svg';
 import axios from 'axios';
+const jsonWeb = require('jsonwebtoken');
 
 class AccountDetails extends Component {
   constructor(props) {

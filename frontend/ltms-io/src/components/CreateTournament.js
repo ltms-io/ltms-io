@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import { Container, Col, Row, Form, Button } from 'react-bootstrap'
 import { SingleDatePicker } from 'react-dates'
 import axios from 'axios';
+const jsonWeb = require('jsonwebtoken');
 //import { Redirect } from 'react-router-dom';
 
 export default class CreateEvent extends Component {

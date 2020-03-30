@@ -3,6 +3,7 @@ import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import sample from '../logo.svg';
 import logo from '../ltmsio-logo-wide.png';
 import axios from 'axios';
+const jsonWeb = require('jsonwebtoken');
 
 class LTMSNavbar extends Component {
   render() {
@@ -46,11 +47,11 @@ class LTMSNavbar extends Component {
     }else{
       console.log("HERE!!!");
       var token = document.cookie.substring(13);
-      var state = jsonWeb.verify(token, "123456", async function(err, decoded) {
+      var stat = jsonWeb.verify(token, "123456", async function(err, decoded) {
         if(err){
           await axios.post(`http://localhost:5000/api/users/auth`, {data: localStorage.getItem("auth0_id")})
           .then ((result) => {
-            this.state.dbresults = result.data;
+            return result.data;
           })
           .catch( (error) => {
             console.log(error);
@@ -59,11 +60,15 @@ class LTMSNavbar extends Component {
           return decoded;
         }
       });
+
+      if(stat){
+        this.state.dbresults = stat;
+      }
     }
-    this.state.dbresults = state;
     this.setState(this.state);
 
     console.log("INITIAL NAVBAR STATE", this.state);
+
   }
 }
 
