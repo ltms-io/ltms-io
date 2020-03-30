@@ -105,7 +105,7 @@ class SetReferee extends Component {
         <h1 data-test="theMainHeader">Set Referee for {this.state.dbtournresults.name}</h1>
         <div>
           {this.state.isAuthorized && (
-            <Form onSubmit={this.handleSubmit}>
+            <Form data-test="theForm" onSubmit={this.handleSubmit}>
               <Form.Group controlId="users">
                 <Form.Label>Enter user(s) below</Form.Label>
                 <Form.Control type="text" placeholder="Enter user email(s) separated by commas" />
@@ -114,7 +114,7 @@ class SetReferee extends Component {
             </Form>
           )}
           {!this.state.isAuthorized && (
-            <h3>You are not authorized for set referee in this tournament.</h3>
+            <h3 data-test="noAuthMsg">You are not authorized for set referee in this tournament.</h3>
           )}
         </div>
       </div>
@@ -157,9 +157,6 @@ class SetReferee extends Component {
     if (this.state.dbtournresults.headReferee === this.state.dbresults._id ||
         this.state.dbtournresults.director === this.state.dbresults._id) {
       this.state.isAuthorized = true;
-    }
-    else {
-      this.state.isAuthorized = false;
     }
 
     this.setState(this.state);

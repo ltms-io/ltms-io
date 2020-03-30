@@ -46,4 +46,43 @@ describe("SetReferee Component", () => {
       expect(theMainHeader.length).toBe(1);
     });
   });
+
+  describe("Authorization", () => {
+    let component;
+    beforeEach( () => {
+      const props = {
+        match: {
+          params: {
+            tourneyId: "Test tourneyId"
+          }
+        }
+      };
+      component = setUp(props);
+    });
+
+    it("Should render the form if authorized", () => {
+      component.setState({
+        tourneyId: component.state().tourneyId,
+        dbresults: component.state().dbresults,
+        dbtournresults: component.state().dbtournresults,
+        authresults: component.state().authresults,
+        isAuthorized: true
+      });
+      console.log(component.state());
+      const theComponent = findByTestAttr(component, "theForm");
+      expect(theComponent.length).toBe(1);
+    });
+
+    it("Should render the no authorization message if not authorized", () => {
+      component.setState({
+        tourneyId: component.state().tourneyId,
+        dbresults: component.state().dbresults,
+        dbtournresults: component.state().dbtournresults,
+        authresults: component.state().authresults,
+        isAuthorized: false
+      });
+      const theMainHeader = findByTestAttr(component, "noAuthMsg");
+      expect(theMainHeader.length).toBe(1);
+    });
+  });
 });
