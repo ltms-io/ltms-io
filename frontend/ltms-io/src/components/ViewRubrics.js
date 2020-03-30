@@ -15,7 +15,6 @@ export default class ViewRubrics extends Component {
     }
     handleSubmit = async event => {
         event.preventDefault()
-        console.log("HELLOO")
         const elements = ['one','two','three'];
         for(const [i,v] of elements.entries()){
             this.state.teams.push(<li key={i}>{v}</li>)
@@ -38,11 +37,65 @@ export default class ViewRubrics extends Component {
                         Display Rubrics
                     </Button>
                 </Form>
-                {this.state.tourneyId}
+                Tournament ID: {this.state.tourneyId}
                 <div>
-                {this.state.teams.map((item, i) => {
+                {this.state.teams.map((item1, i1) => {
                               return(
-                                item.teamName
+                                <div>
+                                  {item1.teamName}
+                                  {item1.rubrics.map((item2, i2) => {
+                                    return(
+                                      <div>
+                                        Rubric {i2 + 1}:
+                                        <div>
+                                          Core Values
+                                          <div>
+                                            Inspiration - (discovery: {item2.coreValues.inspiration.discovery} , team identity: {item2.coreValues.inspiration.teamIdentity} , impact: {item2.coreValues.inspiration.impact})
+                                          </div>
+                                          <div>
+                                            Teamwork - (effectiveness: {item2.coreValues.teamwork.effectiveness} , efficiency: {item2.coreValues.teamwork.efficiency} , kids do the work: {item2.coreValues.teamwork.kidsDoTheWork})
+                                          </div>
+                                          <div>
+                                            Gracious Professionalism - (inclusion: {item2.coreValues.graciousProfessionalism.inclusion} , respect: {item2.coreValues.graciousProfessionalism.respect} , cooperation: {item2.coreValues.graciousProfessionalism.coopertition})
+                                          </div>
+                                          <div>
+                                             Comments: {item2.coreValues.comments}
+                                          </div>
+                                        </div>
+                                        <div>
+                                          Innovation Project
+                                          <div>
+                                            Research - (problem identification: {item2.innovationProject.research.problemIdentification} , sources of information: {item2.innovationProject.research.sourcesOfInformation} , problem analysis: {item2.innovationProject.research.problemAnalysis})
+                                          </div>
+                                          <div>
+                                            Innovative Solution - (team solution: {item2.innovationProject.innovativeSolution.teamSolution} , innovation: {item2.innovationProject.innovativeSolution.innovation} , solution development: {item2.innovationProject.innovativeSolution.solutionDevelopment})
+                                          </div>
+                                          <div>
+                                            Presentation - (sharing: {item2.innovationProject.presentation.sharing} , creativity: {item2.innovationProject.presentation.creativity} , presentation effectiveness: {item2.innovationProject.presentation.presentationEffectiveness})
+                                          </div>
+                                          <div>
+                                          Comments: {item2.innovationProject.comments}
+                                          </div>
+                                        </div>
+                                        <div>
+                                          Robot Design
+                                          <div>
+                                            Mechanical Design - (durability: {item2.robotDesign.mechanicalDesign.durability} , mechanical efficiency: {item2.robotDesign.mechanicalDesign.mechanicalEfficiency} , mechanization: {item2.robotDesign.mechanicalDesign.mechanization})
+                                          </div>
+                                          <div>
+                                            Programming - (programming quality: {item2.robotDesign.programming.programmingQuality} , programming efficiency: {item2.robotDesign.programming.programmingEfficiency} , automation navigation: {item2.robotDesign.programming.automationNavigation})
+                                          </div>
+                                          <div>
+                                            Strategical Innovation - (design process: {item2.robotDesign.strategyInnovation.designProcess} , mission Strategy: {item2.robotDesign.strategyInnovation.missionStrategy} , innovation: {item2.robotDesign.strategyInnovation.innovation})
+                                          </div>
+                                          <div>
+                                            Comments: {item2.robotDesign.comments}
+                                          </div>
+                                        </div>
+                                        </div>
+                                    )
+                                  })}
+                                  </div>
                               );
                             })}
                 </div>
