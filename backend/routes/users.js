@@ -220,6 +220,7 @@ router.post('/search', (req, res) => {
 
 //POST creates json token for cookie
 router.post('/login', (req, res) => {
+    console.log(req);
     if(!req.body.data){
         return res.status(400).send("Body is empty")
     }
