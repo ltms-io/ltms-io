@@ -11,7 +11,7 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
-    password: {
+    auth0id: {
         type: String,
         required: true,
     },
@@ -26,6 +26,20 @@ const UserSchema = new Schema({
     userAuthorizer: {
         type: Boolean,
         default: false,
+    },
+    profilePic: {
+        is_azure: {
+            type: Boolean,
+            default: false,
+        },
+        imgUrl: {
+            type: String,
+            default: '',
+        },
+        thumbUrl: {
+            type: String,
+            default: '',
+        },
     },
 });
 

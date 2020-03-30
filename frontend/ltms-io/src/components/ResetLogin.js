@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
+import { connect } from 'react-redux';
+const jsonWeb = require('jsonwebtoken');
 
 class ResetLogin extends Component {
   constructor(props) {
@@ -20,28 +22,40 @@ class ResetLogin extends Component {
     e.preventDefault();
     alert("Resetting email to: " + e.target.elements.email.value);
     this.state.dbresults.email = e.target.elements.email.value;
-    // Use this statement instead once backend Auth0 connection for register
-    // is complete (5e54b2a86efec099146c054b is random test uid):
-    //await axios.patch("http://localhost:5000/api/users/5e54b2a86efec099146c054b", {
-    await axios.patch(`http://localhost:5000/api/users/${this.state.uid}`, {
+
+    await axios.patch(`http://localhost:5000/api/users/updateuser`, {
+      auth0id: this.state.uid,
       email: this.state.dbresults.email
     })
     .catch( (error) => {
       console.log(error);
     });
 
-    // Use this statement instead once backend Auth0 connection for register
-    // is complete (5e54b2a86efec099146c054b is random test uid):
-    //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
-    await axios.get(`http://localhost:5000/api/users/${this.state.uid}`)
-      .then ( (result) => {
-        this.state.dbresults = result.data;
-      })
-      .catch( (error) => {
-        console.log(error);
-      });
 
-    console.log("UPDATED STATE", this.state);
+    var token = document.cookie.substring(13);
+    var decoded = jsonWeb.verify(token, "123456");
+
+    this.state.dbresults = decoded;
+    this.state.uid = decoded.auth0id;
+
+    await axios({
+      method: 'GET',
+      url: `https://dev-s68c-q-y.auth0.com/userinfo`,
+      headers: {
+        'content-type': 'application/json',
+        'authorization': 'Bearer ' + localStorage.getItem("access_token")
+      },
+      json: true
+    })
+    .then( (result) => {
+      this.state.authresults = result.data;
+      this.state.uid = this.state.authresults.sub;
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
+
+    // console.log("UPDATED STATE", this.state);
   }
 
   async handlePassword(e) {
@@ -53,7 +67,7 @@ class ResetLogin extends Component {
       headers: {'content-type': 'application/json'},
       data: {
         client_id: '4J9E3tWlJczAxTGBR2YUO61Rmebmlnmf',
-        email: this.state.authresults.email,
+        email: this.state.dbresults.email,
         connection: 'Username-Password-Authentication'
       },
       json: true
@@ -90,38 +104,43 @@ class ResetLogin extends Component {
   }
 
   async componentDidMount() {
-    await axios({
-      method: 'GET',
-      url: `https://dev-s68c-q-y.auth0.com/userinfo`,
-      headers: {
-        'content-type': 'application/json',
-        'authorization': 'Bearer ' + localStorage.getItem("access_token")
-      },
-      json: true
-    })
-    .then( (result) => {
-      this.state.authresults = result.data;
-      this.state.uid = this.state.authresults.sub;
-    })
-    .catch( (error) => {
-      console.log(error);
-    });
+    // await axios({
+    //   method: 'GET',
+    //   url: `https://dev-s68c-q-y.auth0.com/userinfo`,
+    //   headers: {
+    //     'content-type': 'application/json',
+    //     'authorization': 'Bearer ' + localStorage.getItem("access_token")
+    //   },
+    //   json: true
+    // })
+    // .then( (result) => {
+    //   console.log("Auth info: ");
+    //   console.log(result);
+    //   this.setState({authresults: result.data});
+    //   this.setState({uid: this.state.authresults.sub});
+    // })
+    // .catch( (error) => {
+    //   console.log(error);
+    // });
 
-    // Use this statement instead once backend Auth0 connection for register
-    // is complete (5e54b2a86efec099146c054b is random test uid):
-    //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
-    await axios.get(`http://localhost:5000/api/users/${this.state.uid.substring(6)}`)
-      .then ( (result) => {
-        this.state.dbresults = result.data;
-      })
-      .catch( (error) => {
-        console.log(error);
-      });
+    var token = document.cookie.substring(13);
+    var decoded = jsonWeb.verify(token, "123456");
 
+    this.state.dbresults = decoded;
+    this.state.uid = decoded.auth0id;
+    
     this.setState(this.state);
 
     console.log("INITIAL RESET LOGIN STATE", this.state);
   }
 }
 
-export default ResetLogin;
+const mapStateToProps = (state) => {
+  return {
+    name: state.name,
+    email: state.email,
+    tournaments: state.tournaments
+  }
+};
+
+export default connect(mapStateToProps)(ResetLogin);

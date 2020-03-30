@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
+const jsonWeb = require('jsonwebtoken');
 
 class Dashboard extends Component {
   constructor(props) {
     super(props);
-
+    console.log(props);
     this.state = {
-      uid: "",
+      tournaments: [],
       dbresults: {},
       authresults: {}
     };
   }
 
   render () {
+
+  //  var tournaments = this.state.tournaments.map((x))
     return(
       <div>
         <div>
@@ -23,8 +26,13 @@ class Dashboard extends Component {
           Name: { this.state.dbresults.name }
         </div>
         <div>
-          UID: { this.state.uid }
+          Auth-UID: { this.state.dbresults.auth0id }
         </div>
+        <div>
+          mongo-id: { this.state.dbresults._id }
+        </div>
+
+
       </div>
     );
   }
@@ -41,22 +49,25 @@ class Dashboard extends Component {
     })
     .then( (result) => {
       this.state.authresults = result.data;
-      this.state.uid = this.state.authresults.sub;
     })
     .catch( (error) => {
       console.log(error);
     });
 
-    // Use this statement instead once backend Auth0 connection for register
-    // is complete (5e54b2a86efec099146c054b is random test uid):
-    //await axios.get(`http://localhost:5000/api/users/5e54b2a86efec099146c054b`)
-    await axios.get(`http://localhost:5000/api/users/${this.state.uid.substring(6)}`)
-      .then ( (result) => {
-        this.state.dbresults = result.data;
+    var token = document.cookie.substring(13);
+    var decoded = jsonWeb.verify(token, "123456");
+
+    this.state.dbresults = decoded;
+    
+    this.setState(this.state);
+
+    await axios.post("http://localhost:5000/api/tournaments/user", {data: {auth0id: decoded.auth0id}})
+      .then((result) => {
+        this.state.tournaments = result.data;
       })
-      .catch( (error) => {
+      .catch((error) => {
         console.log(error);
-      });
+      })
 
     this.setState(this.state);
 

@@ -23,7 +23,6 @@ export default class Auth {
     this.auth0.authorize();
   }
 
-
   handleAuthentication() {
     this.auth0.parseHash( async (err, authResults) => {
       if (authResults && authResults.accessToken && authResults.idToken) {
@@ -33,49 +32,22 @@ export default class Auth {
         localStorage.setItem("access_token", authResults.accessToken);
         localStorage.setItem("id_token", authResults.idToken);
         localStorage.setItem("expires_at", expiresAt);
-
-        var uid = "";
-        var authresults = {};
-        var dbresults = {};
-        await axios({
-          method: 'GET',
-          url: `https://dev-s68c-q-y.auth0.com/userinfo`,
-          headers: {
-            'content-type': 'application/json',
-            'authorization': 'Bearer ' + localStorage.getItem("access_token")
-          },
-          json: true
-        })
-        .then( (result) => {
-          authresults = result.data;
-          uid = this.state.authresults.sub;
-        })
-        .catch( (error) => {
-          console.log(error);
+        axios({
+           method: 'GET',
+           url: 'https://dev-s68c-q-y.auth0.com/userinfo',
+           headers: {
+               'authorization': `Bearer ${authResults.accessToken}`,
+            }
+        }).then((userDataResponse) => {
+          localStorage.setItem("auth0_id", userDataResponse.data.sub);
+          axios.post(`http://localhost:5000/api/users/auth`, {
+            data: userDataResponse.data
+          }).then((x) => {
+            location.hash = "";
+            location.pathname = LOGIN_SUCCESS_PAGE;
+          });
         });
 
-        await axios.get(`http://localhost:5000/api/users/${uid.substring(6)}`)
-          .then ( (result) => {
-            dbresults = result.data;
-          })
-          .catch( async (error) => {
-            if (error.response.status === 404) {
-              await axios.post(`http://localhost:5000/api/users/register`, {
-                uid: uid.substring(6),
-                email: authresults.email,
-                name: authresults.name
-              })
-              .catch( (error) => {
-                console.log(error);
-              });
-            }
-            else {
-              console.log(error);
-            }
-          });
-
-        location.hash = "";
-        location.pathname = LOGIN_SUCCESS_PAGE;
       } else {
         location.pathname = LOGIN_FAIL_PAGE;
         console.log(err);
@@ -89,6 +61,8 @@ export default class Auth {
   }
 
   logout() {
+    var token = document.cookie.substring(13);
+    document.cookie = "UserIdentity=" + token + "; expires=Thu, 01 Jan 1970 00:00:00 UTC";
     localStorage.removeItem("access_token");
     localStorage.removeItem("id_token");
     localStorage.removeItem("expires_at");
