@@ -1,45 +1,34 @@
 import React from "react";
+import "react-dates/initialize";
+import "react-dates/lib/css/_datepicker.css";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import LTMSNavbar from "./components/LTMSNavbar";
 import Home from "./components/Home";
 import Dashboard from "./components/Dashboard";
 import Login from "./components/Login";
 import AccountDetails from "./components/AccountDetails";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import TournamentSearch from "./components/TournamentSearch"
 import CreateTournament from "./components/CreateTournament";
 import Sheet from "./components/Scoresheet";
 import Callback from "./components/Callback";
-import { useCookies } from "react-cookie";
-
-
-import "react-dates/initialize";
-import "react-dates/lib/css/_datepicker.css";
 import PictureUploadModalTest from "./components/PictureUploadModalTest";
 import VolunteerModalTest from "./components/VolunteerModalTest";
+import SetReferee from "./components/SetReferee";
+import MainDashboard from "./components/MainDashboard";
+import TournamentDashboard from "./components/TournamentDashboard";
+import RubricEntry from "./components/RubricEntry";
 import axios from 'axios';
-const jsonWeb = require('jsonwebtoken')
+
 
 function App(props) {
-  //console.log(props);
-  const [cookies, setCookie, removeCookie] = useCookies(['user']);
   if(!document.cookie){
     axios.post('http://localhost:5000/api/users/login', {data: localStorage.getItem("auth0_id")}).then( (result) => {
       document.cookie = "UserIdentity=" + result.data;
       localStorage.removeItem("auth0_id");
-      //var token = cookies.UserIdentity;
-      // var decoded = jsonWeb.verify(result.data,"123456");
-      // console.log(decoded.name);
-      // var token = document.cookie.substring(13);
-      // console.log(token);
-      // var decoded = jsonWeb.verify(token,"123456");
-      // console.log(decoded.name);
-      //removeCookie("UserIdentity");
-      //console.log(cookies.UserIdentity);
-      //console.log(response);
     }).catch(function(err){
       console.log(err);
     });
   }
-
   return (
     <Router>
       <div className="App">
@@ -54,6 +43,11 @@ function App(props) {
           <Route path="/callback" component={Callback} />
           <Route path="/pictureuploadtest" component={PictureUploadModalTest} />
           <Route path="/volunteermodaltest" component={ VolunteerModalTest } />
+          <Route path="/tournamentsearch" component={ TournamentSearch } />
+          <Route path="/setreferee/:tourneyId" component={ SetReferee } />
+          <Route path="/maindashboard" component={ MainDashboard } />
+          <Route path="/tournamentdashboard/:tourneyId" component={ TournamentDashboard } />
+          <Route path="/rubricentry/:tourneyId/:teamId" component={ RubricEntry } />
         </Switch>
       </div>
     </Router>
