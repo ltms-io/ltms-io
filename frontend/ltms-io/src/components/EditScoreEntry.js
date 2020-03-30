@@ -35,23 +35,23 @@ export default class EditScoreEntry extends Component {
 
         if (type === "Yes/No") {
             score = <div>
-                <Dropdown.Item key="yes" eventKey={"y" + eventKey} active={this.state.scoreResults.fieldValues[this.state.insertIdx] == "Yes"}>Yes</Dropdown.Item>
-                <Dropdown.Item key="no" eventKey={"n" + eventKey} active={this.state.scoreResults.fieldValues[this.state.insertIdx] == "No"}>No</Dropdown.Item>
+                <Dropdown.Item key="yes" eventKey={"y" + eventKey}>Yes</Dropdown.Item>
+                <Dropdown.Item key="no" eventKey={"n" + eventKey}>No</Dropdown.Item>
             </div>
         } else {
             score = <div>
-                <Dropdown.Item key="1" eventKey={"1" + eventKey} active={this.state.scoreResults.fieldValues[this.state.insertIdx] == "1"}>1</Dropdown.Item>
-                <Dropdown.Item key="2" eventKey={"2" + eventKey} active={this.state.scoreResults.fieldValues[this.state.insertIdx] == "2"}>2</Dropdown.Item>
-                <Dropdown.Item key="3" eventKey={"3" + eventKey} active={this.state.scoreResults.fieldValues[this.state.insertIdx] == "3"}>3</Dropdown.Item>
-                <Dropdown.Item key="4" eventKey={"4" + eventKey} active={this.state.scoreResults.fieldValues[this.state.insertIdx] == "4"}>4</Dropdown.Item>
-                <Dropdown.Item key="5" eventKey={"5" + eventKey} active={this.state.scoreResults.fieldValues[this.state.insertIdx] == "5"}>5</Dropdown.Item>
+                <Dropdown.Item key="1" eventKey={"1" + eventKey}>1</Dropdown.Item>
+                <Dropdown.Item key="2" eventKey={"2" + eventKey}>2</Dropdown.Item>
+                <Dropdown.Item key="3" eventKey={"3" + eventKey}>3</Dropdown.Item>
+                <Dropdown.Item key="4" eventKey={"4" + eventKey}>4</Dropdown.Item>
+                <Dropdown.Item key="5" eventKey={"5" + eventKey}>5</Dropdown.Item>
             </div>
         }
 
         newArray.push({
             categ: <Form.Control type="text" value={cate} disabled />,
             scoretype: score,
-            tempScore: "Score"
+            tempScore: this.state.scoreResults.fieldValues[this.state.insertIdx]
         })
 
         var newIdx = this.state.insertIdx + 1;
