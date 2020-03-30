@@ -39,7 +39,7 @@ export default class PictureUploadModal extends Component {
         //TODO: Replace with current user id
         var token = document.cookie.substring(13);
         var decoded = jsonWeb.verify(token, "123456");
-        data.append("auth0id", decoded.auth0Id);
+        data.append("auth0id", decoded.auth0id);
 
         axios.post('http://localhost:5000/api/users/uploadpicture', data, {
             'Content-Type': 'multipart/form-data'

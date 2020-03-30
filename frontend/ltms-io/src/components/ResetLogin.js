@@ -46,7 +46,7 @@ class ResetLogin extends Component {
     var decoded = jsonWeb.verify(token, "123456");
 
     //This updates the json token saved as a cookie by creating a new token then saving it    
-    await axios.post('http://localhost:5000/api/users/login', {data: {sub: decoded.auth0Id}}).then( (result) => {
+    await axios.post('http://localhost:5000/api/users/login', {data: {sub: decoded.auth0id}}).then( (result) => {
       document.cookie = "UserIdentity=" + token + "; expires=Thu, 01 Jan 1970 00:00:00 UTC";
       document.cookie = "UserIdentity=" + result.data;
 
