@@ -100,8 +100,8 @@ class SetReferee extends Component {
 
   render() {
     return(
-      <div>
-        <h1>Set Referee for {this.state.dbtournresults.name}</h1>
+      <div data-test="theComponent">
+        <h1 data-test="theMainHeader">Set Referee for {this.state.dbtournresults.name}</h1>
         <div>
           {this.state.isAuthorized && (
             <Form onSubmit={this.handleSubmit}>
