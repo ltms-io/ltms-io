@@ -1,6 +1,6 @@
 import React from "react";
 import { shallow } from "enzyme";
-import { findByTestAttr } from "./../../utils"
+import { findByTestAttr, checkProps } from "./../../utils"
 import SetReferee from "./SetReferee";
 
 const setUp = (props = {}) => {
@@ -9,13 +9,27 @@ const setUp = (props = {}) => {
 };
 
 describe("SetReferee Component", () => {
+  describe("Checking PropTypes", () => {
+    it("Should not throw a warning", () => {
+      const expectedProps = {
+        match: {
+          params: {
+            tourneyId: "Test tourneyId"
+          }
+        }
+      };
+      const propsErr = checkProps(SetReferee, expectedProps);
+      expect(propsErr).toBeUndefined();
+    });
+  });
+
   describe("Basic Rendering", () => {
     let component;
     beforeEach( () => {
       const props = {
         match: {
           params: {
-            tourneyId: "testing"
+            tourneyId: "Test tourneyId"
           }
         }
       };

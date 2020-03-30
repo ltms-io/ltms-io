@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import { Form, Button } from 'react-bootstrap';
+import PropTypes from "prop-types";
 
 class SetReferee extends Component {
   constructor(props) {
@@ -163,6 +164,14 @@ class SetReferee extends Component {
 
     this.setState(this.state);
   }
+}
+
+SetReferee.propTypes = {
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      tourneyId: PropTypes.string
+    })
+  })
 }
 
 export default SetReferee;
