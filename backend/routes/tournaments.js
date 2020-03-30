@@ -341,4 +341,22 @@ router.delete('/:id', (req,res) => {
 
 });
 
+//delete all scores
+router.delete('/scores/yesimsure', (req, res) => {
+    Tournament.findById(req.body.id).then(tournament => {
+        if(!tournament) {
+            return res.status(404).send("tourney not found");
+        }
+
+        tournament.scores = [];
+        
+        tournament.save().then(tournament => {
+            return res.status(200).send(tournament);
+        }).catch(err => {
+            console.log(err)
+            return res.status(500).send(err) ;
+        })
+    })
+})
+
 module.exports = router;

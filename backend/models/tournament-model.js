@@ -17,7 +17,7 @@ const SchoresheetSchema = new Schema({
         required: true
     },
     rawData: {
-        type: Object,
+        type: Array,
         required: true
     }
 });

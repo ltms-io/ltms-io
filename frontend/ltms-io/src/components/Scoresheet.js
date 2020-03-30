@@ -94,7 +94,8 @@ class Sheet extends React.Component{
     newArray.push({
       categ: <Form.Control type = "text" value = {cate}/>,
       scoretype: score,
-      tempScore: "Score"
+      tempScore: "Score",
+      explicitType: this.state.scoreType
     })
 
     this.setState({events: newArray});
@@ -168,7 +169,7 @@ class Sheet extends React.Component{
       teamNum: this.state.team,
       scoreType: "match",
       finalScore: this.state.finalscore,
-      rawData: this.state.events
+      rawData: JSON.stringify(this.state.events)
     }).then(res => {
       alert("done submitting");
     }).catch(err => {
