@@ -19,6 +19,7 @@ import TournamentDashboard from "./components/TournamentDashboard";
 import CreateTeam from "./components/CreateTeam";
 import RubricEntry from "./components/RubricEntry";
 import viewRubric from "./components/ViewRubrics";
+import CreateJudges from "./components/CreateJudges";
 
 function App(props) {
   return (
@@ -32,6 +33,7 @@ function App(props) {
           <Route path="/createtournament" component={CreateTournament} />
           <Route path="/createteam/:tourneyId" component={CreateTeam} />
           <Route path="/viewrubrics/:tourneyId" component={viewRubric} />
+          <Route path="/createjudge" component={CreateJudges} />
 
           <Route
             path="/accountdetails"
