@@ -14,11 +14,17 @@ export default class EditScoreEntry extends Component {
             userResults: {},
             scoreResults: {},
             rawData: [],
-            events: []
+            events: [],
+            insertIdx: 0,
+            finalscore: 0,
+            notesBox: ""
         }
 
         this.handleInsert = this.handleInsert.bind(this);
         this.updateState = this.updateState.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleUpdate = this.handleUpdate.bind(this);
+        this.notesUpdate = this.notesUpdate.bind(this);
     }
 
     handleInsert(name, type) {
@@ -29,26 +35,102 @@ export default class EditScoreEntry extends Component {
 
         if (type === "Yes/No") {
             score = <div>
-                <Dropdown.Item key="yes" eventKey={"y" + eventKey}>Yes</Dropdown.Item>
-                <Dropdown.Item key="no" eventKey={"n" + eventKey}>No</Dropdown.Item>
+                <Dropdown.Item key="yes" eventKey={"y" + eventKey} active={this.state.scoreResults.fieldValues[this.state.insertIdx] == "Yes"}>Yes</Dropdown.Item>
+                <Dropdown.Item key="no" eventKey={"n" + eventKey} active={this.state.scoreResults.fieldValues[this.state.insertIdx] == "No"}>No</Dropdown.Item>
             </div>
         } else {
             score = <div>
-                <Dropdown.Item key="1" eventKey={"1" + eventKey}>1</Dropdown.Item>
-                <Dropdown.Item key="2" eventKey={"2" + eventKey}>2</Dropdown.Item>
-                <Dropdown.Item key="3" eventKey={"3" + eventKey}>3</Dropdown.Item>
-                <Dropdown.Item key="4" eventKey={"4" + eventKey}>4</Dropdown.Item>
-                <Dropdown.Item key="5" eventKey={"5" + eventKey}>5</Dropdown.Item>
+                <Dropdown.Item key="1" eventKey={"1" + eventKey} active={this.state.scoreResults.fieldValues[this.state.insertIdx] == "1"}>1</Dropdown.Item>
+                <Dropdown.Item key="2" eventKey={"2" + eventKey} active={this.state.scoreResults.fieldValues[this.state.insertIdx] == "2"}>2</Dropdown.Item>
+                <Dropdown.Item key="3" eventKey={"3" + eventKey} active={this.state.scoreResults.fieldValues[this.state.insertIdx] == "3"}>3</Dropdown.Item>
+                <Dropdown.Item key="4" eventKey={"4" + eventKey} active={this.state.scoreResults.fieldValues[this.state.insertIdx] == "4"}>4</Dropdown.Item>
+                <Dropdown.Item key="5" eventKey={"5" + eventKey} active={this.state.scoreResults.fieldValues[this.state.insertIdx] == "5"}>5</Dropdown.Item>
             </div>
         }
 
         newArray.push({
-            categ: <Form.Control type="text" value={cate} />,
+            categ: <Form.Control type="text" value={cate} disabled />,
             scoretype: score,
             tempScore: "Score"
         })
 
+        var newIdx = this.state.insertIdx + 1;
+        this.setState({
+            events: newArray,
+            insertIdx: newIdx
+        });
+    }
+
+    handleChange(eventKey) {
+        console.log(parseInt(eventKey.substring(1), 10));
+        console.log(this.state.events[parseInt(eventKey.substring(1), 10) - 1].tempScore);
+        console.log(eventKey);
+        var newArray = [...this.state.events];
+
+        if (eventKey.substring(0, 1) === "y" || eventKey.substring(0, 1) === "n") {
+
+            if (eventKey.substring(0, 1) === "y") {
+                newArray[parseInt(eventKey.substring(1), 10) - 1].tempScore = "Yes";
+            } else {
+                newArray[parseInt(eventKey.substring(1), 10) - 1].tempScore = "No";
+            }
+
+        } else {
+            newArray[parseInt(eventKey.substring(1), 10) - 1].tempScore = eventKey.substring(0, 1);
+        }
+
         this.setState({ events: newArray });
+    }
+
+    handleUpdate(e) {
+        e.preventDefault();
+
+        var index = this.state.events.length;
+        var score = 0;
+
+        for (var i = 0; i < index; i++) {
+            if (this.state.events[i].tempScore === "Yes") {
+                score += 5;
+            } else if (this.state.events[i].tempScore === "No") {
+                continue;
+            } else {
+                score += parseInt(this.state.events[i].tempScore, 10);
+            }
+        }
+
+        this.setState({ finalscore: score });
+
+        var fixedCats = [];
+        var fixedScores = [];
+        this.state.events.forEach(event => {
+            fixedCats.push(event.categ.props.value);
+            fixedScores.push(event.tempScore);
+        });
+
+        alert("submitting");
+
+        axios.patch(`http://localhost:5000/api/tournaments/${this.state.tourneyId}/scores/${this.state.scoreId}`, {
+            id: "5e7a5410be7af1ae4acc6314",
+            fieldTypes: fixedCats,
+            fieldValues: fixedScores,
+            teamNum: this.state.team,
+            scoreType: "match",
+            finalScore: this.state.finalscore,
+            rawData: JSON.stringify(this.state.events),
+            changeNotes: this.state.notesBox
+        }).then(res => {
+            window.location = '/maindashboard';
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+
+    notesUpdate(e) {
+        e.preventDefault();
+
+        this.setState({
+            notesBox: e.target.value
+        });
     }
 
     async componentDidMount() {
@@ -118,28 +200,28 @@ export default class EditScoreEntry extends Component {
                                     </Col>
                                 </Row>
                             ))}
-                            <hr />
-                            <Row>
-                                <Col>
-                                    <h5>Notes</h5>
-                                    <ul>
-                                        {this.state.scoreResults.changeNotes &&
-                                            this.state.scoreResults.changeNotes.map((item, i) => {
-                                                return (
-                                                    <li key={i}>
-                                                        {item}
-                                                    </li>
-                                                );
-                                            })
-                                        }
-                                    </ul>
-                                    <Form.Group controlId="notes">
-                                        <Form.Control as="textarea" />
-                                    </Form.Group>
-                                </Col>
-                            </Row>
+                        <hr />
+                        <Row>
+                            <Col>
+                                <h5>Notes</h5>
+                                <ul>
+                                    {this.state.scoreResults.changeNotes &&
+                                        this.state.scoreResults.changeNotes.map((item, i) => {
+                                            return (
+                                                <li key={i}>
+                                                    {item}
+                                                </li>
+                                            );
+                                        })
+                                    }
+                                </ul>
+                                <Form.Group controlId="notes">
+                                    <Form.Control as="textarea" onChange={this.notesUpdate}/>
+                                </Form.Group>
+                            </Col>
+                        </Row>
                     </Form>
-                    <Button variant="outline-primary" onClick={this.handleCalculate}>
+                    <Button variant="warning" onClick={this.handleUpdate}>
                         Submit Changes
                     </Button>
                 </Container>

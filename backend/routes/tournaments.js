@@ -330,7 +330,39 @@ router.patch('/:id/scores/:scoreid', (req, res) => {
             return res.status(404).send("tournament not found");
         }
 
-        //STOP HERE
+        if(req.body.fieldTypes) {
+            tournament.scores.id(req.params.scoreid).fieldTypes = req.body.fieldTypes;
+        }
+
+        if(req.body.fieldValues) {
+            tournament.scores.id(req.params.scoreid).fieldValues = req.body.fieldValues;
+        }
+
+        if(req.body.teamNum) {
+            tournament.scores.id(req.params.scoreid).teamNum = req.body.teamNum;
+        }
+
+        if(req.body.scoreType) {
+            tournament.scores.id(req.params.scoreid).scoreType = req.body.scoreType;
+        }
+
+        if(req.body.finalScore) {
+            tournament.scores.id(req.params.scoreid).finalScore = req.body.finalScore;
+        }
+
+        if(req.body.rawData) {
+            tournament.scores.id(req.params.scoreid).rawData = req.body.rawData;
+        }
+
+        if(req.body.changeNotes) {
+            tournament.scores.id(req.params.scoreid).changeNotes.push(req.body.changeNotes);
+        }
+
+        tournament.save().then(tournament => {
+            res.status(200).send(tournament);
+        }).catch(err => {
+            res.status(500).send(err);
+        })
     })
 })
 
