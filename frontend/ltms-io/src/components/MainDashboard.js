@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { CardColumns, Card, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import jsonWeb from 'jsonwebtoken';
 
 class MainDashboard extends Component {
     constructor(props) {
@@ -19,7 +20,9 @@ class MainDashboard extends Component {
     }
 
     componentDidMount() {
-        axios.post("http://localhost:5000/api/tournaments/user", {auth0id: localStorage.getItem("auth0_id")})
+        var token = document.cookie.substring(13);
+        var decoded = jsonWeb.verify(token, "123456");
+        axios.post("http://localhost:5000/api/tournaments/user", {auth0id: decoded.auth0id})
             .then(res => {
                 this.setState({
                     director: res.data.director,

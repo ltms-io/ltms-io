@@ -19,8 +19,19 @@ import TournamentDashboard from "./components/TournamentDashboard";
 import RubricEntry from "./components/RubricEntry";
 import MatchScoreListing from "./components/MatchScoreListing";
 import EditScoreEntry from "./components/EditScoreEntry";
+import axios from 'axios';
+const jsonWeb = require('jsonwebtoken');
 
 function App(props) {
+  if(!document.cookie){
+    axios.post('http://localhost:5000/api/users/login', {data: localStorage.getItem("auth0_id")}).then( (result) => {
+      document.cookie = "UserIdentity=" + result.data;
+      localStorage.removeItem("auth0_id");
+    }).catch(function(err){
+      console.log(err);
+    });
+  }
+  
   return (
     <Router>
       <div className="App">
@@ -47,5 +58,3 @@ function App(props) {
     </Router>
   );
 }
-
-export default App;
