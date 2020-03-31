@@ -31,10 +31,9 @@ class ResetLogin extends Component {
       console.log(error);
     });
 
-    await axios.post('http://localhost:5000/api/users/login', {data: {sub: decoded.auth0id}}).then( (result) => {
+    await axios.post('http://localhost:5000/api/users/login', {data: this.state.uid}).then( (result) => {
       document.cookie = "UserIdentity=" + token + "; expires=Thu, 01 Jan 1970 00:00:00 UTC";
       document.cookie = "UserIdentity=" + result.data;
-      
     });
 
     var token = document.cookie.substring(13);
@@ -43,43 +42,8 @@ class ResetLogin extends Component {
     this.state.dbresults = decoded;
     this.state.uid = decoded.auth0id;
 
-    await axios({
-      method: 'GET',
-      url: `https://dev-s68c-q-y.auth0.com/userinfo`,
-      headers: {
-        'content-type': 'application/json',
-        'authorization': 'Bearer ' + localStorage.getItem("access_token")
-      },
-      json: true
-    })
-    .then( (result) => {
-      this.state.authresults = result.data;
-      this.state.uid = this.state.authresults.sub;
-    })
-    .catch( (error) => {
-      console.log(error);
-    });
-    
-    
-    await axios({
-      method: 'GET',
-      url: `https://dev-s68c-q-y.auth0.com/userinfo`,
-      headers: {
-        'content-type': 'application/json',
-        'authorization': 'Bearer ' + localStorage.getItem("access_token")
-      },
-      json: true
-    })
-    .then( (result) => {
-      this.state.authresults = result.data;
-      this.state.uid = this.state.authresults.sub;
-    })
-    .catch( (error) => {
-      console.log(error);
-    });
-
     this.setState(this.state);
-    // console.log("UPDATED STATE", this.state);
+    console.log("UPDATED STATE", this.state);
   }
 
   async handlePassword(e) {
@@ -128,31 +92,12 @@ class ResetLogin extends Component {
   }
 
   async componentDidMount() {
-    // await axios({
-    //   method: 'GET',
-    //   url: `https://dev-s68c-q-y.auth0.com/userinfo`,
-    //   headers: {
-    //     'content-type': 'application/json',
-    //     'authorization': 'Bearer ' + localStorage.getItem("access_token")
-    //   },
-    //   json: true
-    // })
-    // .then( (result) => {
-    //   console.log("Auth info: ");
-    //   console.log(result);
-    //   this.setState({authresults: result.data});
-    //   this.setState({uid: this.state.authresults.sub});
-    // })
-    // .catch( (error) => {
-    //   console.log(error);
-    // });
-
     var token = document.cookie.substring(13);
     var decoded = jsonWeb.verify(token, "123456");
 
     this.state.dbresults = decoded;
     this.state.uid = decoded.auth0id;
-    
+
     this.setState(this.state);
 
     console.log("INITIAL RESET LOGIN STATE", this.state);
