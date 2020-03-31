@@ -17,6 +17,8 @@ import SetReferee from "./components/SetReferee";
 import MainDashboard from "./components/MainDashboard";
 import TournamentDashboard from "./components/TournamentDashboard";
 import RubricEntry from "./components/RubricEntry";
+import MatchScoreListing from "./components/MatchScoreListing";
+import EditScoreEntry from "./components/EditScoreEntry";
 import axios from 'axios';
 const jsonWeb = require('jsonwebtoken');
 
@@ -29,9 +31,10 @@ function App(props) {
       console.log(err);
     });
   }
+  
   return (
     <Router>
-      <div data-test="theApp" className="App">
+      <div className="App">
         <LTMSNavbar />
         <Switch>
           <Route path="/" exact component={() => <Home auth={props.auth} />} />
@@ -48,10 +51,10 @@ function App(props) {
           <Route path="/maindashboard" component={ MainDashboard } />
           <Route path="/tournamentdashboard/:tourneyId" component={ TournamentDashboard } />
           <Route path="/rubricentry/:tourneyId/:teamId" component={ RubricEntry } />
+          <Route path="/t/:tourneyId/mscores" component={ MatchScoreListing } />
+          <Route path="/t/:tourneyId/editscore/:scoreId" component={ EditScoreEntry } />
         </Switch>
       </div>
     </Router>
   );
 }
-
-export default App;
