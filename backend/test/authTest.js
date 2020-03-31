@@ -113,5 +113,4 @@ describe('App', function() {
                 done();
         })
     })
-    it()
 });
