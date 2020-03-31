@@ -19,6 +19,9 @@ import TournamentDashboard from "./components/TournamentDashboard";
 import RubricEntry from "./components/RubricEntry";
 import MatchScoreListing from "./components/MatchScoreListing";
 import EditScoreEntry from "./components/EditScoreEntry";
+import CreateTeam from './components/CreateTeam';
+import ViewRubrics from './components/ViewRubrics';
+import CreateJudges from './components/CreateJudges';
 import axios from 'axios';
 import RoleChange from './components/RoleChange';
 import CreateTeam from './components/CreateTeam';
@@ -30,12 +33,12 @@ function App(props) {
   if(!document.cookie){
     axios.post('http://localhost:5000/api/users/login', {data: localStorage.getItem("auth0_id")}).then( (result) => {
       document.cookie = "UserIdentity=" + result.data;
-      localStorage.removeItem("auth0_id");
+      // localStorage.removeItem("auth0_id");
     }).catch(function(err){
       console.log(err);
     });
   }
-  
+
   return (
     <Router>
       <div className="App">
