@@ -120,7 +120,7 @@ export default class EditScoreEntry extends Component {
             scoreType: "match",
             finalScore: score,
             rawData: JSON.stringify(this.state.events),
-            changeNotes: this.state.notesBox
+            changeNotes: this.state.notesBox += ` [Change to final score: ${score - this.state.scoreResults.finalScore}]`
         }).then(res => {
             window.location = '/maindashboard';
         }).catch(err => {
