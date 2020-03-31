@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { CardColumns, Card, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import jsonWeb from 'jsonwebtoken';
 
 class MainDashboard extends Component {
     constructor(props) {
@@ -19,7 +20,9 @@ class MainDashboard extends Component {
     }
 
     componentDidMount() {
-        axios.post("http://localhost:5000/api/tournaments/user", {auth0id: localStorage.getItem("auth0_id")})
+        var token = document.cookie.substring(13);
+        var decoded = jsonWeb.verify(token, "123456");
+        axios.post("http://localhost:5000/api/tournaments/user", {auth0id: decoded.auth0id})
             .then(res => {
                 this.setState({
                     director: res.data.director,
@@ -54,8 +57,8 @@ class MainDashboard extends Component {
                                     <Card.Text className="m-3">
                                         <p>Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}</p>
                                     </Card.Text>
-                                    <Link>
-                                        <Button as="a" href={"/tournamentdashboard/" + item._id} className="m-3">Access Tournament</Button>
+                                    <Link to={"/tournamentdashboard/" + item._id} >
+                                        <Button className="m-3">Access Tournament</Button>
                                     </Link>
                                 </Card>
                             );
@@ -76,8 +79,8 @@ class MainDashboard extends Component {
                                     <Card.Text className="m-3">
                                         <p>Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}</p>
                                     </Card.Text>
-                                    <Link>
-                                        <Button href={"/tournamentdashboard/" + item._id} className="m-3">Access Tournament</Button>
+                                    <Link to={"/tournamentdashboard/" + item._id} >
+                                        <Button className="m-3">Access Tournament</Button>
                                     </Link>
                                 </Card>
                             );
@@ -98,8 +101,8 @@ class MainDashboard extends Component {
                                     <Card.Text className="m-3">
                                         <p>Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}</p>
                                     </Card.Text>
-                                    <Link>
-                                        <Button href={"/tournamentdashboard/" + item._id} className="m-3">Access Tournament</Button>
+                                    <Link to={"/tournamentdashboard/" + item._id} >
+                                        <Button className="m-3">Access Tournament</Button>
                                     </Link>
                                 </Card>
                             );
@@ -120,8 +123,8 @@ class MainDashboard extends Component {
                                     <Card.Text className="m-3">
                                         <p>Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}</p>
                                     </Card.Text>
-                                    <Link>
-                                        <Button href={"/tournamentdashboard/" + item._id} className="m-3">Access Tournament</Button>
+                                    <Link to={"/tournamentdashboard/" + item._id} >
+                                        <Button className="m-3">Access Tournament</Button>
                                     </Link>
                                 </Card>
                             );
@@ -142,8 +145,8 @@ class MainDashboard extends Component {
                                     <Card.Text className="m-3">
                                         <p>Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}</p>
                                     </Card.Text>
-                                    <Link>
-                                        <Button href={"/tournamentdashboard/" + item._id} className="m-3">Access Tournament</Button>
+                                    <Link to={"/tournamentdashboard/" + item._id} >
+                                        <Button className="m-3">Access Tournament</Button>
                                     </Link>
                                 </Card>
                             );
@@ -164,8 +167,8 @@ class MainDashboard extends Component {
                                     <Card.Text className="m-3">
                                         <p>Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}</p>
                                     </Card.Text>
-                                    <Link>
-                                        <Button href={"/tournamentdashboard/" + item._id} className="m-3">Access Tournament</Button>
+                                    <Link to={"/tournamentdashboard/" + item._id} >
+                                        <Button className="m-3">Access Tournament</Button>
                                     </Link>
                                 </Card>
                             );
