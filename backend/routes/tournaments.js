@@ -126,33 +126,43 @@ router.get('/:id/scores/:scoreid', (req, res) => {
 router.post('/search', async(req, res) => {
     console.log(req.body);
     if (!req.body.tournament_name && !req.body.user_name && !(req.body.date)) {
-        return res.status(400).send("Please include");
+        return res.status(400).send("Bad request: no searchable fields included.");
     }
 
     var found_user;
     if (req.body.user_name) {
-        await User.findOne({name: req.body.user_name}).then((user) => {
+        await User.findOne({name: {$regex: new RegExp(`^${req.body.user_name}$`, 'i')}}).then((user) => {
             found_user = user;
         }).catch((error) => {
             found_user = null;
         });
     }
 
+    console.log(found_user);
+
     var query = {};
 
-    if (found_user) {
+    if (found_user && found_user !== null) {
+        console.log("=== ASSIGNING QUERY FOR DIRECTOR ===");
         query.director = found_user._id;
     };
 
     if (req.body.tournament_name) {
-        query.name = req.body.tournament_name;
+        query.name = {$regex: new RegExp(`^${req.body.tournament_name}$`, 'i')};
     }
 
     if (req.body.date) {
         query.startDate = req.body.date;
     }
+    console.log(query);
 
-    Tournament.find(query).then((tournament) => {
+    if (!query.director && !query.name && !query.startDate) {
+        console.log("Returning empty");
+        return res.status(404).send([]);
+    }
+
+    Tournament.find(query)
+    .then((tournament) => {
         if (!tournament) {
             return res.status(404).send("No results found");
         }
