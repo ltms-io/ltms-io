@@ -15,7 +15,8 @@ export default class TournamentDashboard extends Component {
             dbteamnames: [],
             authresults: {},
             setRefereeAuthorized: false,
-            rubricEntryAuthorized: false
+            rubricEntryAuthorized: false,
+            headRef: false
         }
 
         this.updateState = this.updateState.bind(this);
@@ -27,25 +28,31 @@ export default class TournamentDashboard extends Component {
 
         if (this.state.dbtournresults.headReferee === this.state.dbresults._id ||
             this.state.dbtournresults.director === this.state.dbresults._id) {
-          this.state.setRefereeAuthorized = true;
+            this.state.setRefereeAuthorized = true;
         }
 
         if (this.state.dbtournresults.director === this.state.dbresults._id) {
-          this.state.rubricEntryAuthorized = true;
+            this.state.rubricEntryAuthorized = true;
         }
         else {
-          for (var i = 0; i < this.state.dbtournresults.judgeAdvisor.length; i++) {
-            if (this.state.dbtournresults.judgeAdvisor[i] === this.state.dbresults._id) {
-              this.state.rubricEntryAuthorized = true;
+            for (var i = 0; i < this.state.dbtournresults.judgeAdvisor.length; i++) {
+                if (this.state.dbtournresults.judgeAdvisor[i] === this.state.dbresults._id) {
+                    this.state.rubricEntryAuthorized = true;
+                }
             }
-          }
-          if (!this.state.isAuthorized) {
-            for (var i = 0; i < this.state.dbtournresults.judges.length; i++) {
-              if (this.state.dbtournresults.judges[i] === this.state.dbresults._id) {
-                this.state.rubricEntryAuthorized = true;
-              }
+            if (!this.state.isAuthorized) {
+                for (var i = 0; i < this.state.dbtournresults.judges.length; i++) {
+                    if (this.state.dbtournresults.judges[i] === this.state.dbresults._id) {
+                        this.state.rubricEntryAuthorized = true;
+                    }
+                }
             }
-          }
+        }
+
+        for (var i = 0; i < this.state.dbtournresults.headReferee.length; i++) {
+            if (this.state.dbtournresults.headReferee[i] === this.state.dbresults._id) {
+                this.state.headRef = true;
+            }
         }
 
         this.setState(this.state);
@@ -65,25 +72,25 @@ export default class TournamentDashboard extends Component {
                             <Button disabled={!this.state.setRefereeAuthorized}>Set Referee</Button>
                         </Link>
                         {this.state.dbtournresults.teams && (
-                          <div>
-                            {this.state.dbtournresults.teams.map( (item, i) => {
-                                return(
-                                    <Link to={"/rubricentry/" + this.state.tourneyId + "/" + item}>
-                                        <Button disabled={!this.state.rubricEntryAuthorized}>Rubric Entry for {this.state.dbteamnames[i]}</Button>
-                                    </Link>
-                                );
-                            })}
-                          </div>
+                            <div>
+                                {this.state.dbtournresults.teams.map((item, i) => {
+                                    return (
+                                        <Link to={"/rubricentry/" + this.state.tourneyId + "/" + item}>
+                                            <Button disabled={!this.state.rubricEntryAuthorized}>Rubric Entry for {this.state.dbteamnames[i]}</Button>
+                                        </Link>
+                                    );
+                                })}
+                            </div>
                         )}
-                        {true && ( //TODO set to head ref only
-                          <Link to={"/t/" + this.state.tourneyId + "/mscores"}>
-                            <Button>See Scores</Button>
-                          </Link>
+                        {this.state.headRef && ( //TODO set to head ref only
+                            <Link to={"/t/" + this.state.tourneyId + "/mscores"}>
+                                <Button>See Scores</Button>
+                            </Link>
                         )}
                         {true && (
-                          <Link to={"/matchranking/" + this.state.tourneyId}>
-                            <Button>See Tournament Rankings</Button>
-                          </Link>
+                            <Link to={"/matchranking/" + this.state.tourneyId}>
+                                <Button>See Tournament Rankings</Button>
+                            </Link>
                         )}
                         <Button href={"/createteam/" + this.state.tourneyId}> Create Team</Button>
                         <Button href={"/viewrubrics/" + this.state.tourneyId}> View Rubrics</Button>
@@ -95,46 +102,46 @@ export default class TournamentDashboard extends Component {
     }
 
     async updateState() {
-      await axios({
-        method: 'GET',
-        url: `https://dev-s68c-q-y.auth0.com/userinfo`,
-        headers: {
-          'content-type': 'application/json',
-          'authorization': 'Bearer ' + localStorage.getItem("access_token")
-        },
-        json: true
-      })
-      .then( (result) => {
-        this.state.authresults = result.data;
-      })
-      .catch( (error) => {
-        console.log(error);
-      });
+        await axios({
+            method: 'GET',
+            url: `https://dev-s68c-q-y.auth0.com/userinfo`,
+            headers: {
+                'content-type': 'application/json',
+                'authorization': 'Bearer ' + localStorage.getItem("access_token")
+            },
+            json: true
+        })
+            .then((result) => {
+                this.state.authresults = result.data;
+            })
+            .catch((error) => {
+                console.log(error);
+            });
 
-      var token = document.cookie.substring(13);
-    var decoded = jsonWeb.verify(token, "123456");
+        var token = document.cookie.substring(13);
+        var decoded = jsonWeb.verify(token, "123456");
 
-    this.state.dbresults = decoded;
-    
-    this.setState(this.state)
+        this.state.dbresults = decoded;
 
-      await axios.get(`http://localhost:5000/api/tournaments/${this.state.tourneyId}`)
-      .then( (result) => {
-          this.state.dbtournresults = result.data;
-      }).catch( (error) => {
-          console.log(error);
-      });
+        this.setState(this.state)
 
-      for (var i = 0; i < this.state.dbtournresults.teams.length; i++) {
-        await axios.get(`http://localhost:5000/api/teams/${this.state.dbtournresults.teams[i]}`)
-        .then( (result) => {
-            this.state.dbteamnames[i] = result.data.teamName;
-        }).catch( (error) => {
-            console.log(error);
-        });
-      }
+        await axios.get(`http://localhost:5000/api/tournaments/${this.state.tourneyId}`)
+            .then((result) => {
+                this.state.dbtournresults = result.data;
+            }).catch((error) => {
+                console.log(error);
+            });
 
-      this.setState(this.state);
-      console.log(this.state);
+        for (var i = 0; i < this.state.dbtournresults.teams.length; i++) {
+            await axios.get(`http://localhost:5000/api/teams/${this.state.dbtournresults.teams[i]}`)
+                .then((result) => {
+                    this.state.dbteamnames[i] = result.data.teamName;
+                }).catch((error) => {
+                    console.log(error);
+                });
+        }
+
+        this.setState(this.state);
+        console.log(this.state);
     }
 }
