@@ -1,30 +1,13 @@
-/*
-how to use:
-
-installs in frontend/ltms-io:
-    npm install mocha chai should chai-http
-
-open package.json
-    "scripts: {
-        "test": "mocha"
-    }"
-
-in terminal run command:
-    mocha --exit
-
-exit flag ends the server after tests have finished
-*/
-
-
 const chai = require('chai');
 var chaiHttp = require('chai-http');
-const app = require('../../../backend/app');
+const app = require('../../../../backend/app');
 const should = require('should');
 
 chai.use(chaiHttp);
 
 describe('App', function() {
     it('POST call should return a unique json token for a user', function(done) {
+        this.timeout(5000);
         chai.request(app)
             .post('/api/users/login')
             .send({'data': 'auth0|5e6d97ca0845710c92221b3e'})
@@ -35,6 +18,7 @@ describe('App', function() {
             });
     });
     it('POST call should return 404 given invalid user', function(done) {
+        this.timeout(5000);
         chai.request(app)
             .post('/api/users/login')
             .send({'data': 'auth0|e6d97ca0845710c92221b3e'})
@@ -45,6 +29,7 @@ describe('App', function() {
             });
     });
     it('POST call should return 400 given no authID was sent', function(done) {
+        this.timeout(5000);
         chai.request(app)
             .post('/api/users/login')
             .send({'data': ''})
