@@ -24,6 +24,9 @@ import ViewRubrics from './components/ViewRubrics';
 import CreateJudges from './components/CreateJudges';
 import axios from 'axios';
 import RoleChange from './components/RoleChange';
+import CreateTeam from './components/CreateTeam';
+import viewRubric from './components/ViewRubrics';
+import CreateJudges from './components/CreateJudges';
 const jsonWeb = require('jsonwebtoken');
 
 function App(props) {
@@ -45,9 +48,10 @@ function App(props) {
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/login" component={() => <Login auth={props.auth} />} />
           <Route path="/createtournament" component={CreateTournament} />
+
            <Route path="/createteam/:tourneyId" component={CreateTeam} />
-          <Route path="/viewrubrics/:tourneyId" component={ViewRubrics} />
-          <Route path="/createjudge" component={CreateJudges} />
+          <Route path="/viewrubrics/:tourneyId" component={viewRubric} />
+          <Route path="/createjudge/:tourneyId" component={CreateJudges} />
           <Route path="/accountdetails" component={() => <AccountDetails auth={props.auth} />} />
           <Route path="/createscoresheet" component={ Sheet }/>
           <Route path="/callback" component={Callback} />

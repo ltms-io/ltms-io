@@ -336,7 +336,7 @@ router.patch('/:id', (req, res) => {
         }
 
         if (req.body.judge) {
-            tournament.referees.push(req.body.judge);
+            tournament.judges.push(req.body.judge);
         }
 
         if (req.body.viewOnlyVol) {
