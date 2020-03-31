@@ -24,6 +24,9 @@ function App(props) {
   if(!document.cookie){
     axios.post('http://localhost:5000/api/users/login', {data: localStorage.getItem("auth0_id")}).then( (result) => {
       document.cookie = "UserIdentity=" + result.data;
+      var token = document.cookie.substring(13);
+      var decoded = jsonWeb.verify(token, "123456");
+      console.log(decoded);
       localStorage.removeItem("auth0_id");
     }).catch(function(err){
       console.log(err);
