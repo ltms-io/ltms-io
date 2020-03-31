@@ -24,6 +24,7 @@ import ViewRubrics from './components/ViewRubrics';
 import CreateJudges from './components/CreateJudges';
 import axios from 'axios';
 import RoleChange from './components/RoleChange';
+import SortTeams from './components/SortTeams';
 const jsonWeb = require('jsonwebtoken');
 
 function App(props) {
@@ -61,6 +62,7 @@ function App(props) {
           <Route path="/rolechange" component={ RoleChange }/>
           <Route path="/t/:tourneyId/mscores" component={ MatchScoreListing } />
           <Route path="/t/:tourneyId/editscore/:scoreId" component={ EditScoreEntry } />
+          <Route path="/sortteams" component={ SortTeams } />
         </Switch>
       </div>
     </Router>
