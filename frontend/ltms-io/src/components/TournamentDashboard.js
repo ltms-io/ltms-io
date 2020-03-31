@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Container, Row, Col, Button } from 'react-bootstrap'
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 import jsonWeb from 'jsonwebtoken';
 
 export default class TournamentDashboard extends Component {
@@ -60,30 +61,28 @@ export default class TournamentDashboard extends Component {
                     </Col>
 
                     <Col>
-                        {this.state.setRefereeAuthorized && (
-                          <Button href={"/setreferee/" + this.state.tourneyId}>Set Referee</Button>
-                        )}
-                        {!this.state.setRefereeAuthorized && (
-                          <Button href={"/setreferee/" + this.state.tourneyId} disabled>Set Referee</Button>
-                        )}
-                        {(this.state.dbtournresults.teams && this.state.rubricEntryAuthorized) && (
+                        <Link to={"/setreferee/" + this.state.tourneyId}>
+                            <Button disabled={!this.state.setRefereeAuthorized}>Set Referee</Button>
+                        </Link>
+                        {this.state.dbtournresults.teams && (
                           <div>
                             {this.state.dbtournresults.teams.map( (item, i) => {
-                              return(
-                                <Button href={"/rubricentry/" + this.state.tourneyId + "/" + item}>Rubric Entry for {this.state.dbteamnames[i]}</Button>
-                              );
+                                return(
+                                    <Link to={"/rubricentry/" + this.state.tourneyId + "/" + item}>
+                                        <Button disabled={!this.state.rubricEntryAuthorized}>Rubric Entry for {this.state.dbteamnames[i]}</Button>
+                                    </Link>
+                                );
                             })}
                           </div>
                         )}
-                        {(this.state.dbtournresults.teams && !this.state.rubricEntryAuthorized) && (
-                          <div>
-                            {this.state.dbtournresults.teams.map( (item, i) => {
-                              return(
-                                <Button href={"/rubricentry/" + this.state.tourneyId + "/" + item} disabled>Rubric Entry for {this.state.dbteamnames[i]}</Button>
-                              );
-                            })}
-                          </div>
+                        {true && ( //TODO set to head ref only
+                          <Link to={"/t/" + this.state.tourneyId + "/mscores"}>
+                            <Button>See Scores</Button>
+                          </Link>
                         )}
+                        <Button href={"/createteam/" + this.state.tourneyId}> Create Team</Button>
+                        <Button href={"/viewrubrics/" + this.state.tourneyId}> View Rubrics</Button>
+                        <Button href={"/createjudge/" + this.state.tourneyId}> Create Judges</Button>
                     </Col>
                 </Row>
             </Container>
@@ -131,5 +130,6 @@ export default class TournamentDashboard extends Component {
       }
 
       this.setState(this.state);
+      console.log(this.state);
     }
 }

@@ -1,6 +1,30 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const SchoresheetSchema = new Schema({
+    fieldTypes: [],
+    fieldValues: [],
+    teamNum: {
+        type: Number,
+        required: true,
+    },
+    scoreType: {
+        type: String,
+        default: "match",
+    },
+    finalScore: {
+        type: Number,
+        required: true
+    },
+    rawData: {
+        type: Array,
+        required: true
+    },
+    changeNotes: [{
+        type: String
+    }]
+});
+
 //Create Tournament Schema
 const TournamentSchema = new Schema({
     director: {
@@ -60,6 +84,7 @@ const TournamentSchema = new Schema({
         type: Date,
         default: Date.now,
     },
+    scores: [SchoresheetSchema]
 });
 
 //Instance methods of the Schema

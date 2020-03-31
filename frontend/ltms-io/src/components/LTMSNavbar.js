@@ -9,14 +9,13 @@ class LTMSNavbar extends Component {
   render() {
     return(
       <div>
-        <Navbar bg="secondary" >
+        <Navbar data-test="theNavbar" bg="secondary" >
           <Navbar.Brand href="/">
             <img src={logo} alt="logo" width="100" />
           </Navbar.Brand>
           <Nav className="ml-auto">
             <Navbar.Brand href="/accountdetails">
-              <img src={sample} alt="profile" width="30" height="30"
-                   className="d-inline-block align-top" />
+              <img src={sample} data-test="theLogo" alt="profile" width="30" height="30" className="d-inline-block align-top" />
             </Navbar.Brand>
             <NavDropdown alignRight title="Menu">
               <NavDropdown.Item>Quick Links</NavDropdown.Item>
