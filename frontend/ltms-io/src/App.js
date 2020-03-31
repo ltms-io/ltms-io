@@ -25,13 +25,16 @@ import CreateJudges from './components/CreateJudges';
 import axios from 'axios';
 import RoleChange from './components/RoleChange';
 import SortTeams from './components/SortTeams';
+import CreateTeam from './components/CreateTeam';
+import viewRubric from './components/ViewRubrics';
+import CreateJudges from './components/CreateJudges';
 const jsonWeb = require('jsonwebtoken');
 
 function App(props) {
   if(!document.cookie){
     axios.post('http://localhost:5000/api/users/login', {data: localStorage.getItem("auth0_id")}).then( (result) => {
       document.cookie = "UserIdentity=" + result.data;
-      localStorage.removeItem("auth0_id");
+      // localStorage.removeItem("auth0_id");
     }).catch(function(err){
       console.log(err);
     });
@@ -46,9 +49,10 @@ function App(props) {
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/login" component={() => <Login auth={props.auth} />} />
           <Route path="/createtournament" component={CreateTournament} />
+
            <Route path="/createteam/:tourneyId" component={CreateTeam} />
-          <Route path="/viewrubrics/:tourneyId" component={ViewRubrics} />
-          <Route path="/createjudge" component={CreateJudges} />
+          <Route path="/viewrubrics/:tourneyId" component={viewRubric} />
+          <Route path="/createjudge/:tourneyId" component={CreateJudges} />
           <Route path="/accountdetails" component={() => <AccountDetails auth={props.auth} />} />
           <Route path="/createscoresheet" component={ Sheet }/>
           <Route path="/callback" component={Callback} />
