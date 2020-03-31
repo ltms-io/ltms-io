@@ -220,8 +220,7 @@ router.post('/search', (req, res) => {
 
 //POST creates json token for cookie
 router.post('/login', (req, res) => {
-    console.log(req.body.data);
-    if(!req.body){
+    if(!req.body.data){
         return res.status(400).send("Body is empty")
     }
     var authId = req.body.data;
