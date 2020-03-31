@@ -42,6 +42,9 @@ function App(props) {
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/login" component={() => <Login auth={props.auth} />} />
           <Route path="/createtournament" component={CreateTournament} />
+           <Route path="/createteam/:tourneyId" component={CreateTeam} />
+          <Route path="/viewrubrics/:tourneyId" component={viewRubric} />
+          <Route path="/createjudge" component={CreateJudges} />
           <Route path="/accountdetails" component={() => <AccountDetails auth={props.auth} />} />
           <Route path="/createscoresheet" component={ Sheet }/>
           <Route path="/callback" component={Callback} />

@@ -80,6 +80,9 @@ export default class TournamentDashboard extends Component {
                             <Button>See Scores</Button>
                           </Link>
                         )}
+                        <Button href={"/createteam/" + this.state.tourneyId}> Create Team</Button>
+                        <Button href={"/viewrubrics/" + this.state.tourneyId}> View Rubrics</Button>
+                        <Button href={"/createjudge/" + this.state.tourneyId}> Create Judges</Button>
                     </Col>
                 </Row>
             </Container>
