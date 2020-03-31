@@ -35,7 +35,7 @@ mongoose
     db,
     { useNewUrlParser: true }
   )
-  .then(() => console.log("MongoDB successfully connected"))
+  .then(() => console.log("MongoDB successfully connected\n"))
   .catch(err => console.log(err));
   
 // view engine setup
