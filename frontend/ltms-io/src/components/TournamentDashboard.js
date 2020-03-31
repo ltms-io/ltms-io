@@ -15,7 +15,10 @@ export default class TournamentDashboard extends Component {
             dbteamnames: [],
             authresults: {},
             setRefereeAuthorized: false,
-            rubricEntryAuthorized: false
+            rubricEntryAuthorized: false,
+            judgeAuthorized: false,
+            createTeamAuthorized: false,
+            viewRubricsAuthorized: false
         }
 
         this.updateState = this.updateState.bind(this);
@@ -32,17 +35,23 @@ export default class TournamentDashboard extends Component {
 
         if (this.state.dbtournresults.director === this.state.dbresults._id) {
           this.state.rubricEntryAuthorized = true;
+          this.state.judgeAuthorized = true;
+          this.state.createTeamAuthorized = true;
+          this.state.viewRubricsAuthorized = true;
         }
         else {
           for (var i = 0; i < this.state.dbtournresults.judgeAdvisor.length; i++) {
             if (this.state.dbtournresults.judgeAdvisor[i] === this.state.dbresults._id) {
               this.state.rubricEntryAuthorized = true;
+              this.state.judgeAuthorized = true;
+              this.state.viewRubricsAuthorized = true;
             }
           }
           if (!this.state.isAuthorized) {
             for (var i = 0; i < this.state.dbtournresults.judges.length; i++) {
               if (this.state.dbtournresults.judges[i] === this.state.dbresults._id) {
                 this.state.rubricEntryAuthorized = true;
+                this.state.judgeAuthorized = true;
               }
             }
           }
@@ -80,9 +89,9 @@ export default class TournamentDashboard extends Component {
                             <Button>See Scores</Button>
                           </Link>
                         )}
-                        <Button href={"/createteam/" + this.state.tourneyId}> Create Team</Button>
-                        <Button href={"/viewrubrics/" + this.state.tourneyId}> View Rubrics</Button>
-                        <Button href={"/createjudge/" + this.state.tourneyId}> Create Judges</Button>
+                        <Button disabled = {!this.state.createTeamAuthorized} href={"/createteam/" + this.state.tourneyId}> Create Team</Button>
+                        <Button disabled = {!this.state.viewRubricsAuthorized} href={"/viewrubrics/" + this.state.tourneyId}> View Rubrics</Button>
+                        <Button disabled = {!this.state.viewRubricsAuthorized} href={"/createjudge/" + this.state.tourneyId}> Create Judges</Button>
                     </Col>
                 </Row>
             </Container>
