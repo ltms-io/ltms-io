@@ -1,41 +1,21 @@
 import React, { Component } from 'react'
 import { SingleDatePicker } from 'react-dates'
-import { Form, Button, Container, Row, Col, Card, Alert } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
 import axios from 'axios';
-import TournamentCard from './TournamentCard';
 
-function Results(props) {
-    const resultsToShow = props.results;
-
-
-    if (resultsToShow) {
-        const cards = resultsToShow.map((datum) => 
-            <Col key={datum._id}>
-                <TournamentCard tournament={datum}/>
-            </Col>
-        )
-
-        return (
-            <Row>
-                {cards}
-            </Row>
-        )
-    }
-}
 
 export default class TournamentSearch extends Component {
-
     constructor(props) {
         super(props);
     
         this.state = {
             date: null,
             errMsg: "",
-            results: [],
         };
     
         this.handleSearch = this.handleSearch.bind(this);
-    }
+      }
+
 
     render() {
         return (
@@ -45,7 +25,7 @@ export default class TournamentSearch extends Component {
                         <Col>
                         <Alert
                             variant="danger"
-                            show={this.state.errMsg !== ''}
+                            show={this.state.errMsg != ''}
                             dismissible
                             onClose={() => {this.setState({errMsg: ''})}}>
                             {this.state.errMsg}</Alert>
@@ -55,40 +35,29 @@ export default class TournamentSearch extends Component {
                         <Col>
                             <Form onSubmit={this.handleSearch}>
                                 <Row>
-                                    <Col md={4}>
+                                    <Col>
                                         <Form.Group controlId="tournament_name">
                                         <Form.Control placeholder="Tournament Name"/>
                                         </Form.Group>
                                     </Col>
-                                    <Col md={4}>
+                                    <Col>
                                         <Form.Group controlId="user_name">
                                         <Form.Control placeholder="Director Name"/>
                                         </Form.Group>
                                     </Col>
-                                    <Col md={2}>
+                                    <Col>
                                         {/* <Form.Group controlId="date">
                                         <Form.Control type="date" placeholder="date"/>
                                         </Form.Group> */}
                                         <SingleDatePicker
                                             showClearDate
-                                            numberOfMonths={1}
+                                            numberOfMonths="1"
                                             date={this.state.date}
                                             onDateChange={date => this.setState({ date })}
                                             focused={this.state.focused}
                                             onFocusChange={({ focused }) => this.setState({ focused })}
                                             id="tourneyCreateDatePicker"
                                         />
-                                    </Col>
-                                    <Col md={2}>
-                                        {/* <SingleDatePicker
-                                            showClearDate
-                                            numberOfMonths={1}
-                                            date={this.state.date}
-                                            onDateChange={date => this.setState({ date })}
-                                            focused={this.state.focused}
-                                            onFocusChange={({ focused }) => this.setState({ focused })}
-                                            id="tourneyCreateDatePicker"
-                                        /> */}
                                     </Col>
                                 </Row>
                                 <Button variant="primary" type="submit">
@@ -98,9 +67,7 @@ export default class TournamentSearch extends Component {
                         </Col> 
                     </Row>
                     <Row>
-                        <Card>
-                            <Results results={this.state.results}/>
-                        </Card>
+                    
                     </Row>
                 </Container>
             </div>
@@ -115,12 +82,9 @@ export default class TournamentSearch extends Component {
         const searchDate = this.state.date;
         const searchUser = e.target.elements.user_name.value;
 
-        if (!searchName && searchDate === null && !searchUser) {
+        if (!searchName && searchDate != null && !searchUser) {
             this.setState({errMsg: "No search parameters!"});
             return;
-        }
-        else {
-            this.setState({errMsg: ''});
         }
 
         console.log(`tourneyname: ${searchName}`);
@@ -143,14 +107,8 @@ export default class TournamentSearch extends Component {
 
         await axios.post('http://localhost:5000/api/tournaments/search', req).then((res) => {
             console.log(res.data);
-            this.setState({results: res.data});
-        }).catch((err) => {
-            if (err) {
-                if (err.response.status === 404) {
-                    this.setState({results: []})
-                }
-                console.log(err);
-            }
+        }).then((err) => {
+            console.log(err);
         });
     }
 }
