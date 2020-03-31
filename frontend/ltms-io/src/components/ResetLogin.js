@@ -31,7 +31,7 @@ class ResetLogin extends Component {
       console.log(error);
     });
 
-    await axios.post('http://localhost:5000/api/users/login', {data: {sub: decoded.auth0id}}).then( (result) => {
+    await axios.post('http://localhost:5000/api/users/login', {data: decoded.auth0id}).then( (result) => {
       document.cookie = "UserIdentity=" + token + "; expires=Thu, 01 Jan 1970 00:00:00 UTC";
       document.cookie = "UserIdentity=" + result.data;
       

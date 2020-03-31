@@ -39,7 +39,7 @@ class AccountDetails extends Component {
     var token = document.cookie.substring(13);
     var decoded = jsonWeb.verify(token, "123456");
 
-    await axios.post('http://localhost:5000/api/users/login', {data: {sub: decoded.auth0id}}).then( (result) => {
+    await axios.post('http://localhost:5000/api/users/login', {data: decoded.auth0id}).then( (result) => {
       var token = document.cookie.substring(13);
       document.cookie = "UserIdentity=" + token + "; expires=Thu, 01 Jan 1970 00:00:00 UTC";
 
@@ -60,7 +60,7 @@ class AccountDetails extends Component {
     //   });
   
     //This updates the json token saved as a cookie by creating a new token then saving it
-    await axios.post('http://localhost:5000/api/users/login', {data: {sub: decoded.auth0id}}).then( (result) => {
+    await axios.post('http://localhost:5000/api/users/login', {data: decoded.auth0id}).then( (result) => {
       var token = document.cookie.substring(13);
       document.cookie = "UserIdentity=" + token + "; expires=Thu, 01 Jan 1970 00:00:00 UTC";
 
