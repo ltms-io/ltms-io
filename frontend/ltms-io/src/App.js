@@ -19,6 +19,9 @@ import TournamentDashboard from "./components/TournamentDashboard";
 import RubricEntry from "./components/RubricEntry";
 import MatchScoreListing from "./components/MatchScoreListing";
 import EditScoreEntry from "./components/EditScoreEntry";
+import CreateTeam from './components/CreateTeam';
+import ViewRubrics from './components/ViewRubrics';
+import CreateJudges from './components/CreateJudges';
 import axios from 'axios';
 import RoleChange from './components/RoleChange';
 const jsonWeb = require('jsonwebtoken');
@@ -32,7 +35,7 @@ function App(props) {
       console.log(err);
     });
   }
-  
+
   return (
     <Router>
       <div className="App">
@@ -43,7 +46,7 @@ function App(props) {
           <Route path="/login" component={() => <Login auth={props.auth} />} />
           <Route path="/createtournament" component={CreateTournament} />
            <Route path="/createteam/:tourneyId" component={CreateTeam} />
-          <Route path="/viewrubrics/:tourneyId" component={viewRubric} />
+          <Route path="/viewrubrics/:tourneyId" component={ViewRubrics} />
           <Route path="/createjudge" component={CreateJudges} />
           <Route path="/accountdetails" component={() => <AccountDetails auth={props.auth} />} />
           <Route path="/createscoresheet" component={ Sheet }/>
