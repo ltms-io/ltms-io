@@ -23,7 +23,6 @@ export default class Auth {
     this.auth0.authorize();
   }
 
-
   handleAuthentication() {
     this.auth0.parseHash( async (err, authResults) => {
       if (authResults && authResults.accessToken && authResults.idToken) {
@@ -33,7 +32,6 @@ export default class Auth {
         localStorage.setItem("access_token", authResults.accessToken);
         localStorage.setItem("id_token", authResults.idToken);
         localStorage.setItem("expires_at", expiresAt);
-        console.log(authResults.accessToken);
         axios({
            method: 'GET',
            url: 'https://dev-s68c-q-y.auth0.com/userinfo',
@@ -41,10 +39,10 @@ export default class Auth {
                'authorization': `Bearer ${authResults.accessToken}`,
             }
         }).then((userDataResponse) => {
-          console.log(userDataResponse.data);
-          localStorage.setItem("auth0_id", userDataResponse.data.sub); 
-          axios.post('http://localhost:5000/api/users/auth/', {data: userDataResponse.data}).then((x) => {
-            console.log(x.data);         
+          localStorage.setItem("auth0_id", userDataResponse.data.sub);
+          axios.post(`http://localhost:5000/api/users/auth`, {
+            data: userDataResponse.data
+          }).then((x) => {
             location.hash = "";
             location.pathname = LOGIN_SUCCESS_PAGE;
           });
@@ -63,6 +61,8 @@ export default class Auth {
   }
 
   logout() {
+    var token = document.cookie.substring(13);
+    document.cookie = "UserIdentity=" + token + "; expires=Thu, 01 Jan 1970 00:00:00 UTC";
     localStorage.removeItem("access_token");
     localStorage.removeItem("id_token");
     localStorage.removeItem("expires_at");
