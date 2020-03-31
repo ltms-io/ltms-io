@@ -172,6 +172,49 @@ router.post('/search', async(req, res) => {
     });
 });
 
+/* Add a generic volunteer to a tournament */
+router.post('/addvolunteer', (req, res) => {
+    console.log(req.body);
+
+    if (!req.body.user_id && !req.body.auth_id) {
+        return res.status(400).send("Bad Request: User must be identified in some manner");
+    }
+
+    var idToAdd;
+    if (req.body.auth_id) {
+        User.findOne({ auth0id: req.body.auth_id })
+        .then((user) => {
+            if (user) {
+                idToAdd = user._id;
+            }
+
+        })
+    }
+    else {
+        idToAdd = req.body.user_id;
+    }
+
+    Tournament.findById(req.body.tournament_id).then((tournament) => {
+        if (!tournament) {
+            return res.status(500).send("An error occured with the specified tournament")
+        }
+        let result = tournament.viewOnlyVols.find((vol) => vol === idToAdd.toString());
+        console.log("Result from volunteer check");
+        console.log(result);
+        if (!result || result === null) {
+            console.log("Volunteer added");
+            tournament.viewOnlyVols.push(idToAdd);
+        }   
+        else {
+            console.log("Volunteer exists already");
+        }
+        tournament.save().then((tournament) => res.send(tournament)).catch((err) => console.log(err));
+    }).catch((err) => {
+        console.log(err);
+    })
+
+})
+
 /* POST register new tournament */
 router.post('/register', (req, res) => {
     if (!req.body.auth0id || !req.body.fieldsCount) {
@@ -293,7 +336,7 @@ router.patch('/:id', (req, res) => {
         }
 
         if (req.body.judge) {
-            tournament.referees.push(req.body.judge);
+            tournament.judges.push(req.body.judge);
         }
 
         if (req.body.viewOnlyVol) {
