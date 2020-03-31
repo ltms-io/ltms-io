@@ -16,6 +16,9 @@ export default class TournamentDashboard extends Component {
             authresults: {},
             setRefereeAuthorized: false,
             rubricEntryAuthorized: false,
+            judgeAuthorized: false,
+            createTeamAuthorized: false,
+            viewRubricsAuthorized: false,
             headRef: false
         }
 
@@ -33,17 +36,23 @@ export default class TournamentDashboard extends Component {
 
         if (this.state.dbtournresults.director === this.state.dbresults._id) {
             this.state.rubricEntryAuthorized = true;
-        }
-        else {
+            this.state.judgeAuthorized = true;
+            this.state.createTeamAuthorized = true;
+            this.state.viewRubricsAuthorized = true;
+        } else {
             for (var i = 0; i < this.state.dbtournresults.judgeAdvisor.length; i++) {
                 if (this.state.dbtournresults.judgeAdvisor[i] === this.state.dbresults._id) {
                     this.state.rubricEntryAuthorized = true;
+                    this.state.judgeAuthorized = true;
+                    this.state.viewRubricsAuthorized = true;
                 }
             }
             if (!this.state.isAuthorized) {
                 for (var i = 0; i < this.state.dbtournresults.judges.length; i++) {
                     if (this.state.dbtournresults.judges[i] === this.state.dbresults._id) {
                         this.state.rubricEntryAuthorized = true;
+                        this.state.rubricEntryAuthorized = true;
+                        this.state.judgeAuthorized = true;
                     }
                 }
             }
@@ -87,14 +96,23 @@ export default class TournamentDashboard extends Component {
                                 <Button>See Scores</Button>
                             </Link>
                         )}
+
                         {true && (
                             <Link to={"/matchranking/" + this.state.tourneyId}>
                                 <Button>See Tournament Rankings</Button>
                             </Link>
                         )}
-                        <Button href={"/createteam/" + this.state.tourneyId}> Create Team</Button>
-                        <Button href={"/viewrubrics/" + this.state.tourneyId}> View Rubrics</Button>
-                        <Button href={"/createjudge/" + this.state.tourneyId}> Create Judges</Button>
+
+                        <Link to={"/createteam/" + this.state.tourneyId}>
+                        <Button disabled = {!this.state.createTeamAuthorized}> Create Team</Button>
+                        </Link>
+                        <Link to={"/viewrubrics/" + this.state.tourneyId}>
+                        <Button disabled = {!this.state.viewRubricsAuthorized}> View Rubrics</Button>
+                        </Link>
+                        <Link to={"/createjudge/" + this.state.tourneyId}>
+                        <Button disabled = {!this.state.viewRubricsAuthorized}> Create Judges</Button>
+                        </Link>
+                        
                     </Col>
                 </Row>
             </Container>
