@@ -12,53 +12,17 @@ const TournamentSchema = new Schema({
         type: String,
         required: true,
     },
-    volunteers: [], //don't use anymore
-
-    location: {
-        type: String,
-    },
-
-
-
-    /* Volunteer Roles */
-    headReferee: [{
-        type: String,
-        ref: 'User'
-    }],
-    judgeAdvisor: [{
-        type: String,
-        ref: 'User'
-    }],
-    referees: [{
-        type: String,
-        ref: 'User'
-    }],
-    judges: [{
-        type: String,
-        ref: 'User'
-    }],
-    viewOnlyVols: [{
-        type: String,
-        ref: 'User'
-    }],
-
+    volunteers: [],
     officialEventFlag: {
         type: Boolean,
         default: false,
     },
-    teams: [{
-        type: String,
-        ref: 'Team'
-    }],
+    teams: [],
     fieldsCount: {
         type: Number,
         required: true,
     },
     matchesPerTeam: {
-        type: Number,
-        default: 3,
-    },
-    numJudgeRooms: {
         type: Number,
         default: 3,
     },
