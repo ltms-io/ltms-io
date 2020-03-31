@@ -24,6 +24,7 @@ import ViewRubrics from './components/ViewRubrics';
 import CreateJudges from './components/CreateJudges';
 import axios from 'axios';
 import RoleChange from './components/RoleChange';
+import SortTeams from './components/SortTeams';
 import CreateTeam from './components/CreateTeam';
 import viewRubric from './components/ViewRubrics';
 import CreateJudges from './components/CreateJudges';
@@ -65,6 +66,7 @@ function App(props) {
           <Route path="/rolechange" component={ RoleChange }/>
           <Route path="/t/:tourneyId/mscores" component={ MatchScoreListing } />
           <Route path="/t/:tourneyId/editscore/:scoreId" component={ EditScoreEntry } />
+          <Route path="/matchranking/:tourneyId" component={ SortTeams } />
         </Switch>
       </div>
     </Router>
