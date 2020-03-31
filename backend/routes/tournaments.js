@@ -48,38 +48,92 @@ router.post('/user', (req, res) => {
     })
 });
 
+router.post('/addvolunteer', (req, res) => {
+    console.log(req.body);
+
+    if (!req.body.user_id && !req.body.auth_id) {
+        return res.status(400).send("Bad Request: User must be identified in some manner");
+    }
+
+    var idToAdd;
+    if (req.body.auth_id) {
+        User.findOne({ auth0id: req.body.auth_id })
+        .then((user) => {
+            if (user) {
+                idToAdd = user._id;
+            }
+
+        })
+    }
+    else {
+        idToAdd = req.body.user_id;
+    }
+
+    Tournament.findById(req.body.tournament_id).then((tournament) => {
+        if (!tournament) {
+            return res.status(500).send("An error occured with the specified tournament")
+        }
+        // console.log(tournament.viewOnlyVols);
+        // console.log(idToAdd);
+        let result = tournament.viewOnlyVols.find((vol) => vol === idToAdd.toString());
+        // console.log("Result from volunteer check");
+        // console.log(result);
+        if (!result || result === null) {
+            console.log("Volunteer added");
+            tournament.viewOnlyVols.push(idToAdd);
+        }   
+        else {
+            console.log("Volunteer exists already");
+        }
+        tournament.save().then((tournament) => res.send(tournament)).catch((err) => console.log(err));
+    }).catch((err) => {
+        console.log(err);
+    })
+
+})
+
 
 /* POST search for tournament via various outlets */
 router.post('/search', async(req, res) => {
     console.log(req.body);
     if (!req.body.tournament_name && !req.body.user_name && !(req.body.date)) {
-        return res.status(400).send("Please include");
+        return res.status(400).send("Bad request: no searchable fields included.");
     }
 
     var found_user;
     if (req.body.user_name) {
-        await User.findOne({name: req.body.user_name}).then((user) => {
+        await User.findOne({name: {$regex: new RegExp(`^${req.body.user_name}$`, 'i')}}).then((user) => {
             found_user = user;
         }).catch((error) => {
             found_user = null;
         });
     }
 
+    console.log(found_user);
+
     var query = {};
 
-    if (found_user) {
+    if (found_user && found_user !== null) {
+        console.log("=== ASSIGNING QUERY FOR DIRECTOR ===");
         query.director = found_user._id;
     };
 
     if (req.body.tournament_name) {
-        query.name = req.body.tournament_name;
+        query.name = {$regex: new RegExp(`^${req.body.tournament_name}$`, 'i')};
     }
 
     if (req.body.date) {
         query.startDate = req.body.date;
     }
+    console.log(query);
 
-    Tournament.find(query).then((tournament) => {
+    if (!query.director && !query.name && !query.startDate) {
+        console.log("Returning empty");
+        return res.status(404).send([]);
+    }
+
+    Tournament.find(query)
+    .then((tournament) => {
         if (!tournament) {
             return res.status(404).send("No results found");
         }
@@ -107,6 +161,10 @@ router.post('/register', (req, res) => {
 
             if (req.body.name) {
                 tournamentDetails.name = req.body.name;
+            }
+
+            if (req.body.location) {
+                tournamentDetails.location = req.body.location;
             }
 
             if (req.body.teams) {
@@ -159,6 +217,10 @@ router.patch('/:id', (req, res) => {
 
         if (req.body.name) {
             tournament.name = req.body.name;
+        }
+
+        if (req.body.location) {
+            tournamentDetails.location = req.body.location;
         }
 
         if (req.body.teams) {
