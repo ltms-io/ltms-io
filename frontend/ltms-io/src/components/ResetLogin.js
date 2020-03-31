@@ -10,8 +10,7 @@ class ResetLogin extends Component {
 
     this.state = {
       uid: "",
-      dbresults: {},
-      authresults: {}
+      dbresults: {}
     };
 
     this.handleUsername = this.handleUsername.bind(this);

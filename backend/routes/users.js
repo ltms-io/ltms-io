@@ -5,8 +5,6 @@ const router = express.Router();
 const User = require('../models/user-model');
 const sgMail = require('@sendgrid/mail');
 const dev_config = require('../config/dev-params')
-//const m_api_token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlF6UTFPVVpGTTBRNFFUVTFRa1UyTmpJM05qQXpRMEpFUWpSR1JqZEJSRGhDTVRjeE5UZ3pSQSJ9.eyJpc3MiOiJodHRwczovL2Rldi1zNjhjLXEteS5hdXRoMC5jb20vIiwic3ViIjoib3JGbFVZTkdSNmZjV1ZweWU5a2dIdElOa2s3VFpoOWJAY2xpZW50cyIsImF1ZCI6Imh0dHBzOi8vZGV2LXM2OGMtcS15LmF1dGgwLmNvbS9hcGkvdjIvIiwiaWF0IjoxNTgyOTExNDI3LCJleHAiOjE1ODI5OTc4MjcsImF6cCI6Im9yRmxVWU5HUjZmY1dWcHllOWtnSHRJTmtrN1RaaDliIiwic2NvcGUiOiJyZWFkOmNsaWVudF9ncmFudHMgY3JlYXRlOmNsaWVudF9ncmFudHMgZGVsZXRlOmNsaWVudF9ncmFudHMgdXBkYXRlOmNsaWVudF9ncmFudHMgcmVhZDp1c2VycyB1cGRhdGU6dXNlcnMgZGVsZXRlOnVzZXJzIGNyZWF0ZTp1c2VycyByZWFkOnVzZXJzX2FwcF9tZXRhZGF0YSB1cGRhdGU6dXNlcnNfYXBwX21ldGFkYXRhIGRlbGV0ZTp1c2Vyc19hcHBfbWV0YWRhdGEgY3JlYXRlOnVzZXJzX2FwcF9tZXRhZGF0YSBjcmVhdGU6dXNlcl90aWNrZXRzIHJlYWQ6Y2xpZW50cyB1cGRhdGU6Y2xpZW50cyBkZWxldGU6Y2xpZW50cyBjcmVhdGU6Y2xpZW50cyByZWFkOmNsaWVudF9rZXlzIHVwZGF0ZTpjbGllbnRfa2V5cyBkZWxldGU6Y2xpZW50X2tleXMgY3JlYXRlOmNsaWVudF9rZXlzIHJlYWQ6Y29ubmVjdGlvbnMgdXBkYXRlOmNvbm5lY3Rpb25zIGRlbGV0ZTpjb25uZWN0aW9ucyBjcmVhdGU6Y29ubmVjdGlvbnMgcmVhZDpyZXNvdXJjZV9zZXJ2ZXJzIHVwZGF0ZTpyZXNvdXJjZV9zZXJ2ZXJzIGRlbGV0ZTpyZXNvdXJjZV9zZXJ2ZXJzIGNyZWF0ZTpyZXNvdXJjZV9zZXJ2ZXJzIHJlYWQ6ZGV2aWNlX2NyZWRlbnRpYWxzIHVwZGF0ZTpkZXZpY2VfY3JlZGVudGlhbHMgZGVsZXRlOmRldmljZV9jcmVkZW50aWFscyBjcmVhdGU6ZGV2aWNlX2NyZWRlbnRpYWxzIHJlYWQ6cnVsZXMgdXBkYXRlOnJ1bGVzIGRlbGV0ZTpydWxlcyBjcmVhdGU6cnVsZXMgcmVhZDpydWxlc19jb25maWdzIHVwZGF0ZTpydWxlc19jb25maWdzIGRlbGV0ZTpydWxlc19jb25maWdzIHJlYWQ6aG9va3MgdXBkYXRlOmhvb2tzIGRlbGV0ZTpob29rcyBjcmVhdGU6aG9va3MgcmVhZDplbWFpbF9wcm92aWRlciB1cGRhdGU6ZW1haWxfcHJvdmlkZXIgZGVsZXRlOmVtYWlsX3Byb3ZpZGVyIGNyZWF0ZTplbWFpbF9wcm92aWRlciBibGFja2xpc3Q6dG9rZW5zIHJlYWQ6c3RhdHMgcmVhZDp0ZW5hbnRfc2V0dGluZ3MgdXBkYXRlOnRlbmFudF9zZXR0aW5ncyByZWFkOmxvZ3MgcmVhZDpzaGllbGRzIGNyZWF0ZTpzaGllbGRzIGRlbGV0ZTpzaGllbGRzIHJlYWQ6YW5vbWFseV9ibG9ja3MgZGVsZXRlOmFub21hbHlfYmxvY2tzIHVwZGF0ZTp0cmlnZ2VycyByZWFkOnRyaWdnZXJzIHJlYWQ6Z3JhbnRzIGRlbGV0ZTpncmFudHMgcmVhZDpndWFyZGlhbl9mYWN0b3JzIHVwZGF0ZTpndWFyZGlhbl9mYWN0b3JzIHJlYWQ6Z3VhcmRpYW5fZW5yb2xsbWVudHMgZGVsZXRlOmd1YXJkaWFuX2Vucm9sbG1lbnRzIGNyZWF0ZTpndWFyZGlhbl9lbnJvbGxtZW50X3RpY2tldHMgcmVhZDp1c2VyX2lkcF90b2tlbnMgY3JlYXRlOnBhc3N3b3Jkc19jaGVja2luZ19qb2IgZGVsZXRlOnBhc3N3b3Jkc19jaGVja2luZ19qb2IgcmVhZDpjdXN0b21fZG9tYWlucyBkZWxldGU6Y3VzdG9tX2RvbWFpbnMgY3JlYXRlOmN1c3RvbV9kb21haW5zIHJlYWQ6ZW1haWxfdGVtcGxhdGVzIGNyZWF0ZTplbWFpbF90ZW1wbGF0ZXMgdXBkYXRlOmVtYWlsX3RlbXBsYXRlcyByZWFkOm1mYV9wb2xpY2llcyB1cGRhdGU6bWZhX3BvbGljaWVzIHJlYWQ6cm9sZXMgY3JlYXRlOnJvbGVzIGRlbGV0ZTpyb2xlcyB1cGRhdGU6cm9sZXMgcmVhZDpwcm9tcHRzIHVwZGF0ZTpwcm9tcHRzIHJlYWQ6YnJhbmRpbmcgdXBkYXRlOmJyYW5kaW5nIHJlYWQ6bG9nX3N0cmVhbXMgY3JlYXRlOmxvZ19zdHJlYW1zIGRlbGV0ZTpsb2dfc3RyZWFtcyB1cGRhdGU6bG9nX3N0cmVhbXMiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMifQ.GMcWPtiMo5SLxzWp3v3M77K9xlVeFy-RNXMVc54tQo-nFcAuETe3a5A_8l6boXMEV9-ZBwti6jRz6GnQYZjFfZ6bcXwJNG7EwpkVo-IAclqAfmEwTMGypdp8T8VgBQfo_vhXEDANZDqahPUodxu1vMtpc0AWm8EmOJzfk30c7KPCzyJUG7enACHnpbKLTpOM4bi8PFPjn0V6mf3w3CVJrWM7r9dQG4LHxJRgsN9ExdDpf0cU4rPn1xb_xJfot_E_ZvkgEUA9lvEXZNlGCrFyyC7OZ4ipVxPicrydEA3OAIOXEtUbc8d-G8rYJsFAr-11bLiiAKX_eLtuOLRGEnHs8g';
-
 const { BlobServiceClient, StorageSharedKeyCredential, newPipeline } = require('@azure/storage-blob');
 const multer = require('multer');
 const inMemoryStorage = multer.memoryStorage();
@@ -95,7 +93,7 @@ router.post('/getuser', (req, res) => {
 /* POST */
 
 router.post("/register", (req, res) => {
-    if (!req.body.name || !req.body.email || !req.body.password) {
+    if (!req.body.name || !req.body.email) {
         return res.status(400).send("Need email and name at minimum");
     }
 
@@ -283,28 +281,8 @@ router.patch('/updateuser', (req, res) => {
         }
 
         if (req.body.email) { //TODO add email validator
-            // axios({
-            //     method: 'PATCH',
-            //     url: `https://dev-s68c-q-y.auth0.com/api/v2/users/${user.auth0id}`,
-            //     headers: {
-            //       'content-type': 'application/json',
-            //       'authorization': 'Bearer ' + m_api_token
-            //     },
-            //     data: {
-            //       email: req.body.email
-            //     },
-            //     json: true
-            //   })
-            //   .then( (result) => {
-            //     console.log(result);
-            //     user.email = req.body.email;
-            //     summaryOfChanges += `•Email has been updated to ${req.body.email}\n` //TODO: maybe ask to confirm on old email if this is the case?
-            //   })
-            //   .catch( (error) => {
-            //     console.log(error);
-            //   });
             user.email = req.body.email;
-            var tempAccessToken = "REPLACE WITH UPDATED TOKEN";
+            var tempAccessToken = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlF6UTFPVVpGTTBRNFFUVTFRa1UyTmpJM05qQXpRMEpFUWpSR1JqZEJSRGhDTVRjeE5UZ3pSQSJ9.eyJpc3MiOiJodHRwczovL2Rldi1zNjhjLXEteS5hdXRoMC5jb20vIiwic3ViIjoib3JGbFVZTkdSNmZjV1ZweWU5a2dIdElOa2s3VFpoOWJAY2xpZW50cyIsImF1ZCI6Imh0dHBzOi8vZGV2LXM2OGMtcS15LmF1dGgwLmNvbS9hcGkvdjIvIiwiaWF0IjoxNTg1NjU0MzA4LCJleHAiOjE1ODYyNTkxMDcsImF6cCI6Im9yRmxVWU5HUjZmY1dWcHllOWtnSHRJTmtrN1RaaDliIiwic2NvcGUiOiJyZWFkOmNsaWVudF9ncmFudHMgY3JlYXRlOmNsaWVudF9ncmFudHMgZGVsZXRlOmNsaWVudF9ncmFudHMgdXBkYXRlOmNsaWVudF9ncmFudHMgcmVhZDp1c2VycyB1cGRhdGU6dXNlcnMgZGVsZXRlOnVzZXJzIGNyZWF0ZTp1c2VycyByZWFkOnVzZXJzX2FwcF9tZXRhZGF0YSB1cGRhdGU6dXNlcnNfYXBwX21ldGFkYXRhIGRlbGV0ZTp1c2Vyc19hcHBfbWV0YWRhdGEgY3JlYXRlOnVzZXJzX2FwcF9tZXRhZGF0YSBjcmVhdGU6dXNlcl90aWNrZXRzIHJlYWQ6Y2xpZW50cyB1cGRhdGU6Y2xpZW50cyBkZWxldGU6Y2xpZW50cyBjcmVhdGU6Y2xpZW50cyByZWFkOmNsaWVudF9rZXlzIHVwZGF0ZTpjbGllbnRfa2V5cyBkZWxldGU6Y2xpZW50X2tleXMgY3JlYXRlOmNsaWVudF9rZXlzIHJlYWQ6Y29ubmVjdGlvbnMgdXBkYXRlOmNvbm5lY3Rpb25zIGRlbGV0ZTpjb25uZWN0aW9ucyBjcmVhdGU6Y29ubmVjdGlvbnMgcmVhZDpyZXNvdXJjZV9zZXJ2ZXJzIHVwZGF0ZTpyZXNvdXJjZV9zZXJ2ZXJzIGRlbGV0ZTpyZXNvdXJjZV9zZXJ2ZXJzIGNyZWF0ZTpyZXNvdXJjZV9zZXJ2ZXJzIHJlYWQ6ZGV2aWNlX2NyZWRlbnRpYWxzIHVwZGF0ZTpkZXZpY2VfY3JlZGVudGlhbHMgZGVsZXRlOmRldmljZV9jcmVkZW50aWFscyBjcmVhdGU6ZGV2aWNlX2NyZWRlbnRpYWxzIHJlYWQ6cnVsZXMgdXBkYXRlOnJ1bGVzIGRlbGV0ZTpydWxlcyBjcmVhdGU6cnVsZXMgcmVhZDpydWxlc19jb25maWdzIHVwZGF0ZTpydWxlc19jb25maWdzIGRlbGV0ZTpydWxlc19jb25maWdzIHJlYWQ6aG9va3MgdXBkYXRlOmhvb2tzIGRlbGV0ZTpob29rcyBjcmVhdGU6aG9va3MgcmVhZDplbWFpbF9wcm92aWRlciB1cGRhdGU6ZW1haWxfcHJvdmlkZXIgZGVsZXRlOmVtYWlsX3Byb3ZpZGVyIGNyZWF0ZTplbWFpbF9wcm92aWRlciBibGFja2xpc3Q6dG9rZW5zIHJlYWQ6c3RhdHMgcmVhZDp0ZW5hbnRfc2V0dGluZ3MgdXBkYXRlOnRlbmFudF9zZXR0aW5ncyByZWFkOmxvZ3MgcmVhZDpzaGllbGRzIGNyZWF0ZTpzaGllbGRzIGRlbGV0ZTpzaGllbGRzIHJlYWQ6YW5vbWFseV9ibG9ja3MgZGVsZXRlOmFub21hbHlfYmxvY2tzIHVwZGF0ZTp0cmlnZ2VycyByZWFkOnRyaWdnZXJzIHJlYWQ6Z3JhbnRzIGRlbGV0ZTpncmFudHMgcmVhZDpndWFyZGlhbl9mYWN0b3JzIHVwZGF0ZTpndWFyZGlhbl9mYWN0b3JzIHJlYWQ6Z3VhcmRpYW5fZW5yb2xsbWVudHMgZGVsZXRlOmd1YXJkaWFuX2Vucm9sbG1lbnRzIGNyZWF0ZTpndWFyZGlhbl9lbnJvbGxtZW50X3RpY2tldHMgcmVhZDp1c2VyX2lkcF90b2tlbnMgY3JlYXRlOnBhc3N3b3Jkc19jaGVja2luZ19qb2IgZGVsZXRlOnBhc3N3b3Jkc19jaGVja2luZ19qb2IgcmVhZDpjdXN0b21fZG9tYWlucyBkZWxldGU6Y3VzdG9tX2RvbWFpbnMgY3JlYXRlOmN1c3RvbV9kb21haW5zIHJlYWQ6ZW1haWxfdGVtcGxhdGVzIGNyZWF0ZTplbWFpbF90ZW1wbGF0ZXMgdXBkYXRlOmVtYWlsX3RlbXBsYXRlcyByZWFkOm1mYV9wb2xpY2llcyB1cGRhdGU6bWZhX3BvbGljaWVzIHJlYWQ6cm9sZXMgY3JlYXRlOnJvbGVzIGRlbGV0ZTpyb2xlcyB1cGRhdGU6cm9sZXMgcmVhZDpwcm9tcHRzIHVwZGF0ZTpwcm9tcHRzIHJlYWQ6YnJhbmRpbmcgdXBkYXRlOmJyYW5kaW5nIHJlYWQ6bG9nX3N0cmVhbXMgY3JlYXRlOmxvZ19zdHJlYW1zIGRlbGV0ZTpsb2dfc3RyZWFtcyB1cGRhdGU6bG9nX3N0cmVhbXMiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMifQ.NtBvTZzKVjygUt7GNkHRqppKh_MH6X9eGwDdOVWIU7mBeT19GhyVKQ-8LnJAtlV5YRvk8hP0M6dIhsr8zeAJIsFw_JaySP5ZkYJSWGS5UXvmOYf42foxZ6iSfRr1nE_Y-GDbmC-t-4YcAoOOnGQxsna4uFr0ZaSNn_spt0jAd3FWdDJFUjvSN4Bpx0YcSIzcsRiDOXRIVdvPmrYqBjkneVGU9PcOU3SJhBzfS22rovujS14LU3UrkKQMNzHP_rpmq-5HVFzfaZsyDaI0ekL3VJPutwMDrQJb-8swv8mmL643xsUr_cYnFJvkB6JLPRrgQBHA2HjOa6PkoWXqkFNuYw";
             await axios({
               method: 'PATCH',
               url: `https://dev-s68c-q-y.auth0.com/api/v2/users/${req.body.auth0id}`,
@@ -409,17 +387,48 @@ router.patch('/authorization', (req, res) => {
 //DELETE user
 
 router.delete('/:id', (req, res) => {
-    if (!req.params.id) {
-        res.status(400).send("ID Required!!");
-    }
-    User.findOneAndDelete({ _id: req.params.id }, (err) => {
-        if (err) {
-            res.status(501).send("Server error.");
-        }
-        else {
-            res.status(200).send("User eradicated");
-        }
-    });
+  if (!req.params.id) {
+      res.status(400).send("ID Required!!");
+  }
+  console.log(req.params.id);
+  // User.findOneAndDelete({ _id: req.params.id }, (err, user) => {
+  //     if (err) {
+  //         res.status(501).send("Server error.");
+  //     }
+  //     else {
+  //         res.status(200).send("User eradicated");
+  //     }
+  // });
+  var tempAccessToken = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlF6UTFPVVpGTTBRNFFUVTFRa1UyTmpJM05qQXpRMEpFUWpSR1JqZEJSRGhDTVRjeE5UZ3pSQSJ9.eyJpc3MiOiJodHRwczovL2Rldi1zNjhjLXEteS5hdXRoMC5jb20vIiwic3ViIjoib3JGbFVZTkdSNmZjV1ZweWU5a2dIdElOa2s3VFpoOWJAY2xpZW50cyIsImF1ZCI6Imh0dHBzOi8vZGV2LXM2OGMtcS15LmF1dGgwLmNvbS9hcGkvdjIvIiwiaWF0IjoxNTg1NjA1MTc3LCJleHAiOjE1ODYyMDk5NzUsImF6cCI6Im9yRmxVWU5HUjZmY1dWcHllOWtnSHRJTmtrN1RaaDliIiwic2NvcGUiOiJyZWFkOmNsaWVudF9ncmFudHMgY3JlYXRlOmNsaWVudF9ncmFudHMgZGVsZXRlOmNsaWVudF9ncmFudHMgdXBkYXRlOmNsaWVudF9ncmFudHMgcmVhZDp1c2VycyB1cGRhdGU6dXNlcnMgZGVsZXRlOnVzZXJzIGNyZWF0ZTp1c2VycyByZWFkOnVzZXJzX2FwcF9tZXRhZGF0YSB1cGRhdGU6dXNlcnNfYXBwX21ldGFkYXRhIGRlbGV0ZTp1c2Vyc19hcHBfbWV0YWRhdGEgY3JlYXRlOnVzZXJzX2FwcF9tZXRhZGF0YSBjcmVhdGU6dXNlcl90aWNrZXRzIHJlYWQ6Y2xpZW50cyB1cGRhdGU6Y2xpZW50cyBkZWxldGU6Y2xpZW50cyBjcmVhdGU6Y2xpZW50cyByZWFkOmNsaWVudF9rZXlzIHVwZGF0ZTpjbGllbnRfa2V5cyBkZWxldGU6Y2xpZW50X2tleXMgY3JlYXRlOmNsaWVudF9rZXlzIHJlYWQ6Y29ubmVjdGlvbnMgdXBkYXRlOmNvbm5lY3Rpb25zIGRlbGV0ZTpjb25uZWN0aW9ucyBjcmVhdGU6Y29ubmVjdGlvbnMgcmVhZDpyZXNvdXJjZV9zZXJ2ZXJzIHVwZGF0ZTpyZXNvdXJjZV9zZXJ2ZXJzIGRlbGV0ZTpyZXNvdXJjZV9zZXJ2ZXJzIGNyZWF0ZTpyZXNvdXJjZV9zZXJ2ZXJzIHJlYWQ6ZGV2aWNlX2NyZWRlbnRpYWxzIHVwZGF0ZTpkZXZpY2VfY3JlZGVudGlhbHMgZGVsZXRlOmRldmljZV9jcmVkZW50aWFscyBjcmVhdGU6ZGV2aWNlX2NyZWRlbnRpYWxzIHJlYWQ6cnVsZXMgdXBkYXRlOnJ1bGVzIGRlbGV0ZTpydWxlcyBjcmVhdGU6cnVsZXMgcmVhZDpydWxlc19jb25maWdzIHVwZGF0ZTpydWxlc19jb25maWdzIGRlbGV0ZTpydWxlc19jb25maWdzIHJlYWQ6aG9va3MgdXBkYXRlOmhvb2tzIGRlbGV0ZTpob29rcyBjcmVhdGU6aG9va3MgcmVhZDplbWFpbF9wcm92aWRlciB1cGRhdGU6ZW1haWxfcHJvdmlkZXIgZGVsZXRlOmVtYWlsX3Byb3ZpZGVyIGNyZWF0ZTplbWFpbF9wcm92aWRlciBibGFja2xpc3Q6dG9rZW5zIHJlYWQ6c3RhdHMgcmVhZDp0ZW5hbnRfc2V0dGluZ3MgdXBkYXRlOnRlbmFudF9zZXR0aW5ncyByZWFkOmxvZ3MgcmVhZDpzaGllbGRzIGNyZWF0ZTpzaGllbGRzIGRlbGV0ZTpzaGllbGRzIHJlYWQ6YW5vbWFseV9ibG9ja3MgZGVsZXRlOmFub21hbHlfYmxvY2tzIHVwZGF0ZTp0cmlnZ2VycyByZWFkOnRyaWdnZXJzIHJlYWQ6Z3JhbnRzIGRlbGV0ZTpncmFudHMgcmVhZDpndWFyZGlhbl9mYWN0b3JzIHVwZGF0ZTpndWFyZGlhbl9mYWN0b3JzIHJlYWQ6Z3VhcmRpYW5fZW5yb2xsbWVudHMgZGVsZXRlOmd1YXJkaWFuX2Vucm9sbG1lbnRzIGNyZWF0ZTpndWFyZGlhbl9lbnJvbGxtZW50X3RpY2tldHMgcmVhZDp1c2VyX2lkcF90b2tlbnMgY3JlYXRlOnBhc3N3b3Jkc19jaGVja2luZ19qb2IgZGVsZXRlOnBhc3N3b3Jkc19jaGVja2luZ19qb2IgcmVhZDpjdXN0b21fZG9tYWlucyBkZWxldGU6Y3VzdG9tX2RvbWFpbnMgY3JlYXRlOmN1c3RvbV9kb21haW5zIHJlYWQ6ZW1haWxfdGVtcGxhdGVzIGNyZWF0ZTplbWFpbF90ZW1wbGF0ZXMgdXBkYXRlOmVtYWlsX3RlbXBsYXRlcyByZWFkOm1mYV9wb2xpY2llcyB1cGRhdGU6bWZhX3BvbGljaWVzIHJlYWQ6cm9sZXMgY3JlYXRlOnJvbGVzIGRlbGV0ZTpyb2xlcyB1cGRhdGU6cm9sZXMgcmVhZDpwcm9tcHRzIHVwZGF0ZTpwcm9tcHRzIHJlYWQ6YnJhbmRpbmcgdXBkYXRlOmJyYW5kaW5nIHJlYWQ6bG9nX3N0cmVhbXMgY3JlYXRlOmxvZ19zdHJlYW1zIGRlbGV0ZTpsb2dfc3RyZWFtcyB1cGRhdGU6bG9nX3N0cmVhbXMiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMifQ.YHG500mpR4JOM-kZ3O6KePKwbqvp1dD-axLFfeSxdYhOGjcS_s50SAttwhMn1P-wCu5AkKIzj4hUfVm8mK3D2ECyB1SFLkW3qEpOZFS_7ESIUH1CEpCSpkoau-etxVU6Md29VYu9dnahmuByhdzf22x__2W1wPlPQk6iCRVzqHRfbUPMa9mbkW1FwgufRIwO78-hMegDbOs_w53T7XRuIK1IBhizgWMLCHounki2NZh1g4lIISfKQOFaOW0955SCjt_-jt1_X3yw8Ob2P2EiYQIV-Is2qrCQ-7xnZ5Ak1ESENm9-dUMmK7P1-KeJGhWGr1weni4TYr4yGwVtV4QMIQ"
+  User.findById(req.params.id).then((user) => {
+      if (!user) {
+          res.status(404).send("User not found")
+      }
+      else {
+          axios({
+              method: "DELETE",
+              url: `https://dev-s68c-q-y.auth0.com/api/v2/users/${user.auth0id.replace('|', '%7C')}`,
+              headers: {
+                  'content-type': 'application/json',
+                  'authorization': `Bearer ${tempAccessToken}`
+              },
+          }).then((x) => {
+              User.findOneAndDelete({_id: user._id}).then((user) => {
+                  res.status(200).send("User eradicated/obliterated");
+              }).catch((err) => {
+                  console.log("mongoose delete failed");
+                  res.status(500).send(err);
+              });
+          }).catch((err) => {
+              console.log("Auth0 API call failed");
+              res.status(500).send(err);
+          });
+      }
+  }).catch((err) => {
+      console.log("Finding a user to delete failed");
+      console.log(err);
+      res.status(500).send(err);
+  });
 });
 
 module.exports = router;
