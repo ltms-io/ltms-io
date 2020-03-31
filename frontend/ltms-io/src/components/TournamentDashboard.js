@@ -89,6 +89,7 @@ export default class TournamentDashboard extends Component {
                             <Button>See Scores</Button>
                           </Link>
                         )}
+
                         <Link to={"/createteam/" + this.state.tourneyId}>
                         <Button disabled = {!this.state.createTeamAuthorized}> Create Team</Button>
                         </Link>
