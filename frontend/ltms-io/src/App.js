@@ -26,7 +26,7 @@ function App(props) {
   if(!document.cookie){
     axios.post('http://localhost:5000/api/users/login', {data: localStorage.getItem("auth0_id")}).then( (result) => {
       document.cookie = "UserIdentity=" + result.data;
-      localStorage.removeItem("auth0_id");
+      // localStorage.removeItem("auth0_id");
     }).catch(function(err){
       console.log(err);
     });
