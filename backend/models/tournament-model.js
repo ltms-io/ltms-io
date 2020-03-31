@@ -38,6 +38,9 @@ const TournamentSchema = new Schema({
     },
     volunteers: [], //don't use anymore
 
+    location: {
+        type: String,
+    },
     /* Volunteer Roles */
     headReferee: [{
         type: String,
@@ -73,6 +76,10 @@ const TournamentSchema = new Schema({
         required: true,
     },
     matchesPerTeam: {
+        type: Number,
+        default: 3,
+    },
+    numJudgeRooms: {
         type: Number,
         default: 3,
     },
