@@ -20,6 +20,7 @@ import RubricEntry from "./components/RubricEntry";
 import MatchScoreListing from "./components/MatchScoreListing";
 import EditScoreEntry from "./components/EditScoreEntry";
 import axios from 'axios';
+import RoleChange from './components/RoleChange';
 const jsonWeb = require('jsonwebtoken');
 
 function App(props) {
@@ -51,6 +52,7 @@ function App(props) {
           <Route path="/maindashboard" component={ MainDashboard } />
           <Route path="/tournamentdashboard/:tourneyId" component={ TournamentDashboard } />
           <Route path="/rubricentry/:tourneyId/:teamId" component={ RubricEntry } />
+          <Route path="/rolechange" component={ RoleChange }/>
           <Route path="/t/:tourneyId/mscores" component={ MatchScoreListing } />
           <Route path="/t/:tourneyId/editscore/:scoreId" component={ EditScoreEntry } />
         </Switch>
