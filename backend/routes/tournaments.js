@@ -100,38 +100,69 @@ router.post('/user', (req, res) => {
     });
 });
 
+/* GET all scores for tournament given tourney id */
+router.get('/:id/scores', (req, res) => {
+    Tournament.findById(req.params.id).then(tournament => {
+        if(!tournament) {
+            return res.status(404).send("tournament not found");
+        }
+
+        return res.status(200).send(tournament.scores);
+    })
+})
+
+/* GET SPECIFIC score for tournament given tourney id and score id */
+router.get('/:id/scores/:scoreid', (req, res) => {
+    Tournament.findById(req.params.id).then(tournament => {
+        if(!tournament) {
+            return res.status(404).send("tournament not found");
+        }
+
+        return res.status(200).send(tournament.scores.id(req.params.scoreid));
+    })
+})
 
 /* POST search for tournament via various outlets */
 router.post('/search', async(req, res) => {
     console.log(req.body);
     if (!req.body.tournament_name && !req.body.user_name && !(req.body.date)) {
-        return res.status(400).send("Please include");
+        return res.status(400).send("Bad request: no searchable fields included.");
     }
 
     var found_user;
     if (req.body.user_name) {
-        await User.findOne({name: req.body.user_name}).then((user) => {
+        await User.findOne({name: {$regex: new RegExp(`^${req.body.user_name}$`, 'i')}}).then((user) => {
             found_user = user;
         }).catch((error) => {
             found_user = null;
         });
     }
 
+    console.log(found_user);
+
     var query = {};
 
-    if (found_user) {
+    if (found_user && found_user !== null) {
+        console.log("=== ASSIGNING QUERY FOR DIRECTOR ===");
         query.director = found_user._id;
     };
 
     if (req.body.tournament_name) {
-        query.name = req.body.tournament_name;
+        query.name = {$regex: new RegExp(`^${req.body.tournament_name}$`, 'i')};
     }
 
     if (req.body.date) {
         query.startDate = req.body.date;
     }
+    console.log(query);
 
-    Tournament.find(query).then((tournament) => {
+    if (!query.director && !query.name && !query.startDate) {
+        console.log("Returning empty");
+        return res.status(404).send([]);
+    }
+
+    Tournament.find(query)
+    .then((tournament) => {
         if (!tournament) {
             return res.status(404).send("No results found");
         }
@@ -196,6 +227,31 @@ router.post('/register', (req, res) => {
         res.status(404).send("Your user id was invalid!");
     })
 });
+
+/* POST score */
+router.post('/score', (req, res) => {
+    Tournament.findById(req.body.id).then((tournament) => {
+        if(!tournament) {
+            return res.status(404).send("tourney not found");
+        }
+        
+        tournament.scores.push({
+            fieldTypes: req.body.fieldTypes,
+            fieldValues: req.body.fieldValues,
+            teamNum: req.body.teamNum,
+            scoreType: req.body.scoreType,
+            finalScore: req.body.finalScore,
+            rawData: req.body.rawData
+        });
+
+        tournament.save().then(tourney => {
+            res.status(200).send(tourney);
+        }).catch(err => {
+            console.log(err);
+            res.status(500).send(err);
+        })
+    })
+})
 
 /* PATCH specific tournament. */
 router.patch('/:id', (req, res) => {
@@ -277,6 +333,48 @@ router.patch('/setofficialevent/:id', (req, res) => {
     });
 });
 
+//update a score given tourney and score ids
+router.patch('/:id/scores/:scoreid', (req, res) => {
+    Tournament.findById(req.params.id).then(tournament => {
+        if(!tournament) {
+            return res.status(404).send("tournament not found");
+        }
+
+        if(req.body.fieldTypes) {
+            tournament.scores.id(req.params.scoreid).fieldTypes = req.body.fieldTypes;
+        }
+
+        if(req.body.fieldValues) {
+            tournament.scores.id(req.params.scoreid).fieldValues = req.body.fieldValues;
+        }
+
+        if(req.body.teamNum) {
+            tournament.scores.id(req.params.scoreid).teamNum = req.body.teamNum;
+        }
+
+        if(req.body.scoreType) {
+            tournament.scores.id(req.params.scoreid).scoreType = req.body.scoreType;
+        }
+
+        if(req.body.finalScore) {
+            tournament.scores.id(req.params.scoreid).finalScore = req.body.finalScore;
+        }
+
+        if(req.body.rawData) {
+            tournament.scores.id(req.params.scoreid).rawData = req.body.rawData;
+        }
+
+        if(req.body.changeNotes) {
+            tournament.scores.id(req.params.scoreid).changeNotes.push(req.body.changeNotes);
+        }
+
+        tournament.save().then(tournament => {
+            res.status(200).send(tournament);
+        }).catch(err => {
+            res.status(500).send(err);
+        })
+    })
+})
 
 /* DELETE */
 
@@ -294,5 +392,23 @@ router.delete('/:id', (req,res) => {
     });
 
 });
+
+//delete all scores
+router.delete('/scores/yesimsure', (req, res) => {
+    Tournament.findById(req.body.id).then(tournament => {
+        if(!tournament) {
+            return res.status(404).send("tourney not found");
+        }
+
+        tournament.scores = [];
+        
+        tournament.save().then(tournament => {
+            return res.status(200).send(tournament);
+        }).catch(err => {
+            console.log(err)
+            return res.status(500).send(err) ;
+        })
+    })
+})
 
 module.exports = router;
