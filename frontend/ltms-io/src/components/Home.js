@@ -55,10 +55,6 @@ class Home extends Component {
             <a href="/rolechange">Change User Role</a>
         </div>)}
         {this.props.auth.isAuthenticated() && (
-        <div>
-            <a href="/sortteams">Sort Teams</a>
-        </div>)}
-        {this.props.auth.isAuthenticated() && (
           <button onClick={this.props.auth.logout}>Logout</button>
         )}
 

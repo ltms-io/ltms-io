@@ -62,7 +62,7 @@ function App(props) {
           <Route path="/rolechange" component={ RoleChange }/>
           <Route path="/t/:tourneyId/mscores" component={ MatchScoreListing } />
           <Route path="/t/:tourneyId/editscore/:scoreId" component={ EditScoreEntry } />
-          <Route path="/sortteams" component={ SortTeams } />
+          <Route path="/matchranking/:tourneyId" component={ SortTeams } />
         </Switch>
       </div>
     </Router>
