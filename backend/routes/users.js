@@ -48,6 +48,16 @@ router.get('/', (req, res, next) => {
     })
 });
 
+router.get('/:id', (req, res, next) => {
+    User.findById(req.params.id, (err, user) => {
+        if (err) {
+            res.status(500).send(err);
+        }
+
+        res.send(user);
+    })
+});
+
 //POST specific user
 router.post('/auth', (req, res) => {
     const userinfo = req.body.data;

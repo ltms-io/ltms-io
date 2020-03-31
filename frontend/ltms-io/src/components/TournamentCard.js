@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {Card, Button} from 'react-bootstrap'
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 export default class TournamentCard extends Component {
@@ -26,6 +27,7 @@ export default class TournamentCard extends Component {
 
    
     volunteerForEvent() {
+        console.log(localStorage.getItem("auth0_id"));
         var body = {
             auth_id: localStorage.getItem("auth0_id"),
             tournament_id: this.state.tournament._id
@@ -49,7 +51,9 @@ export default class TournamentCard extends Component {
                         <li>{this.state.tournament.matchesPerTeam}</li>
                     </ul>
                     { localStorage.getItem("auth0_id") === this.state.directorAuth ?
-                    (<Button>Edit tournament</Button>)
+                    (<Link to={"/tournamentdashboard/" + this.state.tournament._id} >
+                        <Button className="m-3">Access Tournament</Button>
+                    </Link>)
                     :
                     (<Button onClick={() => {this.volunteerForEvent()}}>Volunteer</Button>)
                     }
