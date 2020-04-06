@@ -38,9 +38,9 @@ export default class Auth {
            headers: {
                'authorization': `Bearer ${authResults.accessToken}`,
             }
-        }).then((userDataResponse) => {
+        }).then(async (userDataResponse) => {
           localStorage.setItem("auth0_id", userDataResponse.data.sub);
-          axios.post(`http://localhost:5000/api/users/auth`, {
+          await axios.post(`http://localhost:5000/api/users/auth`, {
             data: userDataResponse.data
           }).then((x) => {
             location.hash = "";

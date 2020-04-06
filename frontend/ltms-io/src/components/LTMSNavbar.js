@@ -6,6 +6,16 @@ import axios from 'axios';
 const jsonWeb = require('jsonwebtoken');
 
 class LTMSNavbar extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      uid: "",
+      profilepic: "",
+      dbresults: {}
+    };
+  }
+
   render() {
     return(
       <div>
@@ -28,42 +38,16 @@ class LTMSNavbar extends Component {
   }
 
   async componentDidMount() {
-    if(localStorage.getItem("auth0_id") || !document.cookie.length){
-
-      console.log("AXIOS!!!");
-      await axios.post(`http://localhost:5000/api/users/auth`, {data: localStorage.getItem("auth0_id")})
-        .then ((result) => {
-          this.setState({dbresults: result.data});
-        })
-        .catch( (error) => {
-          console.log(error);
-        });
-
-    }else{
-      console.log("HERE!!!");
+    if (document.cookie.length) {
       var token = document.cookie.substring(13);
-      var stat = jsonWeb.verify(token, "123456", function(err, decoded) {
-        if(err){
-          axios.post(`http://localhost:5000/api/users/auth`, {data: localStorage.getItem("auth0_id")})
-          .then ((result) => {
-            return result.data;
-          })
-          .catch( (error) => {
-            console.log(error);
-          });
-        }else{
-          return decoded;
-        }
-      });
+      var decoded = jsonWeb.verify(token, "123456");
 
-      if(stat){
-        this.setState({dbresults: stat});
-      }
+      this.state.dbresults = decoded;
+      this.state.uid = decoded.auth0id;
     }
     this.setState(this.state);
 
     console.log("INITIAL NAVBAR STATE", this.state);
-
   }
 }
 
