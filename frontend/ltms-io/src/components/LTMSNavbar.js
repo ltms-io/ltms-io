@@ -14,6 +14,13 @@ class LTMSNavbar extends Component {
       profilepic: "",
       dbresults: {}
     };
+
+    this.signOut = this.signOut.bind(this);
+  }
+
+  signOut(e) {
+    e.preventDefault();
+    this.props.auth.logout();
   }
 
   render() {
@@ -28,8 +35,8 @@ class LTMSNavbar extends Component {
               <img src={sample} data-test="theLogo" alt="profile" width="30" height="30" className="d-inline-block align-top" />
             </Navbar.Brand>
             <NavDropdown alignRight title="Menu">
-              <NavDropdown.Item>Quick Links</NavDropdown.Item>
-              <NavDropdown.Item>Sign Out</NavDropdown.Item>
+              <NavDropdown.Item href="https://google.com">Quick Links</NavDropdown.Item>
+              <NavDropdown.Item onClick={this.signOut}>Sign Out</NavDropdown.Item>
             </NavDropdown>
           </Nav>
         </Navbar>

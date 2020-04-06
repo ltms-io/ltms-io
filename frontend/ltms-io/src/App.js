@@ -52,7 +52,7 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
-          <LTMSNavbar />
+          <LTMSNavbar auth={this.props.auth} />
           <Switch>
             <Route path="/" exact component={() => <Home auth={this.props.auth} />} />
             <Route path="/dashboard" component={Dashboard} />
