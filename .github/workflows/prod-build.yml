@@ -3,8 +3,60 @@
 name: Production Build of LTMS.io
 
 on:
-  pull_request:
-    branches: [ master ]
+  push:
+    branches: [ master, 808-4-prod-workflow ]
 
-# jobs:
-#   test:
+jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - continue-on-error: false
+
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: install frontend deps
+        run: npm ci
+        working-directory: ./frontend/ltms-io
+
+      - name: build frontend
+        run: npm build
+        working-directory: ./frontend/ltms-io
+  
+  prep-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - continue-on-error: false
+
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: install backend deps
+        run: npm ci
+        working-directory: ./backend
+
+  build-project:
+    needs: build-frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - continue-on-error: false
+
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+        #create director if it does not already exist
+      - run: mkdir -p production
+      - run: cp ./backend/* ./production
+      - run: cp -R ./frontend/ltms-io/build ./production/frontend
