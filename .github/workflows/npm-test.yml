@@ -10,7 +10,7 @@ on:
     branches: [ master, 808-1-github-cicd ]
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
 
