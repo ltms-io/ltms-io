@@ -1,0 +1,10 @@
+# For production build of ltms-io
+
+name: Production Build of LTMS.io
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
