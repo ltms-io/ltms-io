@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import { Container, Col, Row, Form, Button } from 'react-bootstrap'
 import { SingleDatePicker } from 'react-dates'
 import axios from 'axios';
+const jsonWeb = require('jsonwebtoken');
 //import { Redirect } from 'react-router-dom';
 
 export default class CreateEvent extends Component {
@@ -41,9 +42,11 @@ export default class CreateEvent extends Component {
             this.setState({validated: true});
         } else {
             event.preventDefault();
-
+          
+            var token = document.cookie.substring(13);
+            var decoded = jsonWeb.verify(token, "123456");
             axios.post("http://localhost:5000/api/tournaments/register", {
-                auth0id: localStorage.getItem("auth0_id"), //TODO: add director from authed user
+                auth0id: decoded.auth0id, //TODO: add director from authed user
                 name: this.state.tourneyName,
                 teams: "",
                 officialEventFlag: true, //TODO: implement checking

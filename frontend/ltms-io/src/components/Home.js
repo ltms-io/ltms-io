@@ -35,6 +35,14 @@ class Home extends Component {
         )}
 
         {this.props.auth.isAuthenticated() && (
+        <div>
+            <a href="/maindashboard">The Real Dashboard</a>
+        </div>)}
+        {this.props.auth.isAuthenticated() && (
+        <div>
+            <a href="/rolechange">Change User Role</a>
+        </div>)}
+        {this.props.auth.isAuthenticated() && (
           <button onClick={this.props.auth.logout}>Logout</button>
         )}
         {this.props.auth.isAuthenticated() && (

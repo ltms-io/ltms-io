@@ -17,6 +17,7 @@ const TeamSchema = new Schema({
     },
     judgingScores: [],
     matchScores: [],
+    rubrics: []
 });
 
 //Create a model for team schema instantiation
