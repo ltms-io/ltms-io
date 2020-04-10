@@ -22,7 +22,7 @@ jobs:
         working-directory: ./frontend/ltms-io
 
       - name: build frontend
-        run: npm build
+        run: npm run-script build
         working-directory: ./frontend/ltms-io
   
   prep-backend:
