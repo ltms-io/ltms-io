@@ -7,7 +7,7 @@ on:
     branches: [ master, 808-4-prod-workflow ]
 
 jobs:
-  build-frontend:
+  build-project:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,31 +26,6 @@ jobs:
         working-directory: ./frontend/ltms-io
         env:
           CI: false #TODO: god I hate this I promise this is just for debug
-  
-  prep-backend:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
-
-      - name: install backend deps
-        run: npm ci
-        working-directory: ./backend
-
-  build-project:
-    needs: [build-frontend, prep-backend]
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
 
         #create director if it does not already exist
       - run: mkdir -p production
