@@ -11,8 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - continue-on-error: false
-
       - uses: actions/checkout@v2
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
@@ -31,8 +29,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - continue-on-error: false
-
       - uses: actions/checkout@v2
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
@@ -44,12 +40,10 @@ jobs:
         working-directory: ./backend
 
   build-project:
-    needs: build-frontend
+    needs: [build-frontend, prep-backend]
     runs-on: ubuntu-latest
 
     steps:
-      - continue-on-error: false
-
       - uses: actions/checkout@v2
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
