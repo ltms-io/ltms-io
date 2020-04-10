@@ -24,6 +24,8 @@ jobs:
       - name: build frontend
         run: npm run-script build
         working-directory: ./frontend/ltms-io
+        env:
+          CI: false #TODO: god I hate this I promise this is just for debug
   
   prep-backend:
     runs-on: ubuntu-latest
