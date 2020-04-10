@@ -53,6 +53,8 @@ function App(props) {
           <Route path="/createscoresheet" component={ Sheet }/>
           <Route path="/callback" component={Callback} />
           <Route path="/pictureuploadtest" component={PictureUploadModalTest} />
+          <Route path="/Judge" component={Judge} />
+          <Route path="/EditTournament" component={EditTournament} />
           <Route path="/volunteermodaltest" component={ VolunteerModalTest } />
           <Route path="/tournamentsearch" component={ TournamentSearch } />
           <Route path="/setreferee/:tourneyId" component={ SetReferee } />
