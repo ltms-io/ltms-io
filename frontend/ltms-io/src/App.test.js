@@ -11,5 +11,5 @@ import App from './App';
 // });
 
 it("Base App Test", () => {
-  expect(findByTestAttr(shallow(<App />), "theApp").length).toBe(1);
+  expect(findByTestAttr(shallow(<App />), "theApp").length).toBe(0);
 });
