@@ -52,5 +52,5 @@ jobs:
 
         #create director if it does not already exist
       - run: mkdir -p production
-      - run: cp ./backend/* ./production
+      - run: cp -R ./backend/* ./production
       - run: cp -R ./frontend/ltms-io/build ./production/frontend
