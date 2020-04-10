@@ -25,6 +25,7 @@ import SortTeams from './components/SortTeams';
 import CreateTeam from './components/CreateTeam';
 import viewRubric from './components/ViewRubrics';
 import CreateJudges from './components/CreateJudges';
+import QuickLinks from './components/QuickLinks';
 const jsonWeb = require('jsonwebtoken');
 
 class App extends Component {
@@ -75,6 +76,7 @@ class App extends Component {
             <Route path="/t/:tourneyId/mscores" component={ MatchScoreListing } />
             <Route path="/t/:tourneyId/editscore/:scoreId" component={ EditScoreEntry } />
             <Route path="/matchranking/:tourneyId" component={ SortTeams } />
+            <Route path="/quicklinks" component={ QuickLinks } />
           </Switch>
         </div>
       </Router>
