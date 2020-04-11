@@ -14,8 +14,9 @@ jobs:
       - run: mkdir -p repo
 
       - uses: actions/checkout@v2
-        working-directory: ./repo
-        
+        with:
+          path: ./repo
+
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
         with:
