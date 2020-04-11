@@ -26,7 +26,6 @@ import CreateTeam from './components/CreateTeam';
 import viewRubric from './components/ViewRubrics';
 import CreateJudges from './components/CreateJudges';
 import Schedule from './components/Schedule';
-const jsonWeb = require('jsonwebtoken');
 
 function App(props) {
   if(!document.cookie){

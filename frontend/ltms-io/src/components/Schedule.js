@@ -39,14 +39,14 @@ class Schedule extends React.Component {
                         j = 0;
                     }
                     if(sched[j] == "") {
-                        // sched[j] = this.state.teams[i].teamName;
-                        sched[j] = <Form.Control type="text" value={this.state.teams[i].teamName} readOnly = {true} />
+                        sched[j] = hour + ":" + min + " | " + this.state.teams[i].teamName;
+                        //sched[j] = <Form.Control type="text" value={this.state.teams[i].teamName} readOnly = {true} />
                         break;
                     }
                 }
             } else {
-                // sched[j] = this.state.teams[i].teamName;
-                sched[j] = <Form.Control type="text" value={this.state.teams[i].teamName} readOnly = {true} />
+                sched[j] = hour + ":" + min + " | " + this.state.teams[i].teamName;
+                //sched[j] = <Form.Control type="text" value={this.state.teams[i].teamName} readOnly = {true} />
             }
         }
         console.log(sched);
@@ -78,7 +78,7 @@ class Schedule extends React.Component {
                     {this.state.schedule.map(sched => (
                         <Row>
                             <Col xs = "4">
-                                {sched}
+                            <Form.Control type="text" value={sched} readOnly = {true} />
                             </Col>
                         </Row>
                     ))}

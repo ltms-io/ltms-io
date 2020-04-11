@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
-import logo from '../logo.svg';
+// import logo from '../logo.svg';
 const axios = require('axios');
 
 class RoleChange extends Component{

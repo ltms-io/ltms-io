@@ -51,7 +51,7 @@ class Sheet extends React.Component{
 
     e.preventDefault();
 
-    if(e.target.elements.teamName.value != ""){
+    if(e.target.elements.teamName.value !== ""){
       this.setState({team: e.target.elements.teamName.value});
       this.setState({readOnly: true});
     }
