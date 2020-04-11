@@ -50,10 +50,17 @@ jobs:
         run: git commit -m "deploy"
         working-directory: ./production
 
+      - name: Commit remote
+        env:
+          HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
+          HEROKU_APP_NAME: "ltms-io"
+        run: git remote add origin https://heroku:$HEROKU_API_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git
+        working-directory: ./production
+
       - name: Deploy to Heroku
         env:
           HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
           HEROKU_APP_NAME: "ltms-io"
         if: job.status == 'success'
-        run: git push https://heroku:$HEROKU_API_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git origin/master:master
+        run: git push origin master
         working-directory: ./production
