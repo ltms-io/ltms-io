@@ -45,5 +45,5 @@ jobs:
       - name: Deploy to Heroku
         env:
           HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
-        run: git push heroku master
+        run: git push heroku
         working-directory: ./production
