@@ -50,6 +50,9 @@ jobs:
         run: heroku git:remote -a ltms-io
         working-directory: ./production
 
+      - run: git config user.email "actions@github.com"
+      - run: git config user.name "GitHub Actions"
+
       - name: Deploy to Heroku
         env:
           HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
