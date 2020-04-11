@@ -37,7 +37,10 @@ jobs:
         working-directory: ./production
 
       - run: git config user.email "actions@github.com"
+        working-directory: ./production
+
       - run: git config user.name "GitHub Actions"
+        working-directory: ./production
 
       - name: Stage files
         run: git add .
