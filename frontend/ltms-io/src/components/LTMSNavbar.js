@@ -43,6 +43,12 @@ class LTMSNavbar extends Component {
             <NavDropdown alignRight title="Menu">
               <NavDropdown.Item href="/quicklinks">Quick Links</NavDropdown.Item>
               {this.props.auth.isAuthenticated() && (
+                <NavDropdown.Item href="/createtournament">Create a Tournament</NavDropdown.Item>
+              )}
+              {this.props.auth.isAuthenticated() && (
+                <NavDropdown.Item href="/tournamentsearch">Find a Tournament</NavDropdown.Item>
+              )}
+              {this.props.auth.isAuthenticated() && (
                 <NavDropdown.Item onClick={this.signOut}>Sign Out</NavDropdown.Item>
               )}
             </NavDropdown>
