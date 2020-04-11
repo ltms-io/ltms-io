@@ -32,6 +32,12 @@ jobs:
       - run: cp -R ./backend/* ./production
       - run: cp -R ./frontend/ltms-io/build ./production/frontend
 
+      - name: Heroku login
+        env:
+          HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
+        run: heroku login
+        working-directory: ./production
+
       - name: Create prod git repo
         run: git init
         working-directory: ./production
