@@ -35,6 +35,14 @@ jobs:
       - name: Create prod git repo
         run: git init
         working-directory: ./production
+
+      - name: Stage files
+        run: git add .
+        working-directory: ./production
+
+      - name: Commit files
+        run: git commit -m "deploy"
+        working-directory: ./production
       
       - name: Create Heroku remote
         env:
