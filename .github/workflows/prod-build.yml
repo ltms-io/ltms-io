@@ -11,32 +11,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - run: mkdir -p repo
+
       - uses: actions/checkout@v2
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
+        working-directory: ./repo
 
       - name: install frontend deps
         run: npm ci
-        working-directory: ./frontend/ltms-io
+        working-directory: ./repo/frontend/ltms-io
 
       - name: build frontend
         run: npm run-script build
-        working-directory: ./frontend/ltms-io
+        working-directory: ./repo/frontend/ltms-io
         env:
           CI: false #TODO: god I hate this I promise this is just for debug
 
         #create director if it does not already exist
       - run: mkdir -p production
-      - run: cp -R ./backend/* ./production
-      - run: cp -R ./frontend/ltms-io/build ./production/frontend
-
-      - name: Heroku login
-        env:
-          HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
-        run: heroku login
-        working-directory: ./production
+      - run: cp -R ./repo/backend/* ./production
+      - run: cp -R ./repo/frontend/ltms-io/build ./production/frontend
 
       - name: Create prod git repo
         run: git init
@@ -56,17 +53,10 @@ jobs:
         run: git commit -m "deploy"
         working-directory: ./production
 
-      - name: Commit remote
-        env:
-          HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
-          HEROKU_APP_NAME: "ltms-io"
-        run: git remote add origin https://heroku:$HEROKU_API_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git
-        working-directory: ./production
-
       - name: Deploy to Heroku
         env:
           HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
           HEROKU_APP_NAME: "ltms-io"
         if: job.status == 'success'
-        run: git push origin master
+        run: git push https://heroku:$HEROKU_API_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git origin/master:master
         working-directory: ./production
