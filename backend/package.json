@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "nodemon ./bin/www",
+    "prod": "node ./bin/prod",
     "test": "mocha --exit"
   },
   "dependencies": {

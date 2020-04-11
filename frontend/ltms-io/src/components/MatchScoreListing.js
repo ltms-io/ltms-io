@@ -35,7 +35,7 @@ export default class MatchScoreListing extends Component {
             console.log(error);
         });
 
-        await axios.post(`http://localhost:5000/api/users/getuser`, {
+        await axios.post(`/api/users/getuser`, {
             auth0id: this.state.authresults.sub
         }).then((result) => {
             this.state.userResults = result.data;
@@ -43,7 +43,7 @@ export default class MatchScoreListing extends Component {
             console.log(error);
         });
 
-        await axios.get(`http://localhost:5000/api/tournaments/${this.state.tourneyId}/scores`).then((result) => {
+        await axios.get(`/api/tournaments/${this.state.tourneyId}/scores`).then((result) => {
             this.state.scoreResults = result.data;
         }).catch((error) => {
             console.log(error);

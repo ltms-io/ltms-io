@@ -22,7 +22,7 @@ class MainDashboard extends Component {
     componentDidMount() {
         var token = document.cookie.substring(13);
         var decoded = jsonWeb.verify(token, "123456");
-        axios.post("http://localhost:5000/api/tournaments/user", {auth0id: decoded.auth0id})
+        axios.post("/api/tournaments/user", {auth0id: decoded.auth0id})
             .then(res => {
                 this.setState({
                     director: res.data.director,

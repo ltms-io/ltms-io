@@ -162,7 +162,7 @@ class Sheet extends React.Component{
 
     alert("submitting");
 
-    axios.post("http://localhost:5000/api/tournaments/score", {
+    axios.post("/api/tournaments/score", {
       id: "5e7a5410be7af1ae4acc6314",
       fieldTypes: fixedCats,
       fieldValues: fixedScores,

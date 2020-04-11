@@ -143,7 +143,7 @@ export default class TournamentDashboard extends Component {
 
         this.setState(this.state)
 
-        await axios.get(`http://localhost:5000/api/tournaments/${this.state.tourneyId}`)
+        await axios.get(`/api/tournaments/${this.state.tourneyId}`)
             .then((result) => {
                 this.state.dbtournresults = result.data;
             }).catch((error) => {
@@ -151,7 +151,7 @@ export default class TournamentDashboard extends Component {
             });
 
         for (var i = 0; i < this.state.dbtournresults.teams.length; i++) {
-            await axios.get(`http://localhost:5000/api/teams/${this.state.dbtournresults.teams[i]}`)
+            await axios.get(`/api/teams/${this.state.dbtournresults.teams[i]}`)
                 .then((result) => {
                     this.state.dbteamnames[i] = result.data.teamName;
                 }).catch((error) => {

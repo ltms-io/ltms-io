@@ -28,10 +28,10 @@ class LTMSNavbar extends Component {
   }
 
   async componentDidMount() {
-    if(localStorage.getItem("auth0_id") || !document.cookie.length){
+    if(!document.cookie.length || localStorage.getItem("auth0_id")){
 
       console.log("AXIOS!!!");
-      await axios.post(`http://localhost:5000/api/users/auth`, {data: localStorage.getItem("auth0_id")})
+      await axios.post(`/api/users/auth`, {data: localStorage.getItem("auth0_id")})
         .then ((result) => {
           this.setState({dbresults: result.data});
         })
@@ -44,7 +44,7 @@ class LTMSNavbar extends Component {
       var token = document.cookie.substring(13);
       var stat = jsonWeb.verify(token, "123456", function(err, decoded) {
         if(err){
-          axios.post(`http://localhost:5000/api/users/auth`, {data: localStorage.getItem("auth0_id")})
+          axios.post(`/api/users/auth`, {data: localStorage.getItem("auth0_id")})
           .then ((result) => {
             return result.data;
           })
