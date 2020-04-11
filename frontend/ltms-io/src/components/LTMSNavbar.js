@@ -27,29 +27,31 @@ class LTMSNavbar extends Component {
       <div>
         <Navbar data-test="theNavbar" bg="secondary" >
           <Navbar.Brand href="/">
-            <img src={logo} data-test="theLogo" alt="logo" width="100" />
+            <img data-test="theLogo" src={logo} alt="logo" width="100" />
           </Navbar.Brand>
           <Nav className="ml-auto">
-            {this.props.auth.isAuthenticated() && Object.keys(this.state.dbresults).length && this.state.dbresults.profilePic.imgUrl.length == 0 && (
+            {((this.props.auth && this.props.auth.isAuthenticated()) || (this.props.testAuthorized)) &&
+             ((Object.keys(this.state.dbresults).length && this.state.dbresults.profilePic.imgUrl.length == 0) || !this.props.testProfPic) && (
               <Navbar.Brand href="/accountdetails">
-                <img src={sample} alt="profile" width="30" height="30" className="d-inline-block align-top" />
+                <img data-test="theSampleProfilePic" src={sample} alt="profile" width="30" height="30" className="d-inline-block align-top" />
               </Navbar.Brand>
             )}
-            {this.props.auth.isAuthenticated() && Object.keys(this.state.dbresults).length && this.state.dbresults.profilePic.imgUrl.length != 0 && (
+            {((this.props.auth && this.props.auth.isAuthenticated()) || (this.props.testAuthorized)) &&
+             (Object.keys(this.state.dbresults).length && this.state.dbresults.profilePic.imgUrl.length != 0) && (
               <Navbar.Brand href="/accountdetails">
-                <img src={this.state.dbresults.profilePic.imgUrl} alt="profile" width="30" height="30" className="d-inline-block align-top" />
+                <img data-test="theRealProfilePic" src={this.state.dbresults.profilePic.imgUrl} alt="profile" width="30" height="30" className="d-inline-block align-top" />
               </Navbar.Brand>
             )}
             <NavDropdown alignRight title="Menu">
-              <NavDropdown.Item href="/quicklinks">Quick Links</NavDropdown.Item>
-              {this.props.auth.isAuthenticated() && (
-                <NavDropdown.Item href="/createtournament">Create a Tournament</NavDropdown.Item>
+              <NavDropdown.Item data-test="theQuickLinksOption" href="/quicklinks">Quick Links</NavDropdown.Item>
+              {((this.props.auth && this.props.auth.isAuthenticated()) || (this.props.testAuthorized)) && (
+                <NavDropdown.Item data-test="theCreateTournamentOption" href="/createtournament">Create a Tournament</NavDropdown.Item>
               )}
-              {this.props.auth.isAuthenticated() && (
-                <NavDropdown.Item href="/tournamentsearch">Find a Tournament</NavDropdown.Item>
+              {((this.props.auth && this.props.auth.isAuthenticated()) || (this.props.testAuthorized)) && (
+                <NavDropdown.Item data-test="theFindTournamentOption" href="/tournamentsearch">Find a Tournament</NavDropdown.Item>
               )}
-              {this.props.auth.isAuthenticated() && (
-                <NavDropdown.Item onClick={this.signOut}>Sign Out</NavDropdown.Item>
+              {((this.props.auth && this.props.auth.isAuthenticated()) || (this.props.testAuthorized)) && (
+                <NavDropdown.Item data-test="theSignOutOption" onClick={this.signOut}>Sign Out</NavDropdown.Item>
               )}
             </NavDropdown>
           </Nav>

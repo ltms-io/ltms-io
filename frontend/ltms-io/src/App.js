@@ -52,7 +52,7 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <div className="App">
+        <div data-test="theApp" className="App">
           <LTMSNavbar auth={this.props.auth} />
           <Switch>
             <Route path="/" exact component={() => <Home auth={this.props.auth} />} />
