@@ -88,7 +88,46 @@ router.post('/sendrubrics/:id', (req, res) => {
 
     var rubricsText = "";
     for (var i = 0; i < team.rubrics.length; i++) {
-      rubricsText += (team.rubrics[i] + "\n");
+      rubricsText += "Rubric " + (i + 1) + "\n";
+      rubricsText += "Core Values\n";
+      rubricsText += "Inspiration: (Discovery: " + team.rubrics[i].coreValues.inspiration.discovery + ", " +
+                                   "Team Identity: " + team.rubrics[i].coreValues.inspiration.teamIdentity + ", " +
+                                   "Impact: " + team.rubrics[i].coreValues.inspiration.impact + ")\n";
+      rubricsText += "Teamwork: (Effectiveness: " + team.rubrics[i].coreValues.teamwork.effectiveness + ", " +
+                                 "Efficiency: " + team.rubrics[i].coreValues.teamwork.efficiency + ", " +
+                                 "Kids Do the Work: " + team.rubrics[i].coreValues.teamwork.kidsDoTheWork + ")\n";
+      rubricsText += "Gracious Professionalism®: (Inclusion: " + team.rubrics[i].coreValues.graciousProfessionalism.inclusion + ", " +
+                                                 "Respect: " + team.rubrics[i].coreValues.graciousProfessionalism.respect + ", " +
+                                                 "Coopertition®: " + team.rubrics[i].coreValues.graciousProfessionalism.coopertition + ")\n";
+      rubricsText += "Comments: " + team.rubrics[i].coreValues.comments + "\n\n";
+
+      rubricsText += "Innovation Project\n"
+      rubricsText += "Research: (Problem Identification: " + team.rubrics[i].innovationProject.research.problemIdentificaton + ", " +
+                                 "Sources of Information: " + team.rubrics[i].innovationProject.research.sourcesOfInformation + ", " +
+                                 "Problem Analysis: " + team.rubrics[i].innovationProject.research.problemAnalysis + ")\n";
+      rubricsText += "Innovative Solution: (Team Solution: " + team.rubrics[i].innovationProject.innovativeSolution.teamSolution + ", " +
+                                           "Innovation: " + team.rubrics[i].innovationProject.innovativeSolution.innovation + ", " +
+                                           "Solution Development: " + team.rubrics[i].innovationProject.innovativeSolution.solutionDevelopment + ")\n";
+      rubricsText += "Presentation: (Sharing: " + team.rubrics[i].innovationProject.presentation.sharing + ", " +
+                                    "Creativity: " + team.rubrics[i].innovationProject.presentation.creativity + ", " +
+                                    "Presentation Effectiveness: " + team.rubrics[i].innovationProject.presentation.presentationEffectiveness + ")\n";
+      rubricsText += "Comments: " + team.rubrics[i].innovationProject.comments + "\n\n";
+
+      rubricsText += "Robot Design\n"
+      rubricsText += "Mechanical Design: (Durability: " + team.rubrics[i].robotDesign.mechanicalDesign.durability + ", " +
+                                         "Mechanical Efficiency: " + team.rubrics[i].robotDesign.mechanicalDesign.mechanicalEfficiency + ", " +
+                                         "Mechanization: " + team.rubrics[i].robotDesign.mechanicalDesign.mechanization + ")\n";
+      rubricsText += "Programming: (Programming Quality: " + team.rubrics[i].robotDesign.programming.programmingQuality + ", " +
+                                   "Programming Efficiency: " + team.rubrics[i].robotDesign.programming.programmingEfficiency + ", " +
+                                   "Automation/Navigation: " + team.rubrics[i].robotDesign.programming.automationNavigation + ")\n";
+      rubricsText += "Strategy & Innovation: (Design Process: " + team.rubrics[i].robotDesign.strategyInnovation.designProcess + ", " +
+                                             "Mission Strategy: " + team.rubrics[i].robotDesign.strategyInnovation.missionStrategy + ", " +
+                                             "Innovation: " + team.rubrics[i].robotDesign.strategyInnovation.innovation + ")\n";
+      rubricsText += "Comments: " + team.rubrics[i].robotDesign.comments + "\n\n";
+
+      if (i != team.rubrics.length - 1) {
+        rubricsText += "---\n\n";
+      }
     }
 
     const msg = {
@@ -96,7 +135,7 @@ router.post('/sendrubrics/:id', (req, res) => {
         from: 'noreply@ltmsio.codes',
         subject: 'Rubrics have been sent for your team',
         text: rubricsText,
-        html: rubricsText
+        html: rubricsText.replace(/(\n)/g, "<br>")
     };
     sgMail.send(msg)
     .then( () => {
