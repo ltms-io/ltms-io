@@ -45,7 +45,7 @@ export default class CreateEvent extends Component {
           
             var token = document.cookie.substring(13);
             var decoded = jsonWeb.verify(token, "123456");
-            axios.post("http://localhost:5000/api/tournaments/register", {
+            axios.post("/api/tournaments/register", {
                 auth0id: decoded.auth0id, //TODO: add director from authed user
                 name: this.state.tourneyName,
                 teams: "",
