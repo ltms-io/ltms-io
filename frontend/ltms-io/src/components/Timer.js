@@ -11,17 +11,36 @@ export default class Timer extends Component {
       counter: 0,
       go: false
     };
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount(){
-      this.myInterval = setInterval(() => {
-          this.setState(prevState => ({
-              counter: prevState.counter + 1
-          }))
-      }, 1000)
+      if(!this.state.go)
+      {
+        this.myInterval = setInterval(() => {
+            this.setState(prevState => ({
+                counter: prevState.counter + 1
+            }))
+        }, 1000)
+      }
   }
-
+  componentWillUnmount(){
+      clearInterval(this.myInterval)
+  }
+  handleSubmit = async event => {
+    event.preventDefault()  
+    this.setState({go: true})
+  }
   render() {
-  return <div>Timer: {this.state.counter}</div>;
+  return (
+    <div>
+        Timer: {this.state.counter}
+        <Form onSubmit={this.handleSubmit}>
+        <Button className="mt-5" type="submit">
+            GO
+          </Button>
+    </Form>
+    </div>
+    );
   }
 }
