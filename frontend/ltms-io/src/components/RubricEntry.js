@@ -24,6 +24,7 @@ class RubricEntry extends Component {
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleSend = this.handleSend.bind(this);
     this.updateState = this.updateState.bind(this);
   }
 
@@ -121,6 +122,17 @@ class RubricEntry extends Component {
 
   async handleSend(e) {
     e.preventDefault();
+
+    await axios.post(`/api/teams/sendrubrics/${this.state.teamId}`, {
+      email: e.target.elements.sendEmail.value
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
+
+    this.updateState();
+    console.log("UPDATED STATE", this.state);
+
     alert("Sent!");
   }
 
@@ -172,9 +184,17 @@ class RubricEntry extends Component {
         <h1 data-test="theMainHeader">Rubric Entry for Team "{this.state.dbteamresults.teamName}" in Tournament "{this.state.dbtournresults.name}"</h1>
         {this.state.isAuthorized && (
           <div>
-            <div data-test="theSendDiv">
+            <div>
               <h3>Send All Rubrics to Team</h3>
-              <Button onClick={this.handleSend}>Send Email</Button>
+              <Form data-test="theSendForm" onSubmit={this.handleSend}>
+                <Form.Group controlId="sendEmail">
+                  <Form.Label>What email should rubrics be sent to?</Form.Label>
+                  <Form.Control placeholder="Enter the email address" />
+                </Form.Group>
+                <Button type="submit">
+                  Send Email
+                </Button>
+              </Form>
             </div>
             <div>
               <h3>Rubric Deletion</h3>

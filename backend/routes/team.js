@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 const Team = require('../models/team-model');
 const Tournament = require('../models/tournament-model');
+const sgMail = require('@sendgrid/mail');
+const dev_config = require('../config/dev-params')
+
+sgMail.setApiKey(dev_config.SENDGRID_API_KEY || process.env.SENDGRID_API_KEY);
 
 /* GET */
 
@@ -68,6 +72,20 @@ router.post('/register', (req, res) => {
     }
     else {
       res.status(200).send(team);
+    }
+  });
+});
+
+router.post('/sendrubrics/:id', (req, res) => {
+  Team.findById(req.params.id).then( (team) => {
+    if (!team) {
+      res.status(400).send("Team didn't exist");
+      return;
+    }
+
+    const msg = "";
+    for (var i = 0; i < team.rubrics.length; i++) {
+      console.log(team.rubrics[i]);
     }
   });
 });
