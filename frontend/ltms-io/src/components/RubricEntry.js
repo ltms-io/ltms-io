@@ -189,7 +189,7 @@ class RubricEntry extends Component {
               <h3>Send All Rubrics to Team</h3>
               <Form data-test="theSendForm" onSubmit={this.handleSend}>
                 <Form.Group controlId="sendEmail">
-                  <Form.Label>What email should rubrics be sent to?</Form.Label>
+                  <Form.Label>What email should the rubrics be sent to?</Form.Label>
                   <Form.Control placeholder="Enter the email address" />
                 </Form.Group>
                 <Button type="submit">
