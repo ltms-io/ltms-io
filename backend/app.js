@@ -55,7 +55,7 @@ app.use('/api/tournaments', tournamentsRouter);
 app.use('/api/tournament', tournamentsRouter);
 app.use('/api/teams', teamsRouter);
 
-if(process.env.STAGE == "PROD") {
+if(process.env.NODE_ENV == "production") {
   app.use("/", express.static("./frontend")); //START HERE: I need to figure out how to readjust calls
 }
 
