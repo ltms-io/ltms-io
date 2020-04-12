@@ -6,7 +6,7 @@ const LOGIN_SUCCESS_PAGE = "/";
 const LOGIN_FAIL_PAGE = "/login";
 
 export default class Auth {
-  auth0;
+  auth0 = null;
 
   constructor() {
     this.login = this.login.bind(this);
