@@ -11,7 +11,6 @@ export default class ViewRubrics extends Component {
       teams: [],
       tourneyId: this.props.match.params.tourneyId
     };
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   render() {
