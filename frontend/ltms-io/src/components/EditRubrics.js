@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Form, Button, Col, Row } from "react-bootstrap";
 import axios from "axios";
 
-export default class ViewRubrics extends Component {
+export default class EditRubrics extends Component {
   constructor(props) {
     super(props);
 

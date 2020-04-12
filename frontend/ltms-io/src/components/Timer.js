@@ -3,16 +3,25 @@ import { connect } from "react-redux";
 import { Form, Button, Col, Row } from "react-bootstrap";
 import axios from "axios";
 
-export default class ViewRubrics extends Component {
+export default class Timer extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      teams: []
+      counter: 0,
+      go: false
     };
   }
 
+  componentDidMount(){
+      this.myInterval = setInterval(() => {
+          this.setState(prevState => ({
+              counter: prevState.counter + 1
+          }))
+      }, 1000)
+  }
+
   render() {
-    return <div>Hello Timer</div>;
+  return <div>Timer: {this.state.counter}</div>;
   }
 }
