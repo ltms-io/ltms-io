@@ -6,20 +6,53 @@ import axios from 'axios';
 const jsonWeb = require('jsonwebtoken');
 
 class LTMSNavbar extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      uid: "",
+      dbresults: {}
+    };
+
+    this.signOut = this.signOut.bind(this);
+  }
+
+  signOut(e) {
+    e.preventDefault();
+    this.props.auth.logout();
+  }
+
   render() {
     return(
       <div>
         <Navbar data-test="theNavbar" bg="secondary" >
           <Navbar.Brand href="/">
-            <img src={logo} alt="logo" width="100" />
+            <img data-test="theLogo" src={logo} alt="logo" width="100" />
           </Navbar.Brand>
           <Nav className="ml-auto">
-            <Navbar.Brand href="/accountdetails">
-              <img src={sample} data-test="theLogo" alt="profile" width="30" height="30" className="d-inline-block align-top" />
-            </Navbar.Brand>
+            {((this.props.auth && this.props.auth.isAuthenticated()) || (this.props.testAuthorized)) &&
+             ((Object.keys(this.state.dbresults).length && this.state.dbresults.profilePic.imgUrl.length == 0) || !this.props.testProfPic) && (
+              <Navbar.Brand href="/accountdetails">
+                <img data-test="theSampleProfilePic" src={sample} alt="profile" width="30" height="30" className="d-inline-block align-top" />
+              </Navbar.Brand>
+            )}
+            {((this.props.auth && this.props.auth.isAuthenticated()) || (this.props.testAuthorized)) &&
+             (Object.keys(this.state.dbresults).length && this.state.dbresults.profilePic.imgUrl.length != 0) && (
+              <Navbar.Brand href="/accountdetails">
+                <img data-test="theRealProfilePic" src={this.state.dbresults.profilePic.imgUrl} alt="profile" width="30" height="30" className="d-inline-block align-top" />
+              </Navbar.Brand>
+            )}
             <NavDropdown alignRight title="Menu">
-              <NavDropdown.Item>Quick Links</NavDropdown.Item>
-              <NavDropdown.Item>Sign Out</NavDropdown.Item>
+              <NavDropdown.Item data-test="theQuickLinksOption" href="/quicklinks">Quick Links</NavDropdown.Item>
+              {((this.props.auth && this.props.auth.isAuthenticated()) || (this.props.testAuthorized)) && (
+                <NavDropdown.Item data-test="theCreateTournamentOption" href="/createtournament">Create a Tournament</NavDropdown.Item>
+              )}
+              {((this.props.auth && this.props.auth.isAuthenticated()) || (this.props.testAuthorized)) && (
+                <NavDropdown.Item data-test="theFindTournamentOption" href="/tournamentsearch">Find a Tournament</NavDropdown.Item>
+              )}
+              {((this.props.auth && this.props.auth.isAuthenticated()) || (this.props.testAuthorized)) && (
+                <NavDropdown.Item data-test="theSignOutOption" onClick={this.signOut}>Sign Out</NavDropdown.Item>
+              )}
             </NavDropdown>
           </Nav>
         </Navbar>
@@ -28,42 +61,16 @@ class LTMSNavbar extends Component {
   }
 
   async componentDidMount() {
-    if(!document.cookie.length || localStorage.getItem("auth0_id")){
-
-      console.log("AXIOS!!!");
-      await axios.post(`/api/users/auth`, {data: localStorage.getItem("auth0_id")})
-        .then ((result) => {
-          this.setState({dbresults: result.data});
-        })
-        .catch( (error) => {
-          console.log(error);
-        });
-
-    }else{
-      console.log("HERE!!!");
+    if (document.cookie.length) {
       var token = document.cookie.substring(13);
-      var stat = jsonWeb.verify(token, "123456", function(err, decoded) {
-        if(err){
-          axios.post(`/api/users/auth`, {data: localStorage.getItem("auth0_id")})
-          .then ((result) => {
-            return result.data;
-          })
-          .catch( (error) => {
-            console.log(error);
-          });
-        }else{
-          return decoded;
-        }
-      });
+      var decoded = jsonWeb.verify(token, "123456");
 
-      if(stat){
-        this.setState({dbresults: stat});
-      }
+      this.state.dbresults = decoded;
+      this.state.uid = decoded.auth0id;
     }
     this.setState(this.state);
 
     console.log("INITIAL NAVBAR STATE", this.state);
-
   }
 }
 

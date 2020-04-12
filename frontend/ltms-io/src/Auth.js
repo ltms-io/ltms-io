@@ -46,14 +46,14 @@ export default class Auth {
         localStorage.setItem("id_token", authResults.idToken);
         localStorage.setItem("expires_at", expiresAt);
         axios({
-          method: 'GET',
-          url: 'https://dev-s68c-q-y.auth0.com/userinfo',
-          headers: {
-            'authorization': `Bearer ${authResults.accessToken}`,
-          }
-        }).then((userDataResponse) => {
+           method: 'GET',
+           url: 'https://dev-s68c-q-y.auth0.com/userinfo',
+           headers: {
+               'authorization': `Bearer ${authResults.accessToken}`,
+            }
+        }).then(async (userDataResponse) => {
           localStorage.setItem("auth0_id", userDataResponse.data.sub);
-          axios.post(`/api/users/auth`, {
+          await axios.post(`http://localhost:5000/api/users/auth`, {
             data: userDataResponse.data
           }).then((x) => {
             location.hash = "";
