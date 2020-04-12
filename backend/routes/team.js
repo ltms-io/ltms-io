@@ -78,7 +78,7 @@ router.post('/register', (req, res) => {
 
 router.post('/sendrubrics/:id', (req, res) => {
   if (!req.body.email || req.body.email === "" || !req.body.tournName) {
-    return res.status(400).json("no email and/or tournament name given");
+    return res.status(400).send("No email and/or tournament name given");
   }
 
   Team.findById(req.params.id).then( (team) => {
