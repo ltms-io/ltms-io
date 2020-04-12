@@ -26,6 +26,7 @@ import CreateTeam from './components/CreateTeam';
 import viewRubric from './components/ViewRubrics';
 import CreateJudges from './components/CreateJudges';
 import EditRubrics from './components/EditRubrics';
+import Timer from './components/Timer';
 const jsonWeb = require('jsonwebtoken');
 
 function App(props) {
@@ -65,6 +66,7 @@ function App(props) {
           <Route path="/t/:tourneyId/mscores" component={ MatchScoreListing } />
           <Route path="/t/:tourneyId/editscore/:scoreId" component={ EditScoreEntry } />
           <Route path="/matchranking/:tourneyId" component={ SortTeams } />
+          <Route path="/timer" component={ Timer } />
         </Switch>
       </div>
     </Router>

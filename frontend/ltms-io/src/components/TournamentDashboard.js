@@ -115,6 +115,9 @@ export default class TournamentDashboard extends Component {
                         <Link to={"/createjudge/" + this.state.tourneyId}>
                         <Button disabled = {!this.state.viewRubricsAuthorized}> Create Judges</Button>
                         </Link>
+                        <Link to={"/timer/"}>
+                            <Button>Timer</Button>
+                        </Link>
                         
                     </Col>
                 </Row>
