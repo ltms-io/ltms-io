@@ -3,6 +3,12 @@ import { connect } from "react-redux";
 import { Form, Button, Col, Row } from "react-bootstrap";
 import axios from "axios";
 
+function changeGo(state, props) {
+    return {
+        go: true
+    }
+}
+
 export default class Timer extends Component {
   constructor(props) {
     super(props);
@@ -13,7 +19,6 @@ export default class Timer extends Component {
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-
   componentDidMount(){
       if(!this.state.go)
       {
@@ -29,7 +34,7 @@ export default class Timer extends Component {
   }
   handleSubmit = async event => {
     event.preventDefault()  
-    this.setState({go: true})
+    this.setState(changeGo)
   }
   render() {
   return (
