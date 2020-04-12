@@ -20,7 +20,8 @@ class RubricEntry extends Component {
       dbtournresults: {},
       dbteamresults: {},
       authresults: {},
-      isAuthorized: false
+      isAuthorized: false,
+      isSendAuthorized: false
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
@@ -183,7 +184,7 @@ class RubricEntry extends Component {
     return(
       <div data-test="theComponent">
         <h1 data-test="theMainHeader">Rubric Entry for Team "{this.state.dbteamresults.teamName}" in Tournament "{this.state.dbtournresults.name}"</h1>
-        {this.state.isAuthorized && (
+        {this.state.isSendAuthorized && (
           <div>
             <div>
               <h3>Send All Rubrics to Team</h3>
@@ -197,6 +198,10 @@ class RubricEntry extends Component {
                 </Button>
               </Form>
             </div>
+          </div>
+        )}
+        {this.state.isAuthorized && (
+          <div>
             <div>
               <h3>Rubric Deletion</h3>
               <Form data-test="theDeleteForm" onSubmit={this.handleDelete}>
@@ -639,11 +644,13 @@ class RubricEntry extends Component {
 
     if (this.state.dbtournresults.director === this.state.dbresults._id) {
       this.state.isAuthorized = true;
+      this.state.isSendAuthorized = true;
     }
     else {
       for (var i = 0; i < this.state.dbtournresults.judgeAdvisor.length; i++) {
         if (this.state.dbtournresults.judgeAdvisor[i] === this.state.dbresults._id) {
           this.state.isAuthorized = true;
+          this.state.isSendAuthorized = true;
         }
       }
       if (!this.state.isAuthorized) {

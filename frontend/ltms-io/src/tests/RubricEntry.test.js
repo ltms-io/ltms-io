@@ -63,7 +63,7 @@ describe("RubricEntry Component", () => {
       component = setUp(props);
     });
 
-    it("Should render only the rubric submission and deletion forms if authorized", () => {
+    it("Should render the send rubrics, rubric submission, and deletion forms if authorized for overall and send rubrics", () => {
       component.setState({
         tourneyId: component.state().tourneyId,
         teamId: component.state().teamId,
@@ -71,9 +71,12 @@ describe("RubricEntry Component", () => {
         dbtournresults: component.state().dbtournresults,
         dbteamresults: component.state().dbtournresults,
         authresults: component.state().authresults,
-        isAuthorized: true
+        isAuthorized: true,
+        isSendAuthorized: true
       });
-      var element = findByTestAttr(component, "theSubmitForm");
+      var element = findByTestAttr(component, "theSendForm");
+      expect(element.length).toBe(1);
+      element = findByTestAttr(component, "theSubmitForm");
       expect(element.length).toBe(1);
       element = findByTestAttr(component, "theDeleteForm");
       expect(element.length).toBe(1);
@@ -81,15 +84,37 @@ describe("RubricEntry Component", () => {
       expect(element.length).toBe(0);
     });
 
-    it("Should render only the no authorization message if not authorized", () => {
+    it("Should render only the rubric submission and deletion forms if only authorized for overall", () => {
       component.setState({
         tourneyId: component.state().tourneyId,
         dbresults: component.state().dbresults,
         dbtournresults: component.state().dbtournresults,
         authresults: component.state().authresults,
-        isAuthorized: false
+        isAuthorized: true,
+        isSendAuthorized: false
       });
-      var element = findByTestAttr(component, "theSubmitForm");
+      var element = findByTestAttr(component, "theSendForm");
+      expect(element.length).toBe(0);
+      element = findByTestAttr(component, "theSubmitForm");
+      expect(element.length).toBe(1);
+      element = findByTestAttr(component, "theDeleteForm");
+      expect(element.length).toBe(1);
+      element = findByTestAttr(component, "noAuthMsg");
+      expect(element.length).toBe(0);
+    });
+
+    it("Should render only the no authorization message if given no authorizations", () => {
+      component.setState({
+        tourneyId: component.state().tourneyId,
+        dbresults: component.state().dbresults,
+        dbtournresults: component.state().dbtournresults,
+        authresults: component.state().authresults,
+        isAuthorized: false,
+        isSendAuthorized: false
+      });
+      var element = findByTestAttr(component, "theSendForm");
+      expect(element.length).toBe(0);
+      element = findByTestAttr(component, "theSubmitForm");
       expect(element.length).toBe(0);
       element = findByTestAttr(component, "theDeleteForm");
       expect(element.length).toBe(0);
@@ -120,7 +145,8 @@ describe("RubricEntry Component", () => {
         dbtournresults: component.state().dbtournresults,
         dbteamresults: component.state().dbtournresults,
         authresults: component.state().authresults,
-        isAuthorized: true
+        isAuthorized: true,
+        isSendAuthorized: true
       });
       var element = findByTestAttr(component, "anInput");
       expect(element.length).toBe(27);
