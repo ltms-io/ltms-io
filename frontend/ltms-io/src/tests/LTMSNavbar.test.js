@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 import { findByTestAttr } from "./../../utils"
-import LTMSNavbar from "./LTMSNavbar";
+import LTMSNavbar from "./../components/LTMSNavbar";
 
 const setUp = (props = {}) => {
   const component = shallow(<LTMSNavbar {...props} />);
