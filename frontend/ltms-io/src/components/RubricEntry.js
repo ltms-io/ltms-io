@@ -124,7 +124,8 @@ class RubricEntry extends Component {
     e.preventDefault();
 
     await axios.post(`/api/teams/sendrubrics/${this.state.teamId}`, {
-      email: e.target.elements.sendEmail.value
+      email: e.target.elements.sendEmail.value,
+      tournName: this.state.dbtournresults.name
     })
     .catch( (error) => {
       console.log(error);

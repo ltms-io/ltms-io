@@ -77,8 +77,8 @@ router.post('/register', (req, res) => {
 });
 
 router.post('/sendrubrics/:id', (req, res) => {
-  if (!req.body.email || req.body.email === "") {
-    return res.status(400).json("no email given");
+  if (!req.body.email || req.body.email === "" || !req.body.tournName) {
+    return res.status(400).json("no email and/or tournament name given");
   }
 
   Team.findById(req.params.id).then( (team) => {
@@ -87,7 +87,9 @@ router.post('/sendrubrics/:id', (req, res) => {
     }
 
     var rubricsText = "";
+    rubricsText += `Included below are the rubrics for team "${team.teamName}" in tournament "${req.body.tournName}"\n\n`;
     for (var i = 0; i < team.rubrics.length; i++) {
+      rubricsText += "---\n\n";
       rubricsText += "Rubric " + (i + 1) + "\n";
       rubricsText += "Core Values\n";
       rubricsText += "Inspiration: (Discovery: " + team.rubrics[i].coreValues.inspiration.discovery + ", " +
@@ -124,18 +126,56 @@ router.post('/sendrubrics/:id', (req, res) => {
                                              "Mission Strategy: " + team.rubrics[i].robotDesign.strategyInnovation.missionStrategy + ", " +
                                              "Innovation: " + team.rubrics[i].robotDesign.strategyInnovation.innovation + ")\n";
       rubricsText += "Comments: " + team.rubrics[i].robotDesign.comments + "\n\n";
+    }
 
-      if (i != team.rubrics.length - 1) {
-        rubricsText += "---\n\n";
-      }
+    var rubricsHTML = "";
+    rubricsHTML += `Included below are the rubrics for team "${team.teamName}" in tournament "${req.body.tournName}"<br><br>`;
+    for (var i = 0; i < team.rubrics.length; i++) {
+      rubricsHTML += "<hr>"
+      rubricsHTML += "<h1>Rubric " + (i + 1) + "</h1>";
+      rubricsHTML += "<h3>Core Values</h3>";
+      rubricsHTML += "<strong>Inspiration:</strong> (<em>Discovery:</em> " + team.rubrics[i].coreValues.inspiration.discovery + ", " +
+                                   "<em>Team Identity:</em> " + team.rubrics[i].coreValues.inspiration.teamIdentity + ", " +
+                                   "<em>Impact:</em> " + team.rubrics[i].coreValues.inspiration.impact + ")<br>";
+      rubricsHTML += "<strong>Teamwork:</strong> (<em>Effectiveness:</em> " + team.rubrics[i].coreValues.teamwork.effectiveness + ", " +
+                                 "<em>Efficiency:</em> " + team.rubrics[i].coreValues.teamwork.efficiency + ", " +
+                                 "<em>Kids Do the Work:</em> " + team.rubrics[i].coreValues.teamwork.kidsDoTheWork + ")<br>";
+      rubricsHTML += "<strong>Gracious Professionalism®:</strong> (<em>Inclusion:</em> " + team.rubrics[i].coreValues.graciousProfessionalism.inclusion + ", " +
+                                                 "<em>Respect:</em> " + team.rubrics[i].coreValues.graciousProfessionalism.respect + ", " +
+                                                 "<em>Coopertition®:</em> " + team.rubrics[i].coreValues.graciousProfessionalism.coopertition + ")<br>";
+      rubricsHTML += "<strong>Comments:</strong> <em>" + team.rubrics[i].coreValues.comments + "</em><br>";
+
+      rubricsHTML += "<h3>Innovation Project</h3>"
+      rubricsHTML += "<strong>Research:</strong> (<em>Problem Identification:</em> " + team.rubrics[i].innovationProject.research.problemIdentificaton + ", " +
+                                 "<em>Sources of Information:</em> " + team.rubrics[i].innovationProject.research.sourcesOfInformation + ", " +
+                                 "<em>Problem Analysis:</em> " + team.rubrics[i].innovationProject.research.problemAnalysis + ")<br>";
+      rubricsHTML += "<strong>Innovative Solution:</strong> (<em>Team Solution:</em> " + team.rubrics[i].innovationProject.innovativeSolution.teamSolution + ", " +
+                                           "<em>Innovation:</em> " + team.rubrics[i].innovationProject.innovativeSolution.innovation + ", " +
+                                           "<em>Solution Development:</em> " + team.rubrics[i].innovationProject.innovativeSolution.solutionDevelopment + ")<br>";
+      rubricsHTML += "<strong>Presentation:</strong> (<em>Sharing:</em> " + team.rubrics[i].innovationProject.presentation.sharing + ", " +
+                                    "<em>Creativity:</em> " + team.rubrics[i].innovationProject.presentation.creativity + ", " +
+                                    "<em>Presentation Effectiveness:</em> " + team.rubrics[i].innovationProject.presentation.presentationEffectiveness + ")<br>";
+      rubricsHTML += "<strong>Comments:</strong> <em>" + team.rubrics[i].innovationProject.comments + "</em><br>";
+
+      rubricsHTML += "<h3>Robot Design</h3>"
+      rubricsHTML += "<strong>Mechanical Design:</strong> (<em>Durability:</em> " + team.rubrics[i].robotDesign.mechanicalDesign.durability + ", " +
+                                         "<em>Mechanical Efficiency:</em> " + team.rubrics[i].robotDesign.mechanicalDesign.mechanicalEfficiency + ", " +
+                                         "<em>Mechanization:</em> " + team.rubrics[i].robotDesign.mechanicalDesign.mechanization + ")<br>";
+      rubricsHTML += "<strong>Programming:</strong> (<em>Programming Quality:</em> " + team.rubrics[i].robotDesign.programming.programmingQuality + ", " +
+                                   "<em>Programming Efficiency:</em> " + team.rubrics[i].robotDesign.programming.programmingEfficiency + ", " +
+                                   "<em>Automation/Navigation:</em> " + team.rubrics[i].robotDesign.programming.automationNavigation + ")<br>";
+      rubricsHTML += "<strong>Strategy & Innovation:</strong> (<em>Design Process:</em> " + team.rubrics[i].robotDesign.strategyInnovation.designProcess + ", " +
+                                             "<em>Mission Strategy:</em> " + team.rubrics[i].robotDesign.strategyInnovation.missionStrategy + ", " +
+                                             "<em>Innovation:</em> " + team.rubrics[i].robotDesign.strategyInnovation.innovation + ")<br>";
+      rubricsHTML += "<strong>Comments:</strong> <em>" + team.rubrics[i].robotDesign.comments + "</em><br><br>";
     }
 
     const msg = {
         to: req.body.email,
         from: 'noreply@ltmsio.codes',
-        subject: 'Rubrics have been sent for your team',
+        subject: `Rubrics for team "${team.teamName}"`,
         text: rubricsText,
-        html: rubricsText.replace(/(\n)/g, "<br>")
+        html: rubricsHTML
     };
     sgMail.send(msg)
     .then( () => {
