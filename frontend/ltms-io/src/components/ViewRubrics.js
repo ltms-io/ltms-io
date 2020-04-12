@@ -15,7 +15,7 @@ export default class ViewRubrics extends Component {
     }
     handleSubmit = async event => {
         event.preventDefault()
-        await axios.get("http://localhost:5000/api/teams/tournid/" + this.state.tourneyId)
+        await axios.get("/api/teams/tournid/" + this.state.tourneyId)
           .then(res => {
             console.log(res);
             this.state.teams = res.data

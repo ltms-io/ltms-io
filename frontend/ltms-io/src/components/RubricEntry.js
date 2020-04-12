@@ -85,7 +85,7 @@ class RubricEntry extends Component {
         comments: e.target.elements.formRobotDesignComments.value
       }
     };
-    await axios.patch(`http://localhost:5000/api/teams/${this.state.teamId}`, {
+    await axios.patch(`/api/teams/${this.state.teamId}`, {
       rubric: rubric
     })
     .catch( (error) => {
@@ -105,7 +105,7 @@ class RubricEntry extends Component {
       alert("Invalid Index");
     }
     else {
-      await axios.patch(`http://localhost:5000/api/teams/rubricdelete/${this.state.teamId}`, {
+      await axios.patch(`/api/teams/rubricdelete/${this.state.teamId}`, {
         index: e.target.elements.deleteInd.value
       })
       .catch( (error) => {
@@ -136,7 +136,7 @@ class RubricEntry extends Component {
       console.log(error);
     });
 
-    await axios.post(`http://localhost:5000/api/users/getuser`, {
+    await axios.post(`/api/users/getuser`, {
       auth0id: this.state.authresults.sub
     }).then ( (result) => {
         this.state.dbresults = result.data;
@@ -144,14 +144,14 @@ class RubricEntry extends Component {
         console.log(error);
     });
 
-    await axios.get(`http://localhost:5000/api/tournaments/${this.state.tourneyId}`)
+    await axios.get(`/api/tournaments/${this.state.tourneyId}`)
     .then( (result) => {
         this.state.dbtournresults = result.data;
     }).catch( (error) => {
         console.log(error);
     });
 
-    await axios.get(`http://localhost:5000/api/teams/${this.state.teamId}`)
+    await axios.get(`/api/teams/${this.state.teamId}`)
     .then( (result) => {
         this.state.dbteamresults = result.data;
     }).catch( (error) => {
@@ -575,28 +575,28 @@ class RubricEntry extends Component {
   }
 
   async componentDidMount() {
-    await axios.get(`http://localhost:5000/api/users`)
+    await axios.get(`/api/users`)
     .then ( (result) => {
         console.log("USERS", result.data);
     })
     .catch( (error) => {
         console.log(error);
     });
-    await axios.get(`http://localhost:5000/api/tournaments`)
+    await axios.get(`/api/tournaments`)
     .then ( (result) => {
         console.log("TOURNAMENTS", result.data);
     })
     .catch( (error) => {
         console.log(error);
     });
-    await axios.get(`http://localhost:5000/api/teams`)
+    await axios.get(`/api/teams`)
     .then ( (result) => {
         console.log("ALL TEAMS", result.data);
     })
     .catch( (error) => {
         console.log(error);
     });
-    await axios.get(`http://localhost:5000/api/teams/tournid/${this.state.tourneyId}`)
+    await axios.get(`/api/teams/tournid/${this.state.tourneyId}`)
     .then ( (result) => {
         console.log(`ALL TEAMS FROM ${this.state.tourneyId}`, result.data);
     })

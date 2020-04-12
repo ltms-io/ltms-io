@@ -22,7 +22,7 @@ class ResetLogin extends Component {
     alert("Resetting email to: " + e.target.elements.email.value);
     this.state.dbresults.email = e.target.elements.email.value;
 
-    await axios.patch(`http://localhost:5000/api/users/updateuser`, {
+    await axios.patch(`/api/users/updateuser`, {
       auth0id: this.state.uid,
       email: this.state.dbresults.email
     })
@@ -30,7 +30,7 @@ class ResetLogin extends Component {
       console.log(error);
     });
 
-    await axios.post('http://localhost:5000/api/users/login', {data: this.state.uid}).then( (result) => {
+    await axios.post('/api/users/login', {data: this.state.uid}).then( (result) => {
       document.cookie = "UserIdentity=" + token + "; expires=Thu, 01 Jan 1970 00:00:00 UTC";
       document.cookie = "UserIdentity=" + result.data;
     });
