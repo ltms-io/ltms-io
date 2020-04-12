@@ -12,7 +12,7 @@ export default class Auth {
     this.login = this.login.bind(this);
 
     if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
-      auth0 = new auth0.WebAuth({
+      this.auth0 = new auth0.WebAuth({
         domain: "dev-s68c-q-y.auth0.com",
         clientID: "4J9E3tWlJczAxTGBR2YUO61Rmebmlnmf",
         redirectUri: "http://localhost:3000/callback",
@@ -21,7 +21,7 @@ export default class Auth {
         scope: "openid profile email"
       });
     } else {
-      auth0 = new auth0.WebAuth({
+      this.auth0 = new auth0.WebAuth({
         domain: "dev-s68c-q-y.auth0.com",
         clientID: "4J9E3tWlJczAxTGBR2YUO61Rmebmlnmf",
         redirectUri: "https://ltms-io.herokuapp.com/callback",
