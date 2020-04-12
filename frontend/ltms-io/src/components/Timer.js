@@ -3,10 +3,6 @@ import { connect } from "react-redux";
 import { Form, Button, Col, Row } from "react-bootstrap";
 import axios from "axios";
 
-function handleGo(e) {
-    e.preventDefault();
-    this.setState(handleTrue);
-}
 function handleTrue(state, props){
     return {
         go: true
@@ -21,6 +17,7 @@ export default class Timer extends Component {
       counter: 0,
       go: false
     };
+    this.handleGo = this.handleGo.bind(this);
   }
   componentDidMount(){
       if(!this.state.go)
@@ -35,11 +32,14 @@ export default class Timer extends Component {
   componentWillUnmount(){
       clearInterval(this.myInterval)
   }
+  handleGo = event => {
+    this.setState(handleTrue);
+  }
   render() {
   return (
     <div>
         Timer: {this.state.counter}
-        <button onClick={handleGo}>
+        <button onClick={this.handleGo}>
             GO
         </button>
     </div>
