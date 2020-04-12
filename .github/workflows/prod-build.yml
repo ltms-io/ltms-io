@@ -30,7 +30,7 @@ jobs:
         run: npm run-script build
         working-directory: ./repo/frontend/ltms-io
         env:
-          CI: false #TODO: god I hate this I promise this is just for debug
+          CI: true
 
         #create director if it does not already exist
       - run: mkdir -p production
