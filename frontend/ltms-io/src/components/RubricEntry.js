@@ -119,6 +119,11 @@ class RubricEntry extends Component {
     }
   }
 
+  async handleSend(e) {
+    e.preventDefault();
+    alert("Sent!");
+  }
+
   async updateState() {
     await axios({
       method: 'GET',
@@ -167,6 +172,10 @@ class RubricEntry extends Component {
         <h1 data-test="theMainHeader">Rubric Entry for Team "{this.state.dbteamresults.teamName}" in Tournament "{this.state.dbtournresults.name}"</h1>
         {this.state.isAuthorized && (
           <div>
+            <div data-test="theSendDiv">
+              <h3>Send All Rubrics to Team</h3>
+              <Button onClick={this.handleSend}>Send Email</Button>
+            </div>
             <div>
               <h3>Rubric Deletion</h3>
               <Form data-test="theDeleteForm" onSubmit={this.handleDelete}>
