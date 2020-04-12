@@ -77,16 +77,35 @@ router.post('/register', (req, res) => {
 });
 
 router.post('/sendrubrics/:id', (req, res) => {
+  if (!req.body.email || req.body.email === "") {
+    return res.status(400).json("no email given");
+  }
+
   Team.findById(req.params.id).then( (team) => {
     if (!team) {
-      res.status(400).send("Team didn't exist");
-      return;
+      return res.status(400).send("Team doesn't exist");
     }
 
-    const msg = "";
+    var rubricsText = "";
     for (var i = 0; i < team.rubrics.length; i++) {
-      console.log(team.rubrics[i]);
+      rubricsText += (team.rubrics[i] + "\n");
     }
+
+    const msg = {
+        to: req.body.email,
+        from: 'noreply@ltmsio.codes',
+        subject: 'Rubrics have been sent for your team',
+        text: rubricsText,
+        html: rubricsText
+    };
+    sgMail.send(msg)
+    .then( () => {
+        return res.status(200).send("Email sent successfully");
+    })
+    .catch( (err) => {
+        console.log(err)
+        return res.status(500).send(err);
+    });
   });
 });
 
