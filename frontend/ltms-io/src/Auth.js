@@ -6,17 +6,30 @@ const LOGIN_SUCCESS_PAGE = "/";
 const LOGIN_FAIL_PAGE = "/login";
 
 export default class Auth {
-  auth0 = new auth0.WebAuth({
-    domain: "dev-s68c-q-y.auth0.com",
-    clientID: "4J9E3tWlJczAxTGBR2YUO61Rmebmlnmf",
-    redirectUri: "http://localhost:3000/callback",
-    audience: "https://dev-s68c-q-y.auth0.com/userinfo",
-    responseType: "token id_token",
-    scope: "openid profile email"
-  });
+  auth0;
 
   constructor() {
     this.login = this.login.bind(this);
+
+    if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+      auth0 = new auth0.WebAuth({
+        domain: "dev-s68c-q-y.auth0.com",
+        clientID: "4J9E3tWlJczAxTGBR2YUO61Rmebmlnmf",
+        redirectUri: "http://localhost:3000/callback",
+        audience: "https://dev-s68c-q-y.auth0.com/userinfo",
+        responseType: "token id_token",
+        scope: "openid profile email"
+      });
+    } else {
+      auth0 = new auth0.WebAuth({
+        domain: "dev-s68c-q-y.auth0.com",
+        clientID: "4J9E3tWlJczAxTGBR2YUO61Rmebmlnmf",
+        redirectUri: "https://ltms-io.herokuapp.com/callback",
+        audience: "https://dev-s68c-q-y.auth0.com/userinfo",
+        responseType: "token id_token",
+        scope: "openid profile email"
+      });
+    }
   }
 
   login() {
@@ -24,7 +37,7 @@ export default class Auth {
   }
 
   handleAuthentication() {
-    this.auth0.parseHash( async (err, authResults) => {
+    this.auth0.parseHash(async (err, authResults) => {
       if (authResults && authResults.accessToken && authResults.idToken) {
         let expiresAt = JSON.stringify(
           authResults.expiresIn * 1000 + new Date().getTime()
@@ -33,11 +46,11 @@ export default class Auth {
         localStorage.setItem("id_token", authResults.idToken);
         localStorage.setItem("expires_at", expiresAt);
         axios({
-           method: 'GET',
-           url: 'https://dev-s68c-q-y.auth0.com/userinfo',
-           headers: {
-               'authorization': `Bearer ${authResults.accessToken}`,
-            }
+          method: 'GET',
+          url: 'https://dev-s68c-q-y.auth0.com/userinfo',
+          headers: {
+            'authorization': `Bearer ${authResults.accessToken}`,
+          }
         }).then((userDataResponse) => {
           localStorage.setItem("auth0_id", userDataResponse.data.sub);
           axios.post(`/api/users/auth`, {
