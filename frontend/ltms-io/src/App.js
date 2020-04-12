@@ -42,27 +42,27 @@ function App(props) {
       <div className="App">
         <LTMSNavbar />
         <Switch>
-          <Route exact path="/" exact component={() => <Home auth={props.auth} />} />
-          <Route exact path="/dashboard" component={Dashboard} />
-          <Route exact path="/login" component={() => <Login auth={props.auth} />} />
-          <Route exact path="/createtournament" component={CreateTournament} />
-          <Route exact path="/createteam/:tourneyId" component={CreateTeam} />
-          <Route exact path="/viewrubrics/:tourneyId" component={viewRubric} />
-          <Route exact path="/createjudge/:tourneyId" component={CreateJudges} />
-          <Route exact path="/accountdetails" component={() => <AccountDetails auth={props.auth} />} />
-          <Route exact path="/createscoresheet" component={ Sheet }/>
-          <Route exact path="/callback" component={Callback} />
-          <Route exact path="/pictureuploadtest" component={PictureUploadModalTest} />
-          <Route exact path="/volunteermodaltest" component={ VolunteerModalTest } />
-          <Route exact path="/tournamentsearch" component={ TournamentSearch } />
-          <Route exact path="/setreferee/:tourneyId" component={ SetReferee } />
-          <Route exact path="/maindashboard" component={ MainDashboard } />
-          <Route exact path="/tournamentdashboard/:tourneyId" component={ TournamentDashboard } />
-          <Route exact path="/rubricentry/:tourneyId/:teamId" component={ RubricEntry } />
-          <Route exact path="/rolechange" component={ RoleChange }/>
-          <Route exact path="/t/:tourneyId/mscores" component={ MatchScoreListing } />
-          <Route exact path="/t/:tourneyId/editscore/:scoreId" component={ EditScoreEntry } />
-          <Route exact path="/matchranking/:tourneyId" component={ SortTeams } />
+          <Route path="/" exact component={() => <Home auth={props.auth} />} />
+          <Route path="/dashboard" component={Dashboard} />
+          <Route path="/login" component={() => <Login auth={props.auth} />} />
+          <Route path="/createtournament" component={CreateTournament} />
+          <Route path="/createteam/:tourneyId" component={CreateTeam} />
+          <Route path="/viewrubrics/:tourneyId" component={viewRubric} />
+          <Route path="/createjudge/:tourneyId" component={CreateJudges} />
+          <Route path="/accountdetails" component={() => <AccountDetails auth={props.auth} />} />
+          <Route path="/createscoresheet" component={ Sheet }/>
+          <Route path="/callback" component={Callback} />
+          <Route path="/pictureuploadtest" component={PictureUploadModalTest} />
+          <Route path="/volunteermodaltest" component={ VolunteerModalTest } />
+          <Route path="/tournamentsearch" component={ TournamentSearch } />
+          <Route path="/setreferee/:tourneyId" component={ SetReferee } />
+          <Route path="/maindashboard" component={ MainDashboard } />
+          <Route path="/tournamentdashboard/:tourneyId" component={ TournamentDashboard } />
+          <Route path="/rubricentry/:tourneyId/:teamId" component={ RubricEntry } />
+          <Route path="/rolechange" component={ RoleChange }/>
+          <Route path="/t/:tourneyId/mscores" component={ MatchScoreListing } />
+          <Route path="/t/:tourneyId/editscore/:scoreId" component={ EditScoreEntry } />
+          <Route path="/matchranking/:tourneyId" component={ SortTeams } />
         </Switch>
       </div>
     </Router>
