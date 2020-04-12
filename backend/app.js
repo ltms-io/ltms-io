@@ -58,7 +58,10 @@ app.use('/api/teams', teamsRouter);
 console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
 
 if(process.env.NODE_ENV == "production") {
-  app.use("/", express.static("./frontend")); //START HERE: I need to figure out how to readjust calls
+  console.log("yeet")
+  app.use("/", express.static("./frontend"));
+} else {
+  console.log("no yeet")
 }
 
 // catch 404 and forward to error handler
