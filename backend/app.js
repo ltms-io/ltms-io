@@ -49,7 +49,7 @@ app.use('/api/tournament', tournamentsRouter);
 app.use('/api/teams', teamsRouter);
 
 if (process.env.NODE_ENV == "production") {
-  const publicPath = path.join(__dirname, '../frontend');
+  const publicPath = path.join(__dirname, './frontend');
   app.use(express.static(publicPath));
   app.use('*', express.static(publicPath));
 } else {
