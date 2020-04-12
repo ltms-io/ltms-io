@@ -12,8 +12,8 @@ class Schedule extends React.Component {
             startTime: "",
             endTime: "",
             teams: [],
-            schedule: []
-        }
+            robotPerformance: []
+         }
         this.handleSchedule = this.handleSchedule.bind(this);
     }
 
@@ -21,36 +21,40 @@ class Schedule extends React.Component {
         e.preventDefault();
         this.setState({startTime: e.target.elements.startTime.value});
         this.setState({endTime: e.target.elements.endTime.value});
-        var hour = e.target.elements.startTime.value.substring(0,2);
-        var min = e.target.elements.startTime.value.substring(3);
+        var time = e.target.elements.startTime.value;
+        var hour = parseInt(time.substring(0, time.indexOf(":")), 10);
+        var min = parseInt(time.substring(time.indexOf(":") + 1), 10);
 
         await axios.get(`http://localhost:5000/api/teams/tournid/${this.state.tourneyId}`).then( (result) => {
             this.setState({teams: result.data});
         }).catch( (err) => {
             console.log(err);
         });
+
+
+
+        var events = [];
+        
+
         var sched = new Array(this.state.teams.length).fill("");
         for(var i = 0; i < sched.length; i++) {
             var j = Math.floor(Math.random() * sched.length);
-            if(sched[j] != "") {
+            if(sched[j] !== "") {
                 while(1) {
                     j++;
-                    if(j==sched.length) {
+                    if(j === sched.length) {
                         j = 0;
                     }
-                    if(sched[j] == "") {
+                    if(sched[j] === "") {
                         sched[j] = hour + ":" + min + " | " + this.state.teams[i].teamName;
-                        //sched[j] = <Form.Control type="text" value={this.state.teams[i].teamName} readOnly = {true} />
                         break;
                     }
                 }
             } else {
                 sched[j] = hour + ":" + min + " | " + this.state.teams[i].teamName;
-                //sched[j] = <Form.Control type="text" value={this.state.teams[i].teamName} readOnly = {true} />
             }
         }
-        console.log(sched);
-        this.setState({schedule: sched});
+        this.setState({schedules:{robotSchedule: sched}});
 
     }
     render(){
@@ -75,7 +79,7 @@ class Schedule extends React.Component {
                 </Form>
                 
                 <Form>
-                    {this.state.schedule.map(sched => (
+                    {this.state.schedules.robotSchedule.map(sched => (
                         <Row>
                             <Col xs = "4">
                             <Form.Control type="text" value={sched} readOnly = {true} />
