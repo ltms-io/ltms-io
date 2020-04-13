@@ -63,10 +63,14 @@ class LTMSNavbar extends Component {
   async componentDidMount() {
     if (document.cookie.length) {
       var token = document.cookie.substring(13);
+      try {
       var decoded = jsonWeb.verify(token, "123456");
 
       this.state.dbresults = decoded;
       this.state.uid = decoded.auth0id;
+      } catch(err) {
+        console.log(err);
+      }
     }
     this.setState(this.state);
 
