@@ -11,8 +11,10 @@ class Schedule extends React.Component {
             tourneyId: this.props.match.params.tourneyId,
             startTime: "",
             endTime: "",
+            numJudgeRooms: 0,
             numMatches: 0,
             teams: [],
+            judging: [],
             robotScheduleTable1: [],
             robotScheduleTable2: []
         }
@@ -37,6 +39,7 @@ class Schedule extends React.Component {
         //used to get number of matches in a tournament
         await axios.get(`/api/tournaments/${this.state.tourneyId}`).then((result) => {
             this.setState({ numMatches: result.data.matchesPerTeam })
+            this.setState({ numJudgeRooms: result.data.numJudgeRooms });
         }).catch((err) => {
             console.log(err);
         })
@@ -45,6 +48,7 @@ class Schedule extends React.Component {
 
         var events1 = [];
         var events2 = [];
+        var judges = [];
         var teams = [];
 
         for (var names = 0; names < this.state.teams.length; names++) {
@@ -116,6 +120,32 @@ class Schedule extends React.Component {
             }
         }
 
+        //for(var m = 0; m < this.state.teams.length/this.state.numJudgeRooms; m++) {
+
+            var sched = new Array(this.state.teams.length).fill("");
+            var temp = 0;
+            for (var i = 0; i < sched.length; i++) {
+                var j = Math.floor(Math.random() * sched.length);
+                if (sched[j] !== "") {
+                    while (1) {
+                        j++;
+                        if (j === sched.length) {
+                            j = 0;
+                        }
+                        if (sched[j] === "") {
+                            sched[j] = teams[temp];
+                            break;
+                        }
+                    }
+                } else {
+                    sched[j] = teams[temp];
+                }
+                temp++;
+
+            }
+
+
+        this.setState({ judging: sched });
         this.setState({ robotScheduleTable1: events1 });
         this.setState({ robotScheduleTable2: events2 });
         this.setState({ startTime: startTime });
@@ -177,6 +207,16 @@ class Schedule extends React.Component {
                             ))}
                         </Col>
                     </Row>
+                    <Form.Group>
+                        <h5>Judging Tables</h5>
+                        {this.state.judging.map( tables => (
+                            <Row>
+                                <Col xs = "3">
+                                    <Form.Control type="text" value={tables} readOnly={true} />                                
+                                </Col>
+                            </Row>
+                        ))}
+                    </Form.Group>
                 </Form>
             </div>
         )
