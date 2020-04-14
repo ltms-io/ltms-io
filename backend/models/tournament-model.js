@@ -25,6 +25,34 @@ const SchoresheetSchema = new Schema({
     }]
 });
 
+const ScheduleSchema = new Schema({
+    startTime: {
+        type: String,
+        required: true
+    },
+    endTime: {
+        type: String,
+        required: true
+    },
+    rawData: {
+        type: Array,
+        required: true
+    },
+    sideOneMatches: {
+        type: Array,
+        required: true
+    },
+    sideTwoMatches: {
+        type: Array,
+        required: true
+    },
+    judging: {
+        type: Array,
+        required: true
+    }
+
+})
+
 //Create Tournament Schema
 const TournamentSchema = new Schema({
     director: {
@@ -91,7 +119,11 @@ const TournamentSchema = new Schema({
         type: Date,
         default: Date.now,
     },
-    scores: [SchoresheetSchema]
+    scores: [SchoresheetSchema],
+    schedule: {
+        type: ScheduleSchema,
+        required: true
+    }
 });
 
 //Instance methods of the Schema
