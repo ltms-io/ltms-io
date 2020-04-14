@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 import { findByTestAttr, checkProps } from "./../../utils"
-import SetReferee from "./SetReferee";
+import SetReferee from "./../components/SetReferee";
 
 const setUp = (props = {}) => {
   const component = shallow(<SetReferee {...props} />);

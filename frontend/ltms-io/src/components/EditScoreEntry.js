@@ -112,7 +112,7 @@ export default class EditScoreEntry extends Component {
 
         alert("submitting");
 
-        axios.patch(`http://localhost:5000/api/tournaments/${this.state.tourneyId}/scores/${this.state.scoreId}`, {
+        axios.patch(`/api/tournaments/${this.state.tourneyId}/scores/${this.state.scoreId}`, {
             id: "5e7a5410be7af1ae4acc6314",
             fieldTypes: fixedCats,
             fieldValues: fixedScores,
@@ -155,7 +155,7 @@ export default class EditScoreEntry extends Component {
             console.log(error);
         });
 
-        await axios.post(`http://localhost:5000/api/users/getuser`, {
+        await axios.post(`/api/users/getuser`, {
             auth0id: this.state.authresults.sub
         }).then((result) => {
             this.state.userResults = result.data;
@@ -163,7 +163,7 @@ export default class EditScoreEntry extends Component {
             console.log(error);
         });
 
-        await axios.get(`http://localhost:5000/api/tournaments/${this.state.tourneyId}/scores/${this.state.scoreId}`).then((result) => {
+        await axios.get(`/api/tournaments/${this.state.tourneyId}/scores/${this.state.scoreId}`).then((result) => {
             this.state.scoreResults = result.data;
             this.state.rawData = JSON.parse(result.data.rawData);
             this.state.rawData.forEach(item => {

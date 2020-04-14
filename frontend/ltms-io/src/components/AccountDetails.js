@@ -24,7 +24,7 @@ class AccountDetails extends Component {
     alert("Resetting name to: " + e.target.elements.name.value);
     this.state.dbresults.name = e.target.elements.name.value;
 
-    await axios.patch(`http://localhost:5000/api/users/updateuser`, {
+    await axios.patch(`/api/users/updateuser`, {
       auth0id: this.state.uid,
       name: this.state.dbresults.name
     })
@@ -32,7 +32,7 @@ class AccountDetails extends Component {
       console.log(error);
     });
 
-    await axios.post('http://localhost:5000/api/users/login', {data: this.state.uid}).then( (result) => {
+    await axios.post('/api/users/login', {data: this.state.uid}).then( (result) => {
       document.cookie = "UserIdentity=" + token + "; expires=Thu, 01 Jan 1970 00:00:00 UTC";
       document.cookie = "UserIdentity=" + result.data;
     });
@@ -51,7 +51,7 @@ class AccountDetails extends Component {
     e.preventDefault();
     alert("Deleting account!");
 
-    await axios.delete(`http://localhost:5000/api/users/${this.state.dbresults._id}`)
+    await axios.delete(`/api/users/${this.state.dbresults._id}`)
     .catch( (error) => {
       console.log(error);
     });

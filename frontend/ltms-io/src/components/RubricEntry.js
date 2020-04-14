@@ -20,10 +20,12 @@ class RubricEntry extends Component {
       dbtournresults: {},
       dbteamresults: {},
       authresults: {},
-      isAuthorized: false
+      isAuthorized: false,
+      isSendAuthorized: false
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleSend = this.handleSend.bind(this);
     this.updateState = this.updateState.bind(this);
   }
 
@@ -85,7 +87,7 @@ class RubricEntry extends Component {
         comments: e.target.elements.formRobotDesignComments.value
       }
     };
-    await axios.patch(`http://localhost:5000/api/teams/${this.state.teamId}`, {
+    await axios.patch(`/api/teams/${this.state.teamId}`, {
       rubric: rubric
     })
     .catch( (error) => {
@@ -105,7 +107,7 @@ class RubricEntry extends Component {
       alert("Invalid Index");
     }
     else {
-      await axios.patch(`http://localhost:5000/api/teams/rubricdelete/${this.state.teamId}`, {
+      await axios.patch(`/api/teams/rubricdelete/${this.state.teamId}`, {
         index: e.target.elements.deleteInd.value
       })
       .catch( (error) => {
@@ -117,6 +119,23 @@ class RubricEntry extends Component {
 
       alert("Deleted!");
     }
+  }
+
+  async handleSend(e) {
+    e.preventDefault();
+
+    await axios.post(`/api/teams/sendrubrics/${this.state.teamId}`, {
+      email: e.target.elements.sendEmail.value,
+      tournName: this.state.dbtournresults.name
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
+
+    this.updateState();
+    console.log("UPDATED STATE", this.state);
+
+    alert("Sent!");
   }
 
   async updateState() {
@@ -136,7 +155,7 @@ class RubricEntry extends Component {
       console.log(error);
     });
 
-    await axios.post(`http://localhost:5000/api/users/getuser`, {
+    await axios.post(`/api/users/getuser`, {
       auth0id: this.state.authresults.sub
     }).then ( (result) => {
         this.state.dbresults = result.data;
@@ -144,14 +163,14 @@ class RubricEntry extends Component {
         console.log(error);
     });
 
-    await axios.get(`http://localhost:5000/api/tournaments/${this.state.tourneyId}`)
+    await axios.get(`/api/tournaments/${this.state.tourneyId}`)
     .then( (result) => {
         this.state.dbtournresults = result.data;
     }).catch( (error) => {
         console.log(error);
     });
 
-    await axios.get(`http://localhost:5000/api/teams/${this.state.teamId}`)
+    await axios.get(`/api/teams/${this.state.teamId}`)
     .then( (result) => {
         this.state.dbteamresults = result.data;
     }).catch( (error) => {
@@ -165,6 +184,22 @@ class RubricEntry extends Component {
     return(
       <div data-test="theComponent">
         <h1 data-test="theMainHeader">Rubric Entry for Team "{this.state.dbteamresults.teamName}" in Tournament "{this.state.dbtournresults.name}"</h1>
+        {this.state.isSendAuthorized && (
+          <div>
+            <div>
+              <h3>Send All Rubrics to Team</h3>
+              <Form data-test="theSendForm" onSubmit={this.handleSend}>
+                <Form.Group controlId="sendEmail">
+                  <Form.Label>What email should the rubrics be sent to?</Form.Label>
+                  <Form.Control placeholder="Enter the email address" />
+                </Form.Group>
+                <Button type="submit">
+                  Send Email
+                </Button>
+              </Form>
+            </div>
+          </div>
+        )}
         {this.state.isAuthorized && (
           <div>
             <div>
@@ -575,28 +610,28 @@ class RubricEntry extends Component {
   }
 
   async componentDidMount() {
-    await axios.get(`http://localhost:5000/api/users`)
+    await axios.get(`/api/users`)
     .then ( (result) => {
         console.log("USERS", result.data);
     })
     .catch( (error) => {
         console.log(error);
     });
-    await axios.get(`http://localhost:5000/api/tournaments`)
+    await axios.get(`/api/tournaments`)
     .then ( (result) => {
         console.log("TOURNAMENTS", result.data);
     })
     .catch( (error) => {
         console.log(error);
     });
-    await axios.get(`http://localhost:5000/api/teams`)
+    await axios.get(`/api/teams`)
     .then ( (result) => {
         console.log("ALL TEAMS", result.data);
     })
     .catch( (error) => {
         console.log(error);
     });
-    await axios.get(`http://localhost:5000/api/teams/tournid/${this.state.tourneyId}`)
+    await axios.get(`/api/teams/tournid/${this.state.tourneyId}`)
     .then ( (result) => {
         console.log(`ALL TEAMS FROM ${this.state.tourneyId}`, result.data);
     })
@@ -609,11 +644,13 @@ class RubricEntry extends Component {
 
     if (this.state.dbtournresults.director === this.state.dbresults._id) {
       this.state.isAuthorized = true;
+      this.state.isSendAuthorized = true;
     }
     else {
       for (var i = 0; i < this.state.dbtournresults.judgeAdvisor.length; i++) {
         if (this.state.dbtournresults.judgeAdvisor[i] === this.state.dbresults._id) {
           this.state.isAuthorized = true;
+          this.state.isSendAuthorized = true;
         }
       }
       if (!this.state.isAuthorized) {

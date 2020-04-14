@@ -6,7 +6,7 @@ import axios from 'axios';
 export default class TournamentCard extends Component {
     async setDirectorAuth() {
         console.log(this.props.tournament.director);
-        await axios.get(`http://localhost:5000/api/users/${this.props.tournament.director}`).then((resp) => {
+        await axios.get(`/api/users/${this.props.tournament.director}`).then((resp) => {
             if (resp.data) {
                 this.setState({directorAuth: resp.data.auth0id});
             }
@@ -32,7 +32,7 @@ export default class TournamentCard extends Component {
             auth_id: localStorage.getItem("auth0_id"),
             tournament_id: this.state.tournament._id
         }
-        axios.post('http://localhost:5000/api/tournaments/addvolunteer', body).then((res) => {
+        axios.post('/api/tournaments/addvolunteer', body).then((res) => {
 
         }).catch((err) => {
 

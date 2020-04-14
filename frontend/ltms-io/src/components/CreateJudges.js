@@ -22,7 +22,7 @@ export default class CreateJudges extends Component {
     };
     handleSubmit = async event => {
         event.preventDefault()
-        await axios.get("http://localhost:5000/api/users/")
+        await axios.get("/api/users/")
           .then(res => {
             console.log(res);
             this.state.users = res.data
@@ -37,7 +37,7 @@ export default class CreateJudges extends Component {
           event.preventDefault()
           console.log(this.state.userID)
           console.log(this.state.tourneyID)
-          await axios.patch(`http://localhost:5000/api/tournaments/${this.state.tourneyID}`, {
+          await axios.patch(`/api/tournaments/${this.state.tourneyID}`, {
         judge: this.state.userID
       })
             .then(res => {
@@ -47,7 +47,7 @@ export default class CreateJudges extends Component {
               console.log(err);
             });
             
-            await axios.get(`http://localhost:5000/api/tournaments/${this.state.tourneyID}`)
+            await axios.get(`/api/tournaments/${this.state.tourneyID}`)
           .then(res => {
             console.log(res);
           })

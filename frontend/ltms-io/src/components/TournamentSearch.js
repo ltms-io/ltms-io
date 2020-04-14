@@ -105,7 +105,7 @@ export default class TournamentSearch extends Component {
 
         console.log(req);
 
-        await axios.post('http://localhost:5000/api/tournaments/search', req).then((res) => {
+        await axios.post('/api/tournaments/search', req).then((res) => {
             console.log(res.data);
         }).then((err) => {
             console.log(err);

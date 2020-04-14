@@ -3,8 +3,57 @@
 name: Production Build of LTMS.io
 
 on:
-  pull_request:
+  push:
     branches: [ master ]
 
-# jobs:
-#   test:
+jobs:
+  build-project:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: mkdir -p repo
+
+      - uses: actions/checkout@v2
+        with:
+          path: ./repo
+
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: install frontend deps
+        run: npm ci
+        working-directory: ./repo/frontend/ltms-io
+
+      - name: build frontend
+        run: npm run-script build
+        working-directory: ./repo/frontend/ltms-io
+        env:
+          CI: true
+
+        #create director if it does not already exist
+      - run: mkdir -p production
+      - run: cp -R ./repo/backend/* ./production
+      - run: cp -R ./repo/frontend/ltms-io/build ./production/frontend
+
+      - name: Create prod git repo
+        run: git init
+        working-directory: ./production
+
+      - run: git config user.email "actions@github.com"
+        working-directory: ./production
+
+      - run: git config user.name "GitHub Actions"
+        working-directory: ./production
+
+      - name: Deploy to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_APP_NAME: "ltms-io"
+        if: job.status == 'success'
+        run: |
+          git add .
+          git commit -m "deploy"
+          git push -f https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git HEAD:master
+        working-directory: ./production

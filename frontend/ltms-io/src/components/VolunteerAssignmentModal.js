@@ -25,7 +25,7 @@ export default class VolunteerAssignmentModal extends Component {
             email: this.emailInput.current.value,
         }
     
-       axios({method: 'post', url: 'http://localhost:5000/api/users/search', data: body})
+       axios({method: 'post', url: '/api/users/search', data: body})
         .then((x) => {
             console.log(x.data);
             this.setState({showAlert: false, showVolunteer: true});
