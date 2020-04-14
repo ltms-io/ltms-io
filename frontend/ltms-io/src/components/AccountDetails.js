@@ -69,7 +69,7 @@ class AccountDetails extends Component {
               <Col>
                 <div>
                   <h3>Edit Profile Picture</h3>
-                  {this.state.profilepic ? <img src={this.state.profilepic.imgUrl} /> : <img src={logo} alt="account"/>}
+                  {this.state.profilepic ? <img src={this.state.profilepic.imgUrl} alt="account"/> : <img src={logo} alt="account"/>}
                 </div>
                 <div>
                   <h3>Edit Name</h3>
