@@ -1,15 +1,14 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Form, Button, Col, Row } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import axios from "axios";
 
 export default class ViewRubrics extends Component {
     constructor(props) {
         super(props);
-    
+
         this.state = {
           teams: [],
-          tourneyId: this.props.match.params.tourneyId 
+          tourneyId: this.props.match.params.tourneyId
         };
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -38,11 +37,11 @@ export default class ViewRubrics extends Component {
                 <div>
                 {this.state.teams.map((item1, i1) => {
                               return(
-                                <div>
+                                <div key={i1}>
                                   {item1.teamName}
                                   {item1.rubrics.map((item2, i2) => {
                                     return(
-                                      <div>
+                                      <div key={i2}>
                                         Rubric {i2 + 1}:
                                         <div>
                                           Core Values
@@ -97,7 +96,7 @@ export default class ViewRubrics extends Component {
                             })}
                 </div>
             </div>
-            
+
         )
     }
 }

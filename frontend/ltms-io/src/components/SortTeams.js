@@ -1,6 +1,5 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {Form, Button, Col, Row, DropdownButton, Dropdown} from 'react-bootstrap';
+import {Form} from 'react-bootstrap';
 import axios from 'axios';
 
 export default class SortTeams extends React.Component {

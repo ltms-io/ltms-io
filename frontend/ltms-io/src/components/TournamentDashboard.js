@@ -84,7 +84,7 @@ export default class TournamentDashboard extends Component {
                             <div>
                                 {this.state.dbtournresults.teams.map((item, i) => {
                                     return (
-                                        <Link to={"/rubricentry/" + this.state.tourneyId + "/" + item}>
+                                        <Link key={i} to={"/rubricentry/" + this.state.tourneyId + "/" + item}>
                                             <Button disabled={!this.state.rubricEntryAuthorized}>Rubric Entry for {this.state.dbteamnames[i]}</Button>
                                         </Link>
                                     );

@@ -7,12 +7,12 @@ import axios from 'axios';
 export default class TournamentSearch extends Component {
     constructor(props) {
         super(props);
-    
+
         this.state = {
             date: null,
             errMsg: "",
         };
-    
+
         this.handleSearch = this.handleSearch.bind(this);
       }
 
@@ -25,7 +25,7 @@ export default class TournamentSearch extends Component {
                         <Col>
                         <Alert
                             variant="danger"
-                            show={this.state.errMsg != ''}
+                            show={this.state.errMsg !== ''}
                             dismissible
                             onClose={() => {this.setState({errMsg: ''})}}>
                             {this.state.errMsg}</Alert>
@@ -51,7 +51,7 @@ export default class TournamentSearch extends Component {
                                         </Form.Group> */}
                                         <SingleDatePicker
                                             showClearDate
-                                            numberOfMonths="1"
+                                            numberOfMonths={1}
                                             date={this.state.date}
                                             onDateChange={date => this.setState({ date })}
                                             focused={this.state.focused}
@@ -64,10 +64,10 @@ export default class TournamentSearch extends Component {
                                     Submit
                                 </Button>
                             </Form>
-                        </Col> 
+                        </Col>
                     </Row>
                     <Row>
-                    
+
                     </Row>
                 </Container>
             </div>
@@ -77,7 +77,7 @@ export default class TournamentSearch extends Component {
     async handleSearch(e) {
         e.preventDefault();
 
-        
+
         const searchName = e.target.elements.tournament_name.value;
         const searchDate = this.state.date;
         const searchUser = e.target.elements.user_name.value;

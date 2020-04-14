@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Form, Button, Col, Row } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import axios from "axios";
 
 export default class CreateJudges extends Component {
     constructor(props) {
       super(props);
-  
+
       this.state = {
         tourneyID: this.props.match.params.tourneyId,
         users: [],
@@ -46,7 +45,7 @@ export default class CreateJudges extends Component {
             .catch(err => {
               console.log(err);
             });
-            
+
             await axios.get(`/api/tournaments/${this.state.tourneyID}`)
           .then(res => {
             console.log(res);
@@ -67,7 +66,7 @@ export default class CreateJudges extends Component {
             <div>
             {this.state.users.map((item, i) => {
                 return(
-                    <div>
+                    <div key={i}>
                       {item.name}: {item._id}
                     </div>
                 )
