@@ -131,7 +131,7 @@ router.post('/search', async(req, res) => {
 
     var found_user;
     if (req.body.user_name) {
-        await User.findOne({name: {$regex: new RegExp(`^${req.body.user_name}$`, 'i')}}).then((user) => {
+        await User.findOne({name: {$regex: `${req.body.user_name}`}}).then((user) => {
             found_user = user;
         }).catch((error) => {
             found_user = null;
@@ -148,7 +148,7 @@ router.post('/search', async(req, res) => {
     };
 
     if (req.body.tournament_name) {
-        query.name = {$regex: new RegExp(`^${req.body.tournament_name}$`, 'i')};
+        query.name = {$regex: `${req.body.tournament_name}`};
     }
 
     if (req.body.date) {
@@ -204,7 +204,7 @@ router.post('/addvolunteer', (req, res) => {
         if (!result || result === null) {
             console.log("Volunteer added");
             tournament.viewOnlyVols.push(idToAdd);
-        }   
+        }
         else {
             console.log("Volunteer exists already");
         }
@@ -277,7 +277,7 @@ router.post('/score', (req, res) => {
         if(!tournament) {
             return res.status(404).send("tourney not found");
         }
-        
+
         tournament.scores.push({
             fieldTypes: req.body.fieldTypes,
             fieldValues: req.body.fieldValues,
@@ -444,7 +444,7 @@ router.delete('/scores/yesimsure', (req, res) => {
         }
 
         tournament.scores = [];
-        
+
         tournament.save().then(tournament => {
             return res.status(200).send(tournament);
         }).catch(err => {

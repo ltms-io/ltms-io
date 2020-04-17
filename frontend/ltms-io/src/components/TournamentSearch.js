@@ -1,18 +1,20 @@
 import React, { Component } from 'react'
 import { SingleDatePicker } from 'react-dates'
-import { Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, Alert, CardColumns, Card } from 'react-bootstrap';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+const jsonWeb = require('jsonwebtoken');
 
 
 export default class TournamentSearch extends Component {
     constructor(props) {
         super(props);
-    
+
         this.state = {
             date: null,
             errMsg: "",
         };
-    
+
         this.handleSearch = this.handleSearch.bind(this);
       }
 
@@ -64,50 +66,80 @@ export default class TournamentSearch extends Component {
                                     Submit
                                 </Button>
                             </Form>
-                        </Col> 
+                        </Col>
                     </Row>
-                    <Row>
-                    
-                    </Row>
+                    {this.state.results && (
+                      <Row>
+                        <CardColumns className="pl-5 mt-3">
+                            {this.state.results.map( (item, i) => {
+                                return(
+                                    <Card key={item._id}>
+                                        <Card.Header>{item.name}</Card.Header>
+                                        <Card.Text className="m-3">
+                                            <p>Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}</p>
+                                        </Card.Text>
+                                        {(item.director === this.state.dbresults._id || item.headReferee.includes(this.state.dbresults._id) || item.judgeAdvisor.includes(this.state.dbresults._id) || item.referees.includes(this.state.dbresults._id) || item.judges.includes(this.state.dbresults._id) || item.viewOnlyVols.includes(this.state.dbresults._id)) && (
+                                          <Link to={"/tournamentdashboard/" + item._id} >
+                                              <Button className="m-3">Access Tournament</Button>
+                                          </Link>
+                                        )}
+                                        {(item.director !== this.state.dbresults._id && !item.headReferee.includes(this.state.dbresults._id) && !item.judgeAdvisor.includes(this.state.dbresults._id) && !item.referees.includes(this.state.dbresults._id) && !item.judges.includes(this.state.dbresults._id) && !item.viewOnlyVols.includes(this.state.dbresults._id)) && (
+                                          <Link to={"/tournamentdashboard/" + item._id} >
+                                              <Button className="m-3">Register as a Volunteer</Button>
+                                          </Link>
+                                        )}
+                                    </Card>
+                                );
+                            })}
+                        </CardColumns>
+                      </Row>
+                    )}
                 </Container>
             </div>
         )
     }
 
+    async componentDidMount() {
+      if (document.cookie.length) {
+        var token = document.cookie.substring(13);
+        var decoded = jsonWeb.verify(token, "123456");
+
+        this.state.dbresults = decoded;
+        this.state.uid = decoded.auth0id;
+      }
+      this.setState(this.state);
+
+      console.log("INITIAL TOURNAMENT SEARCH STATE", this.state);
+    }
+
     async handleSearch(e) {
         e.preventDefault();
 
-        
         const searchName = e.target.elements.tournament_name.value;
         const searchDate = this.state.date;
         const searchUser = e.target.elements.user_name.value;
-
-        if (!searchName && searchDate != null && !searchUser) {
+        if (!searchName && !searchDate && !searchUser) {
             this.setState({errMsg: "No search parameters!"});
             return;
         }
 
-        console.log(`tourneyname: ${searchName}`);
-        console.log(`tourneydate: ${searchDate}`);
-        console.log(`user name: ${searchUser}`);
         var req = {};
         if (searchName) {
             req.tournament_name = searchName;
         }
-
         if (searchDate) {
             req.date = searchDate;
         }
-
         if (searchUser) {
             req.user_name = searchUser;
         }
 
-        console.log(req);
-
-        await axios.post('/api/tournaments/search', req).then((res) => {
-            console.log(res.data);
-        }).then((err) => {
+        await axios.post('/api/tournaments/search', req)
+        .then( (res) => {
+            this.setState({results: res.data});
+            console.log(this.state);
+        })
+        .catch( (err) => {
             console.log(err);
         });
     }
