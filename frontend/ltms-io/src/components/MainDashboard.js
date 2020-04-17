@@ -4,7 +4,7 @@ import { CardColumns, Card, Button, Container, Row, Col, Alert, Form } from 'rea
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import jsonWeb from 'jsonwebtoken';
-import { SingleDatePicker } from 'react-dates'
+import { SingleDatePicker } from 'react-dates';
 
 class MainDashboard extends Component {
     constructor(props) {
