@@ -147,7 +147,7 @@ class MainDashboard extends Component {
                                 </Form>
                             </Col>
                         </Row>
-                        {this.state.results && (
+                        {this.state.results && this.state.results != 0 && (
                           <Row>
                             <CardColumns className="pl-5 mt-3">
                                 {this.state.results.map( (item, i) => {
@@ -170,6 +170,9 @@ class MainDashboard extends Component {
                                 })}
                             </CardColumns>
                           </Row>
+                        )}
+                        {this.state.results && this.state.results.length == 0 && (
+                          <h6 className="text-center text-secondary font-italic pt-2">No matching tournaments</h6>
                         )}
                     </Container>
                 </div>
