@@ -124,8 +124,9 @@ router.get('/:id/scores/:scoreid', (req, res) => {
 
 /* POST search for tournament via various outlets */
 router.post('/search', async(req, res) => {
-    console.log(req.body);
-    if (!req.body.tournament_name && !req.body.user_name && !(req.body.date)) {
+    if ((!req.body.tournament_name || req.body.tournament_name === "") &&
+        (!req.body.user_name || req.body.user_name === "") &&
+        (!req.body.date || req.body.date === "")) {
         return res.status(400).send("Bad request: no searchable fields included.");
     }
 
@@ -138,12 +139,9 @@ router.post('/search', async(req, res) => {
         });
     }
 
-    console.log(found_user);
-
     var query = {};
 
     if (found_user && found_user !== null) {
-        console.log("=== ASSIGNING QUERY FOR DIRECTOR ===");
         query.director = found_user._id;
     };
 
@@ -154,20 +152,19 @@ router.post('/search', async(req, res) => {
     if (req.body.date) {
         query.startDate = req.body.date;
     }
-    console.log(query);
 
     if (!query.director && !query.name && !query.startDate) {
-        console.log("Returning empty");
-        return res.status(404).send([]);
+        return res.status(404).send("No results found");
     }
 
     Tournament.find(query)
-    .then((tournament) => {
-        if (!tournament) {
+    .then( (tournament) => {
+        if (!tournament || tournament.length == 0) {
             return res.status(404).send("No results found");
         }
         return res.status(200).send(tournament);
     }).catch((error) => {
+      console.log(error);
         return res.status(500).send(error);
     });
 });
