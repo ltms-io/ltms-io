@@ -45,8 +45,6 @@ describe("LTMSNavbar Component", () => {
       expect(element.length).toBe(1);
       element = findByTestAttr(component, "theCreateTournamentOption");
       expect(element.length).toBe(0);
-      element = findByTestAttr(component, "theFindTournamentOption");
-      expect(element.length).toBe(0);
       element = findByTestAttr(component, "theSignOutOption");
       expect(element.length).toBe(0);
     });
@@ -68,8 +66,6 @@ describe("LTMSNavbar Component", () => {
       expect(element.length).toBe(1);
       element = findByTestAttr(component, "theCreateTournamentOption");
       expect(element.length).toBe(1);
-      element = findByTestAttr(component, "theFindTournamentOption");
-      expect(element.length).toBe(1);
       element = findByTestAttr(component, "theSignOutOption");
       expect(element.length).toBe(1);
     });
@@ -88,8 +84,6 @@ describe("LTMSNavbar Component", () => {
       element = findByTestAttr(component, "theQuickLinksOption");
       expect(element.length).toBe(1);
       element = findByTestAttr(component, "theCreateTournamentOption");
-      expect(element.length).toBe(1);
-      element = findByTestAttr(component, "theFindTournamentOption");
       expect(element.length).toBe(1);
       element = findByTestAttr(component, "theSignOutOption");
       expect(element.length).toBe(1);
