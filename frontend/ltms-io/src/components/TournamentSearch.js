@@ -84,9 +84,7 @@ export default class TournamentSearch extends Component {
                                           </Link>
                                         )}
                                         {(item.director !== this.state.dbresults._id && !item.headReferee.includes(this.state.dbresults._id) && !item.judgeAdvisor.includes(this.state.dbresults._id) && !item.referees.includes(this.state.dbresults._id) && !item.judges.includes(this.state.dbresults._id) && !item.viewOnlyVols.includes(this.state.dbresults._id)) && (
-                                          <Link to={"/tournamentdashboard/" + item._id} >
-                                              <Button className="m-3">Register as a Volunteer</Button>
-                                          </Link>
+                                          <Button className="m-3" onClick={() => this.handleVol(item._id)}>Register as a Volunteer</Button>
                                         )}
                                     </Card>
                                 );
@@ -100,6 +98,13 @@ export default class TournamentSearch extends Component {
     }
 
     async componentDidMount() {
+    await axios.get(`/api/tournaments`)
+    .then ( (result) => {
+        console.log("TOURNAMENTS", result.data);
+    })
+    .catch( (error) => {
+        console.log(error);
+    });
       if (document.cookie.length) {
         var token = document.cookie.substring(13);
         var decoded = jsonWeb.verify(token, "123456");
@@ -113,34 +118,47 @@ export default class TournamentSearch extends Component {
     }
 
     async handleSearch(e) {
-        e.preventDefault();
+      e.preventDefault();
 
-        const searchName = e.target.elements.tournament_name.value;
-        const searchDate = this.state.date;
-        const searchUser = e.target.elements.user_name.value;
-        if (!searchName && !searchDate && !searchUser) {
-            this.setState({errMsg: "No search parameters!"});
-            return;
-        }
+      const searchName = e.target.elements.tournament_name.value;
+      const searchDate = this.state.date;
+      const searchUser = e.target.elements.user_name.value;
+      if (!searchName && !searchDate && !searchUser) {
+        this.setState({errMsg: "No search parameters!"});
+        return;
+      }
 
-        var req = {};
-        if (searchName) {
-            req.tournament_name = searchName;
-        }
-        if (searchDate) {
-            req.date = searchDate;
-        }
-        if (searchUser) {
-            req.user_name = searchUser;
-        }
+      var req = {};
+      if (searchName) {
+        req.tournament_name = searchName;
+      }
+      if (searchDate) {
+        req.date = searchDate;
+      }
+      if (searchUser) {
+        req.user_name = searchUser;
+      }
 
-        await axios.post('/api/tournaments/search', req)
-        .then( (res) => {
-            this.setState({results: res.data});
-            console.log(this.state);
-        })
-        .catch( (err) => {
-            console.log(err);
-        });
+      await axios.post('/api/tournaments/search', req)
+      .then( (res) => {
+        this.setState({results: res.data});
+        console.log(this.state);
+      })
+      .catch( (err) => {
+        console.log(err);
+      });
+    }
+
+    async handleVol(id) {
+      await axios.patch(`/api/tournaments/${id}`, {
+        viewOnlyVol: this.state.dbresults._id
+      })
+      .then( (res) => {
+        console.log(res);
+        window.location = `/tournamentdashboard/${id}`;
+      })
+      .catch( (err) => {
+        console.log(err);
+      });
     }
 }
