@@ -98,13 +98,6 @@ export default class TournamentSearch extends Component {
     }
 
     async componentDidMount() {
-    await axios.get(`/api/tournaments`)
-    .then ( (result) => {
-        console.log("TOURNAMENTS", result.data);
-    })
-    .catch( (error) => {
-        console.log(error);
-    });
       if (document.cookie.length) {
         var token = document.cookie.substring(13);
         var decoded = jsonWeb.verify(token, "123456");
@@ -112,7 +105,6 @@ export default class TournamentSearch extends Component {
         this.state.dbresults = decoded;
         this.state.uid = decoded.auth0id;
       }
-      this.setState(this.state);
 
       console.log("INITIAL TOURNAMENT SEARCH STATE", this.state);
     }

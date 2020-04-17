@@ -54,7 +54,7 @@ describe("LTMSNavbar Component", () => {
     it("Should render only the logo, the sample profile pic, and all menu options if authenticated but no profile pic assigned", () => {
       const props = {
         testAuthorized: true,
-        testProfPic: false
+        testProfPic: true
       };
       component = setUp(props);
 
@@ -77,7 +77,7 @@ describe("LTMSNavbar Component", () => {
     it("Should render only the logo, no sample profile pic, and all menu options if authenticated and profile pic is assigned", () => {
       const props = {
         testAuthorized: true,
-        testProfPic: true
+        testProfPic: false
       };
       component = setUp(props);
 
