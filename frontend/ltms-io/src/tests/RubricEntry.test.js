@@ -154,4 +154,60 @@ describe("RubricEntry Component", () => {
       expect(element.length).toBe(3);
     });
   });
+
+  describe("Rubric Deletion Form Rendering", () => {
+    let component;
+    beforeEach( () => {
+      const props = {
+        match: {
+          params: {
+            tourneyId: "Test tourneyId",
+            teamId: "Test teamId"
+          }
+        }
+      };
+      component = setUp(props);
+    });
+
+    it("Should render the correct amount of options for rubric deletion", () => {
+      component.setState({
+        tourneyId: component.state().tourneyId,
+        teamId: component.state().teamId,
+        dbresults: component.state().dbresults,
+        dbtournresults: component.state().dbtournresults,
+        dbteamresults: component.state().dbtournresults,
+        dbrubricsresults: [
+          {
+            email: "test1@notreallyexistentemail.com",
+            uniqueID: "testkindafakeID1test",
+            name: "Fake Name 1",
+            coreValues: "random filler stuff",
+            innovationProject: "random filler stuff",
+            robotDesign: "random filler stuff"
+          },
+          {
+            email: "test2@notreallyexistentemail.com",
+            uniqueID: "testkindafakeID2test",
+            name: "Fake Name 2",
+            coreValues: "random filler stuff",
+            innovationProject: "random filler stuff",
+            robotDesign: "random filler stuff"
+          },
+          {
+            email: "test3@notreallyexistentemail.com",
+            uniqueID: "testkindafakeID3test",
+            name: "Fake Name 3",
+            coreValues: "random filler stuff",
+            innovationProject: "random filler stuff",
+            robotDesign: "random filler stuff"
+          }
+        ],
+        authresults: component.state().authresults,
+        isAuthorized: true,
+        isSendAuthorized: true
+      });
+      var element = findByTestAttr(component, "aDeleteOption");
+      expect(element.length).toBe(3);
+    });
+  });
 });

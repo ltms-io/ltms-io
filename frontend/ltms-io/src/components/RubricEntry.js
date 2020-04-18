@@ -245,7 +245,7 @@ class RubricEntry extends Component {
                     {this.state.dbrubricsresults && (
                       this.state.dbrubricsresults.map( (item, i) => {
                         return (
-                          <option value={"{\"email\": \"" + item.email + "\", \"uniqueID\": \"" + item.uniqueID + "\"}"} key={i}>{item.username} - {item.uniqueID}</option>
+                          <option data-test="aDeleteOption" value={"{\"email\": \"" + item.email + "\", \"uniqueID\": \"" + item.uniqueID + "\"}"} key={i}>{item.username} - {item.uniqueID}</option>
                         );
                       })
                     )}
