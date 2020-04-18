@@ -114,7 +114,7 @@ class RubricEntry extends Component {
     .catch( (error) => {
       console.log(error);
     });
-    
+
     this.updateState();
     console.log("UPDATED STATE", this.state);
 
@@ -242,11 +242,13 @@ class RubricEntry extends Component {
                   <Form.Label>Which rubric do you want to delete?</Form.Label>
                   <Form.Control required as="select">
                     <option></option>
-                    {this.state.dbrubricsresults.map( (item, i) => {
-                      return (
-                        <option value={"{\"email\": \"" + item.email + "\", \"uniqueID\": \"" + item.uniqueID + "\"}"} key={i}>{item.username} - {item.uniqueID}</option>
-                      );
-                    })}
+                    {this.state.dbrubricsresults && (
+                      this.state.dbrubricsresults.map( (item, i) => {
+                        return (
+                          <option value={"{\"email\": \"" + item.email + "\", \"uniqueID\": \"" + item.uniqueID + "\"}"} key={i}>{item.username} - {item.uniqueID}</option>
+                        );
+                      })
+                    )}
                   </Form.Control>
                 </Form.Group>
                 <Button variant="danger" type="submit">
