@@ -33,6 +33,7 @@ class RubricEntry extends Component {
     e.preventDefault();
     var rubric = {
       username: this.state.dbresults.name,
+      email: this.state.dbresults.email,
       uniqueID: e.target.elements.formUniqueID.value,
       coreValues: {
         inspiration: {
@@ -178,6 +179,39 @@ class RubricEntry extends Component {
     }).catch( (error) => {
         console.log(error);
     });
+
+    if (this.state.dbtournresults.director === this.state.dbresults._id) {
+      this.state.isAuthorized = true;
+      this.state.isSendAuthorized = true;
+    }
+    else {
+      for (var i = 0; i < this.state.dbtournresults.judgeAdvisor.length; i++) {
+        if (this.state.dbtournresults.judgeAdvisor[i] === this.state.dbresults._id) {
+          this.state.isAuthorized = true;
+          this.state.isSendAuthorized = true;
+        }
+      }
+      if (!this.state.isAuthorized) {
+        for (var i = 0; i < this.state.dbtournresults.judges.length; i++) {
+          if (this.state.dbtournresults.judges[i] === this.state.dbresults._id) {
+            this.state.isAuthorized = true;
+          }
+        }
+      }
+    }
+
+    if (this.state.isSendAuthorized) {
+      this.state.dbrubricsresults = this.state.dbteamresults.rubrics;
+    }
+    else {
+      var rubrics = [];
+      this.state.dbteamresults.rubrics.forEach( (item) => {
+        if (item.email === this.state.dbresults.email) {
+          rubrics.push(item);
+        }
+      });
+      this.state.dbrubricsresults = rubrics;
+    }
 
     this.setState(this.state);
   }
@@ -647,28 +681,6 @@ class RubricEntry extends Component {
 
     await this.updateState();
     console.log("INITIAL RUBRIC ENTRY STATE", this.state);
-
-    if (this.state.dbtournresults.director === this.state.dbresults._id) {
-      this.state.isAuthorized = true;
-      this.state.isSendAuthorized = true;
-    }
-    else {
-      for (var i = 0; i < this.state.dbtournresults.judgeAdvisor.length; i++) {
-        if (this.state.dbtournresults.judgeAdvisor[i] === this.state.dbresults._id) {
-          this.state.isAuthorized = true;
-          this.state.isSendAuthorized = true;
-        }
-      }
-      if (!this.state.isAuthorized) {
-        for (var i = 0; i < this.state.dbtournresults.judges.length; i++) {
-          if (this.state.dbtournresults.judges[i] === this.state.dbresults._id) {
-            this.state.isAuthorized = true;
-          }
-        }
-      }
-    }
-
-    this.setState(this.state);
   }
 }
 
