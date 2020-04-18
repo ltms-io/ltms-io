@@ -105,23 +105,20 @@ class RubricEntry extends Component {
 
   async handleDelete(e) {
     e.preventDefault();
-    if (e.target.elements.deleteInd.value < 0 ||
-        e.target.elements.deleteInd.value >= this.state.dbteamresults.rubrics.length) {
-      alert("Invalid Index");
-    }
-    else {
-      await axios.patch(`/api/teams/rubricdelete/${this.state.teamId}`, {
-        index: e.target.elements.deleteInd.value
-      })
-      .catch( (error) => {
-        console.log(error);
-      });
 
-      this.updateState();
-      console.log("UPDATED STATE", this.state);
+    var parsed = JSON.parse(e.target.elements.formDelete.value);
+    await axios.patch(`/api/teams/rubricdelete/${this.state.teamId}`, {
+      email: parsed.email,
+      uniqueID: parsed.uniqueID
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
+    
+    this.updateState();
+    console.log("UPDATED STATE", this.state);
 
-      alert("Deleted!");
-    }
+    alert("Deleted!");
   }
 
   async handleSend(e) {
@@ -241,9 +238,16 @@ class RubricEntry extends Component {
             <div>
               <h3>Rubric Deletion</h3>
               <Form data-test="theDeleteForm" onSubmit={this.handleDelete}>
-                <Form.Group controlId="deleteInd">
+                <Form.Group controlId="formDelete">
                   <Form.Label>Which rubric do you want to delete?</Form.Label>
-                  <Form.Control placeholder="Enter the zero-based index # of the rubric" />
+                  <Form.Control required as="select">
+                    <option></option>
+                    {this.state.dbrubricsresults.map( (item, i) => {
+                      return (
+                        <option value={"{\"email\": \"" + item.email + "\", \"uniqueID\": \"" + item.uniqueID + "\"}"} key={i}>{item.username} - {item.uniqueID}</option>
+                      );
+                    })}
+                  </Form.Control>
                 </Form.Group>
                 <Button variant="danger" type="submit">
                   Delete Rubric
