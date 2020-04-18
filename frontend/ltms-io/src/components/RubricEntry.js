@@ -32,6 +32,8 @@ class RubricEntry extends Component {
   async handleSubmit(e) {
     e.preventDefault();
     var rubric = {
+      username: this.state.dbresults.name,
+      uniqueID: e.target.elements.formUniqueID.value,
       coreValues: {
         inspiration: {
           discovery: e.target.elements.formDiscovery.value,
@@ -217,6 +219,10 @@ class RubricEntry extends Component {
             <div>
               <h3>Rubric Submission</h3>
               <Form data-test="theSubmitForm" onSubmit={this.handleSubmit}>
+                <Form.Group data-test="anInput" controlId="formUniqueID">
+                  <Form.Label>Unique ID/Name</Form.Label>
+                  <Form.Control required type="text" />
+                </Form.Group>
                 <div>
                   <h4>Core Values</h4>
                   <Container>
@@ -612,31 +618,31 @@ class RubricEntry extends Component {
   async componentDidMount() {
     await axios.get(`/api/users`)
     .then ( (result) => {
-        console.log("USERS", result.data);
+      console.log("USERS", result.data);
     })
     .catch( (error) => {
-        console.log(error);
+      console.log(error);
     });
     await axios.get(`/api/tournaments`)
     .then ( (result) => {
-        console.log("TOURNAMENTS", result.data);
+      console.log("TOURNAMENTS", result.data);
     })
     .catch( (error) => {
-        console.log(error);
+      console.log(error);
     });
     await axios.get(`/api/teams`)
     .then ( (result) => {
-        console.log("ALL TEAMS", result.data);
+      console.log("ALL TEAMS", result.data);
     })
     .catch( (error) => {
-        console.log(error);
+      console.log(error);
     });
     await axios.get(`/api/teams/tournid/${this.state.tourneyId}`)
     .then ( (result) => {
-        console.log(`ALL TEAMS FROM ${this.state.tourneyId}`, result.data);
+      console.log(`ALL TEAMS FROM ${this.state.tourneyId}`, result.data);
     })
     .catch( (error) => {
-        console.log(error);
+      console.log(error);
     });
 
     await this.updateState();

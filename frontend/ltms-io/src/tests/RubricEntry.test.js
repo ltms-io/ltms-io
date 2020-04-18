@@ -149,7 +149,7 @@ describe("RubricEntry Component", () => {
         isSendAuthorized: true
       });
       var element = findByTestAttr(component, "anInput");
-      expect(element.length).toBe(27);
+      expect(element.length).toBe(28);
       element = findByTestAttr(component, "aCommentInput");
       expect(element.length).toBe(3);
     });

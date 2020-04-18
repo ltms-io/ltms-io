@@ -239,7 +239,7 @@ router.patch('/:id', (req, res) => {
       team.matchScores.push(req.body.matchScore);
     }
     if (req.body.rubric) {
-      team.rubrics.push(req.body.rubric);
+      team.rubrics = [];
     }
 
     team.save().then( (team) => res.send(team)).catch( (err) => console.log(err));
