@@ -188,8 +188,8 @@ class RubricEntry extends Component {
         }
       }
       if (!this.state.isAuthorized) {
-        for (var i = 0; i < this.state.dbtournresults.judges.length; i++) {
-          if (this.state.dbtournresults.judges[i] === this.state.dbresults._id) {
+        for (var j = 0; j < this.state.dbtournresults.judges.length; j++) {
+          if (this.state.dbtournresults.judges[j] === this.state.dbresults._id) {
             this.state.isAuthorized = true;
           }
         }
