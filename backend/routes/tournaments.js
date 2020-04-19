@@ -124,50 +124,47 @@ router.get('/:id/scores/:scoreid', (req, res) => {
 
 /* POST search for tournament via various outlets */
 router.post('/search', async(req, res) => {
-    console.log(req.body);
-    if (!req.body.tournament_name && !req.body.user_name && !(req.body.date)) {
+    if ((!req.body.tournament_name || req.body.tournament_name === "") &&
+        (!req.body.user_name || req.body.user_name === "") &&
+        (!req.body.date || req.body.date === "")) {
         return res.status(400).send("Bad request: no searchable fields included.");
     }
 
     var found_user;
     if (req.body.user_name) {
-        await User.findOne({name: {$regex: new RegExp(`^${req.body.user_name}$`, 'i')}}).then((user) => {
+        await User.findOne({name: {$regex: `${req.body.user_name}`}}).then((user) => {
             found_user = user;
         }).catch((error) => {
             found_user = null;
         });
     }
 
-    console.log(found_user);
-
     var query = {};
 
     if (found_user && found_user !== null) {
-        console.log("=== ASSIGNING QUERY FOR DIRECTOR ===");
         query.director = found_user._id;
     };
 
     if (req.body.tournament_name) {
-        query.name = {$regex: new RegExp(`^${req.body.tournament_name}$`, 'i')};
+        query.name = {$regex: `${req.body.tournament_name}`};
     }
 
     if (req.body.date) {
         query.startDate = req.body.date;
     }
-    console.log(query);
 
     if (!query.director && !query.name && !query.startDate) {
-        console.log("Returning empty");
-        return res.status(404).send([]);
+        return res.status(404).send("No results found");
     }
 
     Tournament.find(query)
-    .then((tournament) => {
-        if (!tournament) {
+    .then( (tournament) => {
+        if (!tournament || tournament.length == 0) {
             return res.status(404).send("No results found");
         }
         return res.status(200).send(tournament);
     }).catch((error) => {
+      console.log(error);
         return res.status(500).send(error);
     });
 });
@@ -204,7 +201,7 @@ router.post('/addvolunteer', (req, res) => {
         if (!result || result === null) {
             console.log("Volunteer added");
             tournament.viewOnlyVols.push(idToAdd);
-        }   
+        }
         else {
             console.log("Volunteer exists already");
         }
@@ -277,7 +274,7 @@ router.post('/score', (req, res) => {
         if(!tournament) {
             return res.status(404).send("tourney not found");
         }
-        
+
         tournament.scores.push({
             fieldTypes: req.body.fieldTypes,
             fieldValues: req.body.fieldValues,
@@ -444,7 +441,7 @@ router.delete('/scores/yesimsure', (req, res) => {
         }
 
         tournament.scores = [];
-        
+
         tournament.save().then(tournament => {
             return res.status(200).send(tournament);
         }).catch(err => {
