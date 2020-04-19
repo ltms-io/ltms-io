@@ -337,7 +337,7 @@ router.patch('/updateuser', (req, res) => {
         }
 
         const msg = {
-            to: req.body.email,
+            to: user.email,
             from: 'noreply@ltmsio.codes',
             subject: 'Changes have been made to your account',
             text: summaryOfChanges,

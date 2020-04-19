@@ -31,6 +31,9 @@ class RubricEntry extends Component {
   async handleSubmit(e) {
     e.preventDefault();
     var rubric = {
+      username: this.state.dbresults.name,
+      email: this.state.dbresults.email,
+      uniqueID: e.target.elements.formUniqueID.value,
       coreValues: {
         inspiration: {
           discovery: e.target.elements.formDiscovery.value,
@@ -101,23 +104,20 @@ class RubricEntry extends Component {
 
   async handleDelete(e) {
     e.preventDefault();
-    if (e.target.elements.deleteInd.value < 0 ||
-        e.target.elements.deleteInd.value >= this.state.dbteamresults.rubrics.length) {
-      alert("Invalid Index");
-    }
-    else {
-      await axios.patch(`/api/teams/rubricdelete/${this.state.teamId}`, {
-        index: e.target.elements.deleteInd.value
-      })
-      .catch( (error) => {
-        console.log(error);
-      });
 
-      this.updateState();
-      console.log("UPDATED STATE", this.state);
+    var parsed = JSON.parse(e.target.elements.formDelete.value);
+    await axios.patch(`/api/teams/rubricdelete/${this.state.teamId}`, {
+      email: parsed.email,
+      uniqueID: parsed.uniqueID
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
 
-      alert("Deleted!");
-    }
+    this.updateState();
+    console.log("UPDATED STATE", this.state);
+
+    alert("Deleted!");
   }
 
   async handleSend(e) {
@@ -176,6 +176,39 @@ class RubricEntry extends Component {
         console.log(error);
     });
 
+    if (this.state.dbtournresults.director === this.state.dbresults._id) {
+      this.state.isAuthorized = true;
+      this.state.isSendAuthorized = true;
+    }
+    else {
+      for (var i = 0; i < this.state.dbtournresults.judgeAdvisor.length; i++) {
+        if (this.state.dbtournresults.judgeAdvisor[i] === this.state.dbresults._id) {
+          this.state.isAuthorized = true;
+          this.state.isSendAuthorized = true;
+        }
+      }
+      if (!this.state.isAuthorized) {
+        for (var i = 0; i < this.state.dbtournresults.judges.length; i++) {
+          if (this.state.dbtournresults.judges[i] === this.state.dbresults._id) {
+            this.state.isAuthorized = true;
+          }
+        }
+      }
+    }
+
+    if (this.state.isSendAuthorized) {
+      this.state.dbrubricsresults = this.state.dbteamresults.rubrics;
+    }
+    else {
+      var rubrics = [];
+      this.state.dbteamresults.rubrics.forEach( (item) => {
+        if (item.email === this.state.dbresults.email) {
+          rubrics.push(item);
+        }
+      });
+      this.state.dbrubricsresults = rubrics;
+    }
+
     this.setState(this.state);
   }
 
@@ -204,9 +237,18 @@ class RubricEntry extends Component {
             <div>
               <h3>Rubric Deletion</h3>
               <Form data-test="theDeleteForm" onSubmit={this.handleDelete}>
-                <Form.Group controlId="deleteInd">
+                <Form.Group controlId="formDelete">
                   <Form.Label>Which rubric do you want to delete?</Form.Label>
-                  <Form.Control placeholder="Enter the zero-based index # of the rubric" />
+                  <Form.Control required as="select">
+                    <option></option>
+                    {this.state.dbrubricsresults && (
+                      this.state.dbrubricsresults.map( (item, i) => {
+                        return (
+                          <option data-test="aDeleteOption" value={"{\"email\": \"" + item.email + "\", \"uniqueID\": \"" + item.uniqueID + "\"}"} key={i}>{item.username} - {item.uniqueID}</option>
+                        );
+                      })
+                    )}
+                  </Form.Control>
                 </Form.Group>
                 <Button variant="danger" type="submit">
                   Delete Rubric
@@ -216,6 +258,10 @@ class RubricEntry extends Component {
             <div>
               <h3>Rubric Submission</h3>
               <Form data-test="theSubmitForm" onSubmit={this.handleSubmit}>
+                <Form.Group data-test="anInput" controlId="formUniqueID">
+                  <Form.Label>Unique ID/Name</Form.Label>
+                  <Form.Control required type="text" />
+                </Form.Group>
                 <div>
                   <h4>Core Values</h4>
                   <Container>
@@ -611,57 +657,35 @@ class RubricEntry extends Component {
   async componentDidMount() {
     await axios.get(`/api/users`)
     .then ( (result) => {
-        console.log("USERS", result.data);
+      console.log("USERS", result.data);
     })
     .catch( (error) => {
-        console.log(error);
+      console.log(error);
     });
     await axios.get(`/api/tournaments`)
     .then ( (result) => {
-        console.log("TOURNAMENTS", result.data);
+      console.log("TOURNAMENTS", result.data);
     })
     .catch( (error) => {
-        console.log(error);
+      console.log(error);
     });
     await axios.get(`/api/teams`)
     .then ( (result) => {
-        console.log("ALL TEAMS", result.data);
+      console.log("ALL TEAMS", result.data);
     })
     .catch( (error) => {
-        console.log(error);
+      console.log(error);
     });
     await axios.get(`/api/teams/tournid/${this.state.tourneyId}`)
     .then ( (result) => {
-        console.log(`ALL TEAMS FROM ${this.state.tourneyId}`, result.data);
+      console.log(`ALL TEAMS FROM ${this.state.tourneyId}`, result.data);
     })
     .catch( (error) => {
-        console.log(error);
+      console.log(error);
     });
 
     await this.updateState();
     console.log("INITIAL RUBRIC ENTRY STATE", this.state);
-
-    if (this.state.dbtournresults.director === this.state.dbresults._id) {
-      this.state.isAuthorized = true;
-      this.state.isSendAuthorized = true;
-    }
-    else {
-      for (var i = 0; i < this.state.dbtournresults.judgeAdvisor.length; i++) {
-        if (this.state.dbtournresults.judgeAdvisor[i] === this.state.dbresults._id) {
-          this.state.isAuthorized = true;
-          this.state.isSendAuthorized = true;
-        }
-      }
-      if (!this.state.isAuthorized) {
-        for (var j = 0; j < this.state.dbtournresults.judges.length; j++) {
-          if (this.state.dbtournresults.judges[j] === this.state.dbresults._id) {
-            this.state.isAuthorized = true;
-          }
-        }
-      }
-    }
-
-    this.setState(this.state);
   }
 }
 

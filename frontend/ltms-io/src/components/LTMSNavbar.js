@@ -30,13 +30,13 @@ class LTMSNavbar extends Component {
           </Navbar.Brand>
           <Nav className="ml-auto">
             {((this.props.auth && this.props.auth.isAuthenticated()) || (this.props.testAuthorized)) &&
-             ((Object.keys(this.state.dbresults).length && this.state.dbresults.profilePic.imgUrl.length === 0) || !this.props.testProfPic) && (
+             ((Object.keys(this.state.dbresults).length != 0 && this.state.dbresults.profilePic.imgUrl.length == 0) || this.props.testProfPic) && (
               <Navbar.Brand href="/accountdetails">
                 <img data-test="theSampleProfilePic" src={sample} alt="profile" width="30" height="30" className="d-inline-block align-top" />
               </Navbar.Brand>
             )}
             {((this.props.auth && this.props.auth.isAuthenticated()) || (this.props.testAuthorized)) &&
-             (Object.keys(this.state.dbresults).length && this.state.dbresults.profilePic.imgUrl.length !== 0) && (
+             (Object.keys(this.state.dbresults).length != 0 && this.state.dbresults.profilePic.imgUrl.length != 0) && (
               <Navbar.Brand href="/accountdetails">
                 <img data-test="theRealProfilePic" src={this.state.dbresults.profilePic.imgUrl} alt="profile" width="30" height="30" className="d-inline-block align-top" />
               </Navbar.Brand>
@@ -45,9 +45,6 @@ class LTMSNavbar extends Component {
               <NavDropdown.Item data-test="theQuickLinksOption" href="/quicklinks">Quick Links</NavDropdown.Item>
               {((this.props.auth && this.props.auth.isAuthenticated()) || (this.props.testAuthorized)) && (
                 <NavDropdown.Item data-test="theCreateTournamentOption" href="/createtournament">Create a Tournament</NavDropdown.Item>
-              )}
-              {((this.props.auth && this.props.auth.isAuthenticated()) || (this.props.testAuthorized)) && (
-                <NavDropdown.Item data-test="theFindTournamentOption" href="/tournamentsearch">Find a Tournament</NavDropdown.Item>
               )}
               {((this.props.auth && this.props.auth.isAuthenticated()) || (this.props.testAuthorized)) && (
                 <NavDropdown.Item data-test="theSignOutOption" onClick={this.signOut}>Sign Out</NavDropdown.Item>
