@@ -15,11 +15,32 @@ export default class Timer extends Component {
 
     this.state = {
       counter: 0,
+      start: 0,
       go: false
     };
-    this.handleGo = this.handleGo.bind(this);
+    this.startTimer = this.startTimer.bind(this)
+    this.stopTimer = this.stopTimer.bind(this)
+    this.resetTimer = this.resetTimer.bind(this)
   }
-  componentDidMount(){
+
+  startTimer(){
+    this.setState({
+      counter: this.state.counter,
+      start: Date.now() - this.state.counter,
+      go: true
+    })
+    this.timer = setInterval(() => this.setState({
+      counter: Date.now() - this.state.start
+    }), 1);
+  }
+  stopTimer() {
+    this.setState({go: false})
+    clearInterval(this.timer)
+  }
+  resetTimer() {
+    this.setState({counter: 0})
+  }
+  /*componentDidMount(){
       if(!this.state.go)
       {
         this.myInterval = setInterval(() => {
@@ -31,17 +52,33 @@ export default class Timer extends Component {
   }
   componentWillUnmount(){
       clearInterval(this.myInterval)
-  }
-  handleGo = event => {
-    this.setState(handleTrue);
-  }
+  }*/
   render() {
-  return (
+
+    let start = (this.state.counter == 0) ?
+    <button onClick={this.startTimer}>start</button>:
+    null
+
+    let stop = (this.state.go) ?
+    <button onClick={this.stopTimer}>stop</button>:
+    null
+
+    let reset = (this.state.coutner != 0 && !this.state.go) ?
+    <button onClick={this.resetTimer}>reset</button>:
+    null
+
+    let resume = (this.state.coutner != 0 && !this.state.go) ?
+    <button onClick={this.startTimer}>resume</button>:
+    null
+  
+  
+    return (
     <div>
-        Timer: {this.state.counter}
-        <button onClick={this.handleGo}>
-            GO
-        </button>
+        <h3>timer: {this.state.counter}</h3>
+        {start}
+        {resume}
+        {stop}
+        {reset}
     </div>
     );
   }
