@@ -25,27 +25,46 @@ const SchoresheetSchema = new Schema({
     }]
 });
 
+const MatchSchema = new Schema({
+    startTime: {
+        type: Date,
+        required: true
+    },
+    table: {
+        type: String
+    },
+    teamA: {
+        type: String
+    },
+    teamB: {
+        type: String
+    }
+})
+
 const ScheduleSchema = new Schema({
     startTime: {
         type: String,
         required: true
     },
-    endTime: {
+    endTime: { //change to cycle time?????
         type: String,
         required: true
     },
-    rawData: {
+    rawData: { //do we need this????
         type: Array,
         required: true
     },
-    sideOneMatches: {
+    sideOneMatches: { //get rid of
         type: Array,
         required: true
     },
-    sideTwoMatches: {
+    sideTwoMatches: { //get rid of
         type: Array,
         required: true
     },
+
+    //CHANGE TO match schemea SUB DOC
+
     judging: {
         type: Array,
         required: true
