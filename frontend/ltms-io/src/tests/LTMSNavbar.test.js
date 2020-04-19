@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 import { findByTestAttr } from "./../../utils"
-import LTMSNavbar from "./LTMSNavbar";
+import LTMSNavbar from "./../components/LTMSNavbar";
 
 const setUp = (props = {}) => {
   const component = shallow(<LTMSNavbar {...props} />);
@@ -45,8 +45,6 @@ describe("LTMSNavbar Component", () => {
       expect(element.length).toBe(1);
       element = findByTestAttr(component, "theCreateTournamentOption");
       expect(element.length).toBe(0);
-      element = findByTestAttr(component, "theFindTournamentOption");
-      expect(element.length).toBe(0);
       element = findByTestAttr(component, "theSignOutOption");
       expect(element.length).toBe(0);
     });
@@ -54,7 +52,7 @@ describe("LTMSNavbar Component", () => {
     it("Should render only the logo, the sample profile pic, and all menu options if authenticated but no profile pic assigned", () => {
       const props = {
         testAuthorized: true,
-        testProfPic: false
+        testProfPic: true
       };
       component = setUp(props);
 
@@ -68,8 +66,6 @@ describe("LTMSNavbar Component", () => {
       expect(element.length).toBe(1);
       element = findByTestAttr(component, "theCreateTournamentOption");
       expect(element.length).toBe(1);
-      element = findByTestAttr(component, "theFindTournamentOption");
-      expect(element.length).toBe(1);
       element = findByTestAttr(component, "theSignOutOption");
       expect(element.length).toBe(1);
     });
@@ -77,7 +73,7 @@ describe("LTMSNavbar Component", () => {
     it("Should render only the logo, no sample profile pic, and all menu options if authenticated and profile pic is assigned", () => {
       const props = {
         testAuthorized: true,
-        testProfPic: true
+        testProfPic: false
       };
       component = setUp(props);
 
@@ -88,8 +84,6 @@ describe("LTMSNavbar Component", () => {
       element = findByTestAttr(component, "theQuickLinksOption");
       expect(element.length).toBe(1);
       element = findByTestAttr(component, "theCreateTournamentOption");
-      expect(element.length).toBe(1);
-      element = findByTestAttr(component, "theFindTournamentOption");
       expect(element.length).toBe(1);
       element = findByTestAttr(component, "theSignOutOption");
       expect(element.length).toBe(1);
