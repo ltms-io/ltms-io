@@ -7,7 +7,6 @@ import Home from "./components/Home";
 import Dashboard from "./components/Dashboard";
 import Login from "./components/Login";
 import AccountDetails from "./components/AccountDetails";
-import TournamentSearch from "./components/TournamentSearch"
 import CreateTournament from "./components/CreateTournament";
 import Sheet from "./components/Scoresheet";
 import Callback from "./components/Callback";
@@ -67,7 +66,6 @@ class App extends Component {
             <Route path="/callback" component={Callback} />
             <Route path="/pictureuploadtest" component={PictureUploadModalTest} />
             <Route path="/volunteermodaltest" component={ VolunteerModalTest } />
-            <Route path="/tournamentsearch" component={ TournamentSearch } />
             <Route path="/setreferee/:tourneyId" component={ SetReferee } />
             <Route path="/maindashboard" component={ MainDashboard } />
             <Route path="/tournamentdashboard/:tourneyId" component={ TournamentDashboard } />
