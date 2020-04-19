@@ -47,7 +47,7 @@ class CreateJudges extends Component {
 
     for (var i = 0; i < ids.length; i++) {
       await axios.patch(`/api/tournaments/${this.state.tourneyId}`, {
-        judges: ids[i]
+        judge: ids[i]
       })
       .catch( (error) => {
         if (ids[i] !== "DNE") {
@@ -153,7 +153,7 @@ class CreateJudges extends Component {
     await this.updateState();
     console.log("INITIAL SET JUDGE STATE", this.state);
 
-    if (this.state.dbtournresults.judgeAdvisor === this.state.dbresults._id ||
+    if (this.state.dbtournresults.judgeAdvisor.includes(this.state.dbresults._id) ||
         this.state.dbtournresults.director === this.state.dbresults._id) {
       this.state.isAuthorized = true;
     }
