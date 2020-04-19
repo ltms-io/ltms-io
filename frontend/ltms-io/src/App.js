@@ -23,6 +23,7 @@ import axios from 'axios';
 import RoleChange from './components/RoleChange';
 import SortTeams from './components/SortTeams';
 import CreateTeam from './components/CreateTeam';
+import CreateT from './components/CreateT';
 import viewRubric from './components/ViewRubrics';
 import CreateJudges from './components/CreateJudges';
 import EditRubrics from './components/EditRubrics';
@@ -49,6 +50,7 @@ function App(props) {
           <Route path="/login" component={() => <Login auth={props.auth} />} />
           <Route path="/createtournament" component={CreateTournament} />
           <Route path="/createteam/:tourneyId" component={CreateTeam} />
+          <Route path="/createt/:tourneyId" component={CreateT} />
           <Route path="/viewrubrics/:tourneyId" component={viewRubric} />
           <Route path="/createjudge/:tourneyId" component={CreateJudges} />
           <Route path="/editrubrics/:tourneyId" component={EditRubrics} />
