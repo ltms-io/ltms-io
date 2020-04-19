@@ -8,6 +8,7 @@ class ViewRubrics extends Component {
       super(props);
 
       this.state = {
+        filter: "all-teams",
         dbteamsresults: [],
         dbtournresults: {},
         tourneyId: this.props.match.params.tourneyId
@@ -18,32 +19,51 @@ class ViewRubrics extends Component {
       return (
         <div>
           <h2 className="text-center pt-2">View Rubrics for "{this.state.dbtournresults.name}"</h2>
+          <div className="pl-2">
+            <h3>Filter by Team</h3>
+            <Form data-test="theDeleteForm" onSubmit={this.handleDelete}>
+              <Form.Group controlId="formDelete">
+                <Form.Label>Which rubric do you want to delete?</Form.Label>
+                <Form.Control required as="select">
+                  <option value="all-teams">All teams</option>
+                  {this.state.dbteamsresults.map( (item, i) => {
+                    return (
+                      <option value={i} key={i}>{item.teamName}</option>
+                    );
+                  })}
+                </Form.Control>
+              </Form.Group>
+              <Button type="submit">
+                Filter
+              </Button>
+            </Form>
+          </div>
           {this.state.dbteamsresults.map( (item1, i1) => {
             return(
-              <div key={i1}>
+              <div className="pl-2" key={i1}>
                 <h3>{item1.teamName}</h3>
-                <CardColumns className="pl-2 mt-2">
+                <CardColumns>
                   {item1.rubrics.map( (item2, i2) => {
                     return(
                       <Card key={i2}>
-                        <Card.Header><strong>Rubric {i2 + 1}</strong></Card.Header>
+                        <Card.Header><strong>{item2.username} - {item2.uniqueID}</strong></Card.Header>
                         <ListGroup className="list-group-flush">
                           <ListGroupItem>
                             <Card.Title><strong>Core Values</strong></Card.Title>
                             <Card.Text>
                               <strong>Inspiration:</strong> (<em>Discovery:</em> {item2.coreValues.inspiration.discovery},
-                                                          <em> Team Identity:</em> {item2.coreValues.inspiration.teamIdentity},
-                                                          <em> Impact:</em> {item2.coreValues.inspiration.impact})
+                                                            <em> Team Identity:</em> {item2.coreValues.inspiration.teamIdentity},
+                                                            <em> Impact:</em> {item2.coreValues.inspiration.impact})
                             </Card.Text>
                             <Card.Text>
                               <strong>Teamwork:</strong> (<em>Effectiveness:</em> {item2.coreValues.teamwork.effectiveness},
-                                                        <em> Efficiency:</em> {item2.coreValues.teamwork.efficiency},
-                                                        <em> Kids Do the Work:</em> {item2.coreValues.teamwork.kidsDoTheWork})
+                                                          <em> Efficiency:</em> {item2.coreValues.teamwork.efficiency},
+                                                          <em> Kids Do the Work:</em> {item2.coreValues.teamwork.kidsDoTheWork})
                             </Card.Text>
                             <Card.Text>
                               <strong>Gracious Professionalism®:</strong> (<em>Inclusion:</em> {item2.coreValues.graciousProfessionalism.inclusion},
-                                                                        <em> Respect:</em> {item2.coreValues.graciousProfessionalism.respect},
-                                                                        <em> Coopertition®:</em> {item2.coreValues.graciousProfessionalism.coopertition})
+                                                                          <em> Respect:</em> {item2.coreValues.graciousProfessionalism.respect},
+                                                                          <em> Coopertition®:</em> {item2.coreValues.graciousProfessionalism.coopertition})
                             </Card.Text>
                             <Card.Text>
                               <strong>Comments:</strong> <em>{item2.coreValues.comments}</em>
@@ -53,18 +73,18 @@ class ViewRubrics extends Component {
                             <Card.Title><strong>Innovation Project</strong></Card.Title>
                             <Card.Text>
                               <strong>Research:</strong> (<em>Problem Identification:</em> {item2.innovationProject.research.problemIdentificaton},
-                                                        <em> Sources of Information:</em> {item2.innovationProject.research.sourcesOfInformation},
-                                                        <em> Problem Analysis:</em> {item2.innovationProject.research.problemAnalysis})<br/>
+                                                          <em> Sources of Information:</em> {item2.innovationProject.research.sourcesOfInformation},
+                                                          <em> Problem Analysis:</em> {item2.innovationProject.research.problemAnalysis})<br/>
                             </Card.Text>
                             <Card.Text>
                               <strong>Innovative Solution:</strong> (<em>Team Solution:</em> {item2.innovationProject.innovativeSolution.teamSolution},
-                                                                  <em> Innovation:</em> {item2.innovationProject.innovativeSolution.innovation},
-                                                                  <em> Solution Development:</em> {item2.innovationProject.innovativeSolution.solutionDevelopment})
+                                                                    <em> Innovation:</em> {item2.innovationProject.innovativeSolution.innovation},
+                                                                    <em> Solution Development:</em> {item2.innovationProject.innovativeSolution.solutionDevelopment})
                             </Card.Text>
                             <Card.Text>
                               <strong>Presentation:</strong> (<em>Sharing:</em> {item2.innovationProject.presentation.sharing},
-                                                            <em> Creativity:</em> {item2.innovationProject.presentation.creativity},
-                                                            <em> Presentation Effectiveness:</em> {item2.innovationProject.presentation.presentationEffectiveness})
+                                                              <em> Creativity:</em> {item2.innovationProject.presentation.creativity},
+                                                              <em> Presentation Effectiveness:</em> {item2.innovationProject.presentation.presentationEffectiveness})
                             </Card.Text>
                             <Card.Text>
                               <strong>Comments:</strong> <em>{item2.innovationProject.comments}</em><br/>
@@ -74,18 +94,18 @@ class ViewRubrics extends Component {
                             <Card.Title><strong>Robot Design</strong></Card.Title>
                             <Card.Text>
                               <strong>Mechanical Design:</strong> (<em>Durability:</em> {item2.robotDesign.mechanicalDesign.durability},
-                                                                <em> Mechanical Efficiency:</em> {item2.robotDesign.mechanicalDesign.mechanicalEfficiency},
-                                                                <em> Mechanization:</em> {item2.robotDesign.mechanicalDesign.mechanization})
+                                                                  <em> Mechanical Efficiency:</em> {item2.robotDesign.mechanicalDesign.mechanicalEfficiency},
+                                                                  <em> Mechanization:</em> {item2.robotDesign.mechanicalDesign.mechanization})
                             </Card.Text>
                             <Card.Text>
                               <strong>Programming:</strong> (<em>Programming Quality:</em> {item2.robotDesign.programming.programmingQuality},
-                                                          <em> Programming Efficiency:</em> {item2.robotDesign.programming.programmingEfficiency},
-                                                          <em> Automation/Navigation:</em> {item2.robotDesign.programming.automationNavigation})
+                                                            <em> Programming Efficiency:</em> {item2.robotDesign.programming.programmingEfficiency},
+                                                            <em> Automation/Navigation:</em> {item2.robotDesign.programming.automationNavigation})
                             </Card.Text>
                             <Card.Text>
                               <strong>Strategy & Innovation:</strong> (<em>Design Process:</em> {item2.robotDesign.strategyInnovation.designProcess},
-                                                                    <em> Mission Strategy:</em> {item2.robotDesign.strategyInnovation.missionStrategy},
-                                                                    <em> Innovation:</em> {item2.robotDesign.strategyInnovation.innovation})
+                                                                      <em> Mission Strategy:</em> {item2.robotDesign.strategyInnovation.missionStrategy},
+                                                                      <em> Innovation:</em> {item2.robotDesign.strategyInnovation.innovation})
                             </Card.Text>
                             <Card.Text>
                               <strong>Comments:</strong> <em>{item2.robotDesign.comments}</em>
@@ -96,6 +116,9 @@ class ViewRubrics extends Component {
                     );
                   })}
                 </CardColumns>
+                {item1.rubrics.length == 0 && (
+                  <h6 className="text-secondary font-italic pl-2">No rubrics for this team</h6>
+                )}
               </div>
             );
           })}
