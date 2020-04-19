@@ -3,11 +3,7 @@ import { connect } from "react-redux";
 import { Form, Button, Col, Row } from "react-bootstrap";
 import axios from "axios";
 
-function handleTrue(state, props){
-    return {
-        go: true
-    }
-}
+const ms = require('pretty-ms')
 
 export default class Timer extends Component {
   constructor(props) {
@@ -15,6 +11,7 @@ export default class Timer extends Component {
 
     this.state = {
       counter: 0,
+      initalCounter: 0,
       start: 0,
       go: false
     };
@@ -22,7 +19,7 @@ export default class Timer extends Component {
     this.stopTimer = this.stopTimer.bind(this)
     this.resetTimer = this.resetTimer.bind(this)
   }
-
+  
   startTimer(){
     this.setState({
       counter: this.state.counter,
@@ -40,45 +37,14 @@ export default class Timer extends Component {
   resetTimer() {
     this.setState({counter: 0})
   }
-  /*componentDidMount(){
-      if(!this.state.go)
-      {
-        this.myInterval = setInterval(() => {
-            this.setState(prevState => ({
-                counter: prevState.counter + 1
-            }))
-        }, 1000)
-      }
-  }
-  componentWillUnmount(){
-      clearInterval(this.myInterval)
-  }*/
   render() {
-
-    let start = (this.state.counter == 0) ?
-    <button onClick={this.startTimer}>start</button>:
-    null
-
-    let stop = (this.state.go) ?
-    <button onClick={this.stopTimer}>stop</button>:
-    null
-
-    let reset = (this.state.coutner != 0 && !this.state.go) ?
-    <button onClick={this.resetTimer}>reset</button>:
-    null
-
-    let resume = (this.state.coutner != 0 && !this.state.go) ?
-    <button onClick={this.startTimer}>resume</button>:
-    null
-  
-  
     return (
     <div>
-        <h3>timer: {this.state.counter}</h3>
-        {start}
-        {resume}
-        {stop}
-        {reset}
+        <h3>Timer: {ms(this.state.counter)}</h3>
+        <button disabled={!this.state.counter == 0} onClick={this.startTimer}>start</button>
+        <button disabled={!this.state.go} onClick={this.stopTimer}>stop</button>
+        <button disabled={!(this.state.coutner != 0 && !this.state.go)} onClick={this.resetTimer}>reset</button>
+        <button disabled={!(this.state.coutner != 0 && !this.state.go)} onClick={this.startTimer}>resume</button>
     </div>
     );
   }
