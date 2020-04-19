@@ -12,82 +12,66 @@ describe("ViewRubrics Component", () => {
   describe("Basic Rendering", () => {
     let component;
     beforeEach( () => {
-      component = setUp();
-    })
+      const props = {
+        match: {
+          params: {
+            tourneyId: "Test tourneyId"
+          }
+        }
+      };
+      component = setUp(props);
+    });
 
     it("Should render without errors", () => {
       const wrapper = findByTestAttr(component, "theViewRubrics");
       expect(wrapper.length).toBe(1);
     });
+  });
 
-    it("Should render both the filter by team and actual cards sections", () => {
-      const element = findByTestAttr(component, "theFilter");
+  describe("Authorization Rendering", () => {
+    let component;
+    beforeEach( () => {
+      const props = {
+        match: {
+          params: {
+            tourneyId: "Test tourneyId"
+          }
+        }
+      };
+      component = setUp(props);
+    });
+
+    it("Should render the filter by team and rubric cards sections if authorized", () => {
+      component.setState({
+        filter: component.state().filter,
+        dbresults: component.state().dbresults,
+        dbteamsresults: component.state().dbteamsresults,
+        dbtournresults: component.state().dbtournresults,
+        tourneyId: component.state().tourneyId,
+        isAuthorized: true
+      });
+      var element = findByTestAttr(component, "theFilter");
       expect(element.length).toBe(1);
       element = findByTestAttr(component, "theCards");
       expect(element.length).toBe(1);
-    });
-  });
-
-  describe("Authentication Rendering", () => {
-    let component;
-
-    it("Should render only the logo and quick links menu option if not authenticated", () => {
-      const props = {
-        testAuthorized: false
-      };
-      component = setUp(props);
-
-      var element = findByTestAttr(component, "theLogo");
-      expect(element.length).toBe(1);
-      element = findByTestAttr(component, "theSampleProfilePic");
-      expect(element.length).toBe(0);
-      element = findByTestAttr(component, "theRealProfilePic");
-      expect(element.length).toBe(0);
-      element = findByTestAttr(component, "theQuickLinksOption");
-      expect(element.length).toBe(1);
-      element = findByTestAttr(component, "theCreateTournamentOption");
-      expect(element.length).toBe(0);
-      element = findByTestAttr(component, "theSignOutOption");
+      element = findByTestAttr(component, "noAuthMsg");
       expect(element.length).toBe(0);
     });
 
-    it("Should render only the logo, the sample profile pic, and all menu options if authenticated but no profile pic assigned", () => {
-      const props = {
-        testAuthorized: true,
-        testProfPic: true
-      };
-      component = setUp(props);
-
-      var element = findByTestAttr(component, "theLogo");
-      expect(element.length).toBe(1);
-      element = findByTestAttr(component, "theSampleProfilePic");
-      expect(element.length).toBe(1);
-      element = findByTestAttr(component, "theRealProfilePic");
+    it("Should render only the no authorization message if not authorized", () => {
+      component.setState({
+        filter: component.state().filter,
+        dbresults: component.state().dbresults,
+        dbteamsresults: component.state().dbteamsresults,
+        dbtournresults: component.state().dbtournresults,
+        tourneyId: component.state().tourneyId,
+        isAuthorized: false
+      });
+      var element = findByTestAttr(component, "theFilter");
       expect(element.length).toBe(0);
-      element = findByTestAttr(component, "theQuickLinksOption");
-      expect(element.length).toBe(1);
-      element = findByTestAttr(component, "theCreateTournamentOption");
-      expect(element.length).toBe(1);
-      element = findByTestAttr(component, "theSignOutOption");
-      expect(element.length).toBe(1);
-    });
-
-    it("Should render only the logo, no sample profile pic, and all menu options if authenticated and profile pic is assigned", () => {
-      const props = {
-        testAuthorized: true,
-        testProfPic: false
-      };
-      component = setUp(props);
-
-      var element = findByTestAttr(component, "theLogo");
-      expect(element.length).toBe(1);
-      element = findByTestAttr(component, "theSampleProfilePic");
+      element = findByTestAttr(component, "theCards");
       expect(element.length).toBe(0);
-      element = findByTestAttr(component, "theQuickLinksOption");
-      expect(element.length).toBe(1);
-      element = findByTestAttr(component, "theCreateTournamentOption");
-      expect(element.length).toBe(1);
-      element = findByTestAttr(component, "theSignOutOption");
+      element = findByTestAttr(component, "noAuthMsg");
       expect(element.length).toBe(1);
     });
   });

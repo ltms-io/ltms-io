@@ -33,7 +33,7 @@ class ViewRubrics extends Component {
     return (
       <div data-test="theViewRubrics">
         <h2 className="text-center pt-2">View Rubrics for "{this.state.dbtournresults.name}"</h2>
-        {this.state.isAuthorized && (
+        {(this.state.isAuthorized) && (
           <div data-test="theFilter">
             <div className="pl-2">
               <h3>Filter by Team</h3>
@@ -41,10 +41,10 @@ class ViewRubrics extends Component {
                 <Form.Group controlId="formFilter">
                   <Form.Label>Which team's rubrics do you want to view?</Form.Label>
                   <Form.Control required as="select">
-                    <option value="all-teams">All teams</option>
+                    <option data-test="anOption" value="all-teams">All teams</option>
                     {this.state.dbteamsresults.map( (item, i) => {
                       return (
-                        <option value={i} key={i}>{item.teamName}</option>
+                        <option data-test="anOption" value={i} key={i}>{item.teamName}</option>
                       );
                     })}
                   </Form.Control>
@@ -61,7 +61,7 @@ class ViewRubrics extends Component {
                       <CardColumns>
                         {item1.rubrics.map( (item2, i2) => {
                           return(
-                            <Card key={i2}>
+                            <Card data-test="aCard" key={i2}>
                               <Card.Header><strong>{item2.username} - {item2.uniqueID}</strong></Card.Header>
                               <ListGroup className="list-group-flush">
                                 <ListGroupItem>
