@@ -1,5 +1,4 @@
 import React from 'react';
-import {connect} from 'react-redux';
 import {Form, Button, Col, Row, DropdownButton, Dropdown} from 'react-bootstrap';
 import axios from 'axios';
 
@@ -51,7 +50,7 @@ class Sheet extends React.Component{
 
     e.preventDefault();
 
-    if(e.target.elements.teamName.value != ""){
+    if(e.target.elements.teamName.value !== ""){
       this.setState({team: e.target.elements.teamName.value});
       this.setState({readOnly: true});
     }

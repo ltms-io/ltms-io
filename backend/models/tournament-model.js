@@ -25,6 +25,53 @@ const SchoresheetSchema = new Schema({
     }]
 });
 
+const MatchSchema = new Schema({
+    startTime: {
+        type: Date,
+        required: true
+    },
+    table: {
+        type: String
+    },
+    teamA: {
+        type: String
+    },
+    teamB: {
+        type: String
+    }
+})
+
+const ScheduleSchema = new Schema({
+    startTime: {
+        type: String,
+        required: true
+    },
+    endTime: { //change to cycle time?????
+        type: String,
+        required: true
+    },
+    rawData: { //do we need this????
+        type: Array,
+        required: true
+    },
+    sideOneMatches: { //get rid of
+        type: Array,
+        required: true
+    },
+    sideTwoMatches: { //get rid of
+        type: Array,
+        required: true
+    },
+
+    //CHANGE TO match schemea SUB DOC
+
+    judging: {
+        type: Array,
+        required: true
+    }
+
+})
+
 //Create Tournament Schema
 const TournamentSchema = new Schema({
     director: {
@@ -91,7 +138,11 @@ const TournamentSchema = new Schema({
         type: Date,
         default: Date.now,
     },
-    scores: [SchoresheetSchema]
+    scores: [SchoresheetSchema],
+    schedule: {
+        type: ScheduleSchema,
+        required: true
+    }
 });
 
 //Instance methods of the Schema

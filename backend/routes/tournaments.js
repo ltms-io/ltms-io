@@ -26,6 +26,20 @@ router.get('/:id', (req, res) => {
     });
 });
 
+/* GET most recent schedule for tournament. */
+router.get('/schedule/:id', (req, res) => {
+    Tournament.findById(req.params.id).then((tournament) => {
+        if(!tournament) {
+            return res.status(404).send("No tournament found");
+        }
+        if(!tournament.schedule) {
+            return res.status(400).send("No schedule generated for tournament");
+        }
+
+        return res.status(200).send(tournament.schedule);
+    })
+})
+
 
 /* GET tournaments by user id */
 router.post('/user', (req, res) => {
@@ -293,6 +307,25 @@ router.post('/score', (req, res) => {
     })
 })
 
+router.post('/schedule', (req, res) => {
+    Tournament.findById(req.body.id).then((tournament) => {
+        if(!tournament) {
+            return res.status(404).send("tourney not found");
+        }
+
+    
+        tournament.schedule = req.body;
+
+        tournament.save().then(() => {
+            res.status(200).send("schedule successfully saved");
+        }).catch(err => {
+            console.log(err);
+            res.status(500).send(err);
+        })
+        
+    })
+})
+
 /* PATCH specific tournament. */
 router.patch('/:id', (req, res) => {
     // if (!req.headers.auth) { // TODO: replace with correct authorization field or auth handler module
@@ -447,6 +480,24 @@ router.delete('/scores/yesimsure', (req, res) => {
         }).catch(err => {
             console.log(err)
             return res.status(500).send(err) ;
+        })
+    })
+})
+
+//delete all schedules
+router.delete('/schedules/byebye', (req, res) => {
+    Tournament.findById(req.body.id).then(tournament => {
+        if(!tournament) {
+            return res.status(404).send("tourney not found");
+        }
+
+        tournament.schedule = [];
+
+        tournament.save().then(tournament => {
+            return res.status(200).send(tournament);
+        }).catch(err => {
+            console.log(err);
+            return res.status(500).send(err);
         })
     })
 })

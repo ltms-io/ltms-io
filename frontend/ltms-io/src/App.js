@@ -24,8 +24,8 @@ import SortTeams from './components/SortTeams';
 import CreateTeam from './components/CreateTeam';
 import viewRubric from './components/ViewRubrics';
 import CreateJudges from './components/CreateJudges';
+import Schedule from './components/Schedule';
 import QuickLinks from './components/QuickLinks';
-const jsonWeb = require('jsonwebtoken');
 
 class App extends Component {
   constructor(props) {
@@ -36,7 +36,7 @@ class App extends Component {
 
   async initializeCookie() {
     if (!document.cookie) {
-      await axios.post('http://localhost:5000/api/users/login', {data: localStorage.getItem("auth0_id")})
+      await axios.post('api/users/login', {data: localStorage.getItem("auth0_id")})
       .then( (result) => {
         document.cookie = "UserIdentity=" + result.data;
         //localStorage.removeItem("auth0_id");
@@ -75,6 +75,7 @@ class App extends Component {
             <Route path="/t/:tourneyId/editscore/:scoreId" component={ EditScoreEntry } />
             <Route path="/matchranking/:tourneyId" component={ SortTeams } />
             <Route path="/quicklinks" component={ QuickLinks } />
+            <Route path="/tournamentschedule/:tourneyId" component={ Schedule } />
           </Switch>
         </div>
       </Router>
