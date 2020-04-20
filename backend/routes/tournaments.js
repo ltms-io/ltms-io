@@ -147,28 +147,12 @@ router.get('/:id/pdf', (req, res) => {
         const doc = new PDFDocument;
         doc.pipe(res);
 
-        // draw some text
-        doc.fontSize(25).text('Here is some vector graphics...', 100, 80);
+        doc.image("public/ltmsio-logo-wide.png", (doc.page.width - 165), 15, {fit: [150, 250]});
+        doc.fontSize(24)
+            .text(`Match Schedule for ${tournament.name}`);
 
-        doc.save()
-            .moveTo(100, 150)
-            .lineTo(100, 250)
-            .lineTo(200, 250)
-            .fill('#FF3300');
-
-        doc.circle(280, 200, 50).fill('#6600FF');
-
-        // an SVG path
-        doc.scale(0.6)
-            .translate(470, 130)
-            .path('M 250,75 L 323,301 131,161 369,161 177,301 z')
-            .fill('red', 'even-odd')
-            .restore();
-
-        // end and display the document in the iframe to the right
+        // end and display the document
         doc.end();
-
-        // res.status(200).send();
     })
 })
 
