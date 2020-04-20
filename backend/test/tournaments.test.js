@@ -76,8 +76,8 @@ describe("Tournament Backend Routes", () => {
         user_name: "ltmstest"
       })
       .end( (err, res) => {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
+        expect(res).to.have.status(404);
+        expect(res.body).to.be.empty;
       });
 
       chai.request(app)
@@ -97,8 +97,8 @@ describe("Tournament Backend Routes", () => {
         user_name: "ltmstest"
       })
       .end( (err, res) => {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
+        expect(res).to.have.status(404);
+        expect(res.body).to.be.empty;
       });
 
       chai.request(app)
@@ -108,8 +108,8 @@ describe("Tournament Backend Routes", () => {
         date: "2020-04-20T19:00:00.000Z"
       })
       .end( (err, res) => {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
+        expect(res).to.have.status(404);
+        expect(res.body).to.be.empty;
       });
 
       chai.request(app)
@@ -131,8 +131,8 @@ describe("Tournament Backend Routes", () => {
         date: "2020-04-20T19:00:00.000Z"
       })
       .end( (err, res) => {
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
+        expect(res).to.have.status(404);
+        expect(res.body).to.be.empty;
         done();
       });
     });
