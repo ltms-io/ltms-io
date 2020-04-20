@@ -73,11 +73,11 @@ describe("Tournament Backend Routes", () => {
       chai.request(app)
       .post("/api/tournaments/search")
       .send({
-        user_name: "ltmstest"
+        user_name: "John"
       })
       .end( (err, res) => {
-        expect(res).to.have.status(404);
-        expect(res.body).to.be.empty;
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
       });
 
       chai.request(app)
@@ -94,22 +94,22 @@ describe("Tournament Backend Routes", () => {
       .post("/api/tournaments/search")
       .send({
         tournament_name: "test",
-        user_name: "ltmstest"
+        user_name: "John"
       })
       .end( (err, res) => {
-        expect(res).to.have.status(404);
-        expect(res.body).to.be.empty;
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
       });
 
       chai.request(app)
       .post("/api/tournaments/search")
       .send({
-        user_name: "ltmstest",
+        user_name: "John",
         date: "2020-04-20T19:00:00.000Z"
       })
       .end( (err, res) => {
-        expect(res).to.have.status(404);
-        expect(res.body).to.be.empty;
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
       });
 
       chai.request(app)
@@ -127,12 +127,12 @@ describe("Tournament Backend Routes", () => {
       .post("/api/tournaments/search")
       .send({
         tournament_name: "test",
-        user_name: "ltmstest",
+        user_name: "John",
         date: "2020-04-20T19:00:00.000Z"
       })
       .end( (err, res) => {
-        expect(res).to.have.status(404);
-        expect(res.body).to.be.empty;
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
         done();
       });
     });
