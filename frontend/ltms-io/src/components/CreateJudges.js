@@ -25,37 +25,39 @@ class CreateJudges extends Component {
     var strings = e.target.elements.users.value.split(",");
     var ids = [];
     var message = "";
-    for (var i = 0; i < strings.length; i++) {
-      strings[i] = strings[i].trim();
+    strings.forEach( async (item, index) => {
+      var temp = item;
+      temp = temp.trim();
       await axios.post(`/api/users/search`, {
-        email: strings[i]
+        email: temp
       })
       .then( (result) => {
-        ids[i] = result.data._id;
-        if (this.state.dbtournresults.judges.includes(ids[i])) {
-          message += ("User " + strings[i] + " already is a judge.\n");
-          ids[i] = "DNE";
+        ids[index] = result.data._id;
+        if (this.state.dbtournresults.judges.includes(ids[index])) {
+          message += ("User " + temp + " already is a judge.\n");
+          ids[index] = "DNE";
         }
       })
       .catch( (error) => {
-        message += ("There was an error finding user " + strings[i] + ".\n");
-        ids[i] = "DNE";
+        message += ("There was an error finding user " + temp + ".\n");
+        ids[index] = "DNE";
         console.log(error);
       });
-    }
+    });
     message += "\n";
 
-    for (var i = 0; i < ids.length; i++) {
+    ids.forEach( async (item, index) => {
+      var temp = item;
       await axios.patch(`/api/tournaments/${this.state.tourneyId}`, {
-        judge: ids[i]
+        judge: temp
       })
       .catch( (error) => {
-        if (ids[i] !== "DNE") {
-          message += ("There was an error adding user ID " + ids[i] + " to the database.\n");
+        if (temp !== "DNE") {
+          message += ("There was an error adding user ID " + temp + " to the database.\n");
         }
         console.log(error);
       });
-    }
+    });
 
     this.updateState();
     console.log("UPDATED STATE", this.state);
