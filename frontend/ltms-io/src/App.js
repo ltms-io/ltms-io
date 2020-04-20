@@ -7,7 +7,6 @@ import Home from "./components/Home";
 import Dashboard from "./components/Dashboard";
 import Login from "./components/Login";
 import AccountDetails from "./components/AccountDetails";
-import TournamentSearch from "./components/TournamentSearch"
 import CreateTournament from "./components/CreateTournament";
 import Sheet from "./components/Scoresheet";
 import Callback from "./components/Callback";
@@ -37,7 +36,7 @@ class App extends Component {
 
   async initializeCookie() {
     if (!document.cookie) {
-      await axios.post('http://localhost:5000/api/users/login', {data: localStorage.getItem("auth0_id")})
+      await axios.post('/api/users/login', {data: localStorage.getItem("auth0_id")})
       .then( (result) => {
         document.cookie = "UserIdentity=" + result.data;
         //localStorage.removeItem("auth0_id");
@@ -67,7 +66,6 @@ class App extends Component {
             <Route path="/callback" component={Callback} />
             <Route path="/pictureuploadtest" component={PictureUploadModalTest} />
             <Route path="/volunteermodaltest" component={ VolunteerModalTest } />
-            <Route path="/tournamentsearch" component={ TournamentSearch } />
             <Route path="/setreferee/:tourneyId" component={ SetReferee } />
             <Route path="/maindashboard" component={ MainDashboard } />
             <Route path="/tournamentdashboard/:tourneyId" component={ TournamentDashboard } />
