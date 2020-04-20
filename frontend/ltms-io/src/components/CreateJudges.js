@@ -1,93 +1,173 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Form, Button, Col, Row } from "react-bootstrap";
-import axios from "axios";
+import React, { Component } from 'react';
+import axios from 'axios';
+import { Form, Button } from 'react-bootstrap';
+import PropTypes from "prop-types";
 
-export default class CreateJudges extends Component {
-    constructor(props) {
-      super(props);
-  
-      this.state = {
-        tourneyID: this.props.match.params.tourneyId,
-        users: [],
-        userID: null
-      };
-      this.handleSubmit = this.handleSubmit.bind(this);
-      this.handlePush = this.handlePush.bind(this);
-    }
-    handleChange = event => {
-      const name = event.target.name;
-      const value = event.target.value;
-      this.setState({ [name]: value });
+class CreateJudges extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      tourneyId: this.props.match.params.tourneyId,
+      dbresults: {},
+      dbtournresults: {},
+      authresults: {},
+      isAuthorized: false
     };
-    handleSubmit = async event => {
-        event.preventDefault()
-        await axios.get("/api/users/")
-          .then(res => {
-            console.log(res);
-            this.state.users = res.data
-          })
-          .catch(err => {
-            console.log(err);
-          });
-          this.setState(this.state)
-          console.log(this.state.users)
-        }
-        handlePush = async event => {
-          event.preventDefault()
-          console.log(this.state.userID)
-          console.log(this.state.tourneyID)
-          await axios.patch(`/api/tournaments/${this.state.tourneyID}`, {
-        judge: this.state.userID
+
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.updateState = this.updateState.bind(this);
+  }
+
+  async handleSubmit(e) {
+    e.preventDefault();
+    alert(e.target.elements.users.value);
+    var strings = e.target.elements.users.value.split(",");
+    var ids = [];
+    var message = "";
+    for (var i = 0; i < strings.length; i++) {
+      strings[i] = strings[i].trim();
+      await axios.post(`/api/users/search`, {
+        email: strings[i]
       })
-            .then(res => {
-              console.log(res);
-            })
-            .catch(err => {
-              console.log(err);
-            });
-            
-            await axios.get(`/api/tournaments/${this.state.tourneyID}`)
-          .then(res => {
-            console.log(res);
-          })
-          .catch(err => {
-            console.log(err);
-          });
-        };
-    render() {
-        return (
-          <div>
-            <Form onSubmit={this.handleSubmit}>
-                <Button className="mt-5" type="submit" >
-                    Display Users
-                </Button>
+      .then( (result) => {
+        ids[i] = result.data._id;
+        if (this.state.dbtournresults.judges.includes(ids[i])) {
+          message += ("User " + strings[i] + " already is a judge.\n");
+          ids[i] = "DNE";
+        }
+      })
+      .catch( (error) => {
+        message += ("There was an error finding user " + strings[i] + ".\n");
+        ids[i] = "DNE";
+        console.log(error);
+      });
+    }
+    message += "\n";
+
+    for (var i = 0; i < ids.length; i++) {
+      await axios.patch(`/api/tournaments/${this.state.tourneyId}`, {
+        judge: ids[i]
+      })
+      .catch( (error) => {
+        if (ids[i] !== "DNE") {
+          message += ("There was an error adding user ID " + ids[i] + " to the database.\n");
+        }
+        console.log(error);
+      });
+    }
+
+    this.updateState();
+    console.log("UPDATED STATE", this.state);
+
+    alert(message);
+  }
+
+  async updateState() {
+    await axios({
+      method: 'GET',
+      url: `https://dev-s68c-q-y.auth0.com/userinfo`,
+      headers: {
+        'content-type': 'application/json',
+        'authorization': 'Bearer ' + localStorage.getItem("access_token")
+      },
+      json: true
+    })
+    .then( (result) => {
+      this.state.authresults = result.data;
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
+
+    await axios.post(`/api/users/getuser`, {
+      auth0id: this.state.authresults.sub
+    }).then ( (result) => {
+        this.state.dbresults = result.data;
+    }).catch( (error) => {
+        console.log(error);
+    });
+
+    await axios.get(`/api/tournaments/${this.state.tourneyId}`)
+    .then( (result) => {
+        this.state.dbtournresults = result.data;
+    }).catch( (error) => {
+        console.log(error);
+    });
+
+    this.setState(this.state);
+  }
+
+  render() {
+    return(
+      <div data-test="theComponent">
+        <h1 data-test="theMainHeader">Set Judge for {this.state.dbtournresults.name}</h1>
+        <div>
+          {this.state.isAuthorized && (
+            <Form data-test="theForm" onSubmit={this.handleSubmit}>
+              <Form.Group controlId="users">
+                <Form.Label>Enter user(s) below</Form.Label>
+                <Form.Control type="text" placeholder="Enter user email(s) separated by commas" />
+              </Form.Group>
+              <Button variant="outline-primary" type="submit">Submit</Button>
             </Form>
-            Users/UserID:
-            <div>
-            {this.state.users.map((item, i) => {
-                return(
-                    <div>
-                      {item.name}: {item._id}
-                    </div>
-                )
-            })}
-            </div>
-            <div>
-              <Form onSubmit={this.handlePush}>
-          <Form.Label>Judge ID</Form.Label>
-          <Form.Control
-            required
-            placeholder="Judge ID"
-            name="userID"
-            onChange={this.handleChange}
-          />
-                <Button className="mt-5" type="submit">
-                  Input Judge ID
-                </Button>
-              </Form>
-            </div>
-          </div>
-        );
-      }
+          )}
+          {!this.state.isAuthorized && (
+            <h3 data-test="noAuthMsg">You are not authorized for set judges in this tournament.</h3>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  async componentDidMount() {
+    await axios.get(`/api/users`)
+    .then ( (result) => {
+        console.log("USERS", result.data);
+    })
+    .catch( (error) => {
+        console.log(error);
+    });
+    await axios.get(`/api/tournaments`)
+    .then ( (result) => {
+        console.log("TOURNAMENTS", result.data);
+    })
+    .catch( (error) => {
+        console.log(error);
+    });
+    await axios.get(`/api/teams`)
+    .then ( (result) => {
+        console.log("ALL TEAMS", result.data);
+    })
+    .catch( (error) => {
+        console.log(error);
+    });
+    await axios.get(`/api/teams/tournid/5e7c53f30c6d5700d3701567`)
+    .then ( (result) => {
+        console.log("ALL TEAMS FROM 5e7c53f30c6d5700d3701567", result.data);
+    })
+    .catch( (error) => {
+        console.log(error);
+    });
+
+    await this.updateState();
+    console.log("INITIAL SET JUDGE STATE", this.state);
+
+    if (this.state.dbtournresults.judgeAdvisor.includes(this.state.dbresults._id) ||
+        this.state.dbtournresults.director === this.state.dbresults._id) {
+      this.state.isAuthorized = true;
+    }
+
+    this.setState(this.state);
+  }
 }
+
+CreateJudges.propTypes = {
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      tourneyId: PropTypes.string
+    })
+  })
+}
+
+export default CreateJudges;

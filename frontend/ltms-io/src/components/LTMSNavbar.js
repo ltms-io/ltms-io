@@ -26,7 +26,7 @@ class LTMSNavbar extends Component {
     return(
       <div>
         <Navbar data-test="theNavbar" bg="secondary" >
-          <Navbar.Brand href="/">
+          <Navbar.Brand href="/maindashboard">
             <img data-test="theLogo" src={logo} alt="logo" width="100" />
           </Navbar.Brand>
           <Nav className="ml-auto">
