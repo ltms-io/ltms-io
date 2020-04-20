@@ -90,7 +90,7 @@ router.post('/sendrubrics/:id', (req, res) => {
     rubricsText += `Included below are the rubrics for team "${team.teamName}" in tournament "${req.body.tournName}"\n\n`;
     for (var i = 0; i < team.rubrics.length; i++) {
       rubricsText += "---\n\n";
-      rubricsText += "Rubric " + (i + 1) + "\n";
+      rubricsText += team.rubrics[i].username + " - " + team.rubrics[i].uniqueID + "\n";
       rubricsText += "Core Values\n";
       rubricsText += "Inspiration: (Discovery: " + team.rubrics[i].coreValues.inspiration.discovery + ", " +
                                    "Team Identity: " + team.rubrics[i].coreValues.inspiration.teamIdentity + ", " +
@@ -132,7 +132,7 @@ router.post('/sendrubrics/:id', (req, res) => {
     rubricsHTML += `Included below are the rubrics for team "${team.teamName}" in tournament "${req.body.tournName}"<br><br>`;
     for (var i = 0; i < team.rubrics.length; i++) {
       rubricsHTML += "<hr>"
-      rubricsHTML += "<h1>Rubric " + (i + 1) + "</h1>";
+      rubricsHTML += "<h1>" + team.rubrics[i].username + " - " + team.rubrics[i].uniqueID + "</h1>";
       rubricsHTML += "<h3>Core Values</h3>";
       rubricsHTML += "<strong>Inspiration:</strong> (<em>Discovery:</em> " + team.rubrics[i].coreValues.inspiration.discovery + ", " +
                                    "<em>Team Identity:</em> " + team.rubrics[i].coreValues.inspiration.teamIdentity + ", " +
