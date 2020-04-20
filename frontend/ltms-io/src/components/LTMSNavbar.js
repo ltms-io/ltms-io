@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import sample from '../logo.svg';
 import logo from '../ltmsio-logo-wide.png';
+import axios from 'axios';
 const jsonWeb = require('jsonwebtoken');
 
 class LTMSNavbar extends Component {
@@ -25,18 +26,18 @@ class LTMSNavbar extends Component {
     return(
       <div>
         <Navbar data-test="theNavbar" bg="secondary" >
-          <Navbar.Brand href="/">
+          <Navbar.Brand href="/maindashboard">
             <img data-test="theLogo" src={logo} alt="logo" width="100" />
           </Navbar.Brand>
           <Nav className="ml-auto">
             {((this.props.auth && this.props.auth.isAuthenticated()) || (this.props.testAuthorized)) &&
-             ((Object.keys(this.state.dbresults).length !== 0 && this.state.dbresults.profilePic.imgUrl.length === 0) || this.props.testProfPic) && (
+             ((Object.keys(this.state.dbresults).length != 0 && this.state.dbresults.profilePic.imgUrl.length == 0) || this.props.testProfPic) && (
               <Navbar.Brand href="/accountdetails">
                 <img data-test="theSampleProfilePic" src={sample} alt="profile" width="30" height="30" className="d-inline-block align-top" />
               </Navbar.Brand>
             )}
             {((this.props.auth && this.props.auth.isAuthenticated()) || (this.props.testAuthorized)) &&
-             (Object.keys(this.state.dbresults).length !== 0 && this.state.dbresults.profilePic.imgUrl.length !== 0) && (
+             (Object.keys(this.state.dbresults).length != 0 && this.state.dbresults.profilePic.imgUrl.length != 0) && (
               <Navbar.Brand href="/accountdetails">
                 <img data-test="theRealProfilePic" src={this.state.dbresults.profilePic.imgUrl} alt="profile" width="30" height="30" className="d-inline-block align-top" />
               </Navbar.Brand>
@@ -59,15 +60,10 @@ class LTMSNavbar extends Component {
   async componentDidMount() {
     if (document.cookie.length) {
       var token = document.cookie.substring(13);
-      try {
-        var decoded = jsonWeb.verify(token, "123456");
+      var decoded = jsonWeb.verify(token, "123456");
 
-        this.state.dbresults = decoded;
-        this.state.uid = decoded.auth0id;
-      }
-      catch (err) {
-        console.log(err);
-      }
+      this.state.dbresults = decoded;
+      this.state.uid = decoded.auth0id;
     }
     this.setState(this.state);
 
