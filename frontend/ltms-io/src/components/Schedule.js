@@ -21,6 +21,7 @@ class Schedule extends React.Component {
             disabled: false
         }
         this.handleSchedule = this.handleSchedule.bind(this);
+        this.generatePDF = this.generatePDF.bind(this);
     }
 
     //Very ugly may need to find better way to do this
@@ -208,6 +209,24 @@ class Schedule extends React.Component {
 
     }
 
+    generatePDF() {
+        axios({
+            method: 'get',
+            url: `/api/tournaments/${this.state.tourneyId}/pdf`,
+            responseType: 'blob'
+        }).then(res => {
+            const file = new Blob(
+                [res.data],
+                {type: 'application/pdf'}
+            );
+
+            const fileURL = URL.createObjectURL(file);
+            window.open(fileURL);
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+
     render() {
         return (
             <div>
@@ -222,6 +241,9 @@ class Schedule extends React.Component {
                             <Form.Group controlId="endTime">
                                 <Form.Control type="text" placeholder="End Time (hh:mm)" />
                             </Form.Group>
+                        </Col>
+                        <Col>
+                            <Button onClick={this.generatePDF}>Generate PDF</Button>
                         </Col>
                     </Row>
                     <Form.Group>

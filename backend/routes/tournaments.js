@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Tournament = require('../models/tournament-model');
 const User = require('../models/user-model');
+const PDFDocument = require('pdfkit');
 
 /* GET all tournaments listing. */
 router.get('/', (req, res) => {
@@ -133,6 +134,41 @@ router.get('/:id/scores/:scoreid', (req, res) => {
         }
 
         return res.status(200).send(tournament.scores.id(req.params.scoreid));
+    })
+})
+
+/* GET PDF of schedule */
+router.get('/:id/pdf', (req, res) => {
+    Tournament.findById(req.params.id).then(tournament => {
+        if(!tournament) {
+            return res.status(404).send("tournament not found");
+        }
+
+        const doc = new PDFDocument;
+        doc.pipe(res);
+
+        // draw some text
+        doc.fontSize(25).text('Here is some vector graphics...', 100, 80);
+
+        doc.save()
+            .moveTo(100, 150)
+            .lineTo(100, 250)
+            .lineTo(200, 250)
+            .fill('#FF3300');
+
+        doc.circle(280, 200, 50).fill('#6600FF');
+
+        // an SVG path
+        doc.scale(0.6)
+            .translate(470, 130)
+            .path('M 250,75 L 323,301 131,161 369,161 177,301 z')
+            .fill('red', 'even-odd')
+            .restore();
+
+        // end and display the document in the iframe to the right
+        doc.end();
+
+        // res.status(200).send();
     })
 })
 
