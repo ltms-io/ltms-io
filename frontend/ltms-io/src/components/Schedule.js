@@ -10,21 +10,20 @@ class Schedule extends React.Component {
         this.state = {
             tourneyId: this.props.match.params.tourneyId,
             startTime: "",
-            endTime: "",
+            cycleTime: 0,
             numJudgeRooms: 0,
             numMatches: 0,
             numTables: 0,
             teams: [],
-            judging: [],
-            robotScheduleTable1: [],
-            robotScheduleTable2: [],
+            tableLayout: [],
             disabled: false
         }
         this.handleSchedule = this.handleSchedule.bind(this);
+        this.randomizeTeams = this.randomizeTeams.bind(this);
     }
 
     //Very ugly may need to find better way to do this
-    async handleSchedule(e) {
+    /*async handleSchedule(e) {
         e.preventDefault();
         if(!e.target.elements.startTime.value || !e.target.elements.endTime.value) {
             alert("Please enter start time/end time");
@@ -121,7 +120,7 @@ class Schedule extends React.Component {
             }
 
             if (table2.length !== table1.length) {
-                table2[table2.length - 1] = table + " " + hour + ":" + tempMin.substring(tempMin.length - 2) + " | " + table2[table2.length - 1];
+                table2[table2.length - 1] = "Table " + table + " " + hour + ":" + tempMin.substring(tempMin.length - 2) + " | " + table2[table2.length - 1];
             }
 
             events1.push(table1);
@@ -157,7 +156,7 @@ class Schedule extends React.Component {
 
         }
 
-        console.log(sched2);
+        //console.log(sched2);
 
         //var rooms = new Array(this.state.numJudgeRooms).fill([]);
         var rooms = [];
@@ -168,25 +167,25 @@ class Schedule extends React.Component {
         } else {
             size = Math.floor(this.state.teams.length/this.state.numJudgeRooms + 1);
         }
-        /*for(var o = 0; o < 1; o++){
-            rooms[temp].push(sched[o]);
-            temp++;
-            if(temp === this.state.numJudgeRooms) {
-                temp = 0;
-            }
-        }*/
+        // for(var o = 0; o < 1; o++){
+        //     rooms[temp].push(sched[o]);
+        //     temp++;
+        //     if(temp === this.state.numJudgeRooms) {
+        //         temp = 0;
+        //     }
+        // }
 
-        while(temp1 < sched.length) {
-            rooms.push(sched.slice(temp1, temp1 + size));
+        while(temp1 < sched2.length) {
+            rooms.push(sched2.slice(temp1, temp1 + size));
             temp1 += size;
         }
 
-        console.log(rooms);
+        //console.log(rooms);
 
 
         this.setState({ judging: rooms });
-        this.setState({ robotScheduleTable1: events1 });
-        this.setState({ robotScheduleTable2: events2 });
+        this.setState({ side1: events1 });
+        this.setState({ side2: events2 });
         this.setState({ startTime: startTime });
         this.setState({ endTime: endTime });
         this.setState({ disabled: true});
@@ -197,14 +196,119 @@ class Schedule extends React.Component {
             startTime: this.state.startTime,
             endTime: this.state.endTime,
             rawData: JSON.stringify(this.state),
-            sideOneMatches: this.state.robotScheduleTable1,
-            sideTwoMatches: this.state.robotScheduleTable2,
+            sideOneMatches: this.state.side1,
+            sideTwoMatches: this.state.side2,
             judging: this.state.judging
         }).then(result => {
             console.log(result);
         }).catch(err => {
             console.log(err);
         })
+
+    }*/
+
+    randomizeTeams() {
+        var sched = new Array(this.state.teams.length).fill("");
+
+        //populates each match shedule in robotSchedule
+        for (var i = 0; i < sched.length; i++) {
+            var j = Math.floor(Math.random() * sched.length);
+            if (sched[j] !== "") {
+                while (1) {
+                    j++;
+                    if (j === sched.length) {
+                        j = 0;
+                    }
+                    if (sched[j] === "") {
+                        sched[j] = this.state.teams[i];
+                        break;
+                    }
+                }
+            } else {
+                sched[j] = this.state.teams[i];
+            }
+
+
+        }
+        this.setState({ teams: sched });
+    }
+
+    async handleSchedule(e) {
+        e.preventDefault();
+        if(!e.target.elements.startTime.value || !e.target.elements.cycleTime.value) {
+            alert("Please enter start time and cycle time");
+            return;
+        }
+
+        var startTime = e.target.elements.startTime.value;
+        var cycleTime = parseInt(e.target.elements.cycleTime.value, 10);
+        var hour = parseInt(startTime.substring(0, startTime.indexOf(":")), 10);
+        var min = parseInt(startTime.substring(startTime.indexOf(":") + 1), 10);
+
+        //gets all teams in a tournament
+        await axios.get(`/api/teams/tournid/${this.state.tourneyId}`).then((result) => {
+            this.setState({ teams: result.data });
+        }).catch((err) => {
+            console.log(err);
+        });
+
+        //used to get number of matches in a tournament
+        await axios.get(`/api/tournaments/${this.state.tourneyId}`).then((result) => {
+            this.setState({ numMatches: result.data.matchesPerTeam });
+            this.setState({ numJudgeRooms: result.data.numJudgeRooms });
+            this.setState({ numTables: result.data.fieldsCount });
+        }).catch((err) => {
+            console.log(err);
+        });
+
+        var matchSchema = [];
+        var table = 1;
+        this.randomizeTeams();
+        for(var j = 0; j<this.state.numMatches; j++) {
+            for(var i = 0; i<this.state.teams.length; i += 2) {
+                var tempMin = "0" + min;
+                var match = {
+                    match: j + 1,
+                    tableNum: table,
+                    teamNameA: this.state.teams[i].teamName,
+                    teamNameB: this.state.teams[i+1].teamName,
+                    startTime: hour + ":" + tempMin.substring(tempMin.length - 2)
+                }
+
+                min += cycleTime;
+                if(min > 59) {
+                    min -= 60;
+                    hour++;
+                    if(hour > 12) {
+                        hour -= 12;
+                    }
+                }
+
+                matchSchema.push(match);
+                if(table === this.state.numTables) {
+                    table = 0;
+                }
+                table++;
+            }
+            this.randomizeTeams();
+        }
+
+        var tableArr = [];
+        for(var k = 0; k < this.state.numTables; k++) {
+            var temp = [];
+            for(var m = 0; m < matchSchema.length; m++) {
+                if(matchSchema[m].tableNum === k + 1) {
+                    temp.push(matchSchema[m]);
+                }
+            }
+            tableArr.push(temp);
+        }
+
+        console.log(tableArr);
+        this.setState({ tableLayout: tableArr });
+        this.setState({ disabled: false });
+        this.setState({ startTime: startTime });
+        this.setState({ cycleTime: cycleTime });
 
     }
 
@@ -219,26 +323,28 @@ class Schedule extends React.Component {
                             </Form.Group>
                         </Col>
                         <Col xs="2">
-                            <Form.Group controlId="endTime">
-                                <Form.Control type="text" placeholder="End Time (hh:mm)" />
+                            <Form.Group controlId="cycleTime">
+                                <Form.Control type="text" placeholder="Cycle Time (mm)" />
                             </Form.Group>
                         </Col>
                     </Row>
                     <Form.Group>
-                        <Button disabled = {this.state.disabled} variant="outline-primary" type="submit">Generate Tournament Schedule</Button>
+                        <Button variant="outline-primary" type="submit">Generate Tournament Schedule</Button>
                     </Form.Group>
                 </Form>
 
-                <Form>
+                {/* <Form>
                     <Row>
                         <Col>
-                            <h4>Side 1</h4>
-                            {this.state.robotScheduleTable1.map((sched, index) => (
+                            {this.state.disabled && (
+                                <h4>Side 1</h4>
+                            )}
+                            {this.state.side1.map((sched, index) => (
                                 <Form.Group>
-                                    <h5>Match {index + 1}</h5>
+                                    <h5>Round {index + 1}</h5>
                                     {sched.map((robot) => (
                                         <Row>
-                                            <Col xs="5">
+                                            <Col>
                                                 <Form.Control type="text" value={robot} readOnly={true} />
                                             </Col>
                                         </Row>
@@ -247,13 +353,15 @@ class Schedule extends React.Component {
                             ))}
                         </Col>
                         <Col>
-                            <h4>Side 2</h4>
-                            {this.state.robotScheduleTable2.map((sched, index) => (
+                            {this.state.disabled && (
+                                <h4>Side 2</h4>
+                            )}
+                            {this.state.side2.map((sched, index) => (
                                 <Form.Group>
-                                    <h5>Match {index + 1}</h5>
+                                    <h5>Round {index + 1}</h5>
                                     {sched.map((robot) => (
                                         <Row>
-                                            <Col xs="5">
+                                            <Col>
                                                 <Form.Control type="text" value={robot} readOnly={true} />
                                             </Col>
                                         </Row>
@@ -262,7 +370,9 @@ class Schedule extends React.Component {
                             ))}
                         </Col>
                     </Row>
-                    <h5>Judging Rooms</h5>
+                        {this.state.disabled && (
+                            <h4>Judging Tables</h4>
+                        )}
                         {this.state.judging.map( (tables, index) => (
                             <Form.Group>
                                 <h4>Room {index + 1}</h4>
@@ -275,7 +385,7 @@ class Schedule extends React.Component {
                                 ))}
                             </Form.Group>
                     ))}
-                </Form>
+                </Form> */}
             </div>
         )
     }

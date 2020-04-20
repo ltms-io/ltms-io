@@ -27,11 +27,14 @@ const SchoresheetSchema = new Schema({
 
 const MatchSchema = new Schema({
     startTime: {
-        type: Date,
+        type: String,
         required: true
     },
     table: {
         type: String
+    },
+    match: {
+        type: Number
     },
     teamA: {
         type: String
@@ -46,7 +49,7 @@ const ScheduleSchema = new Schema({
         type: String,
         required: true
     },
-    endTime: { //change to cycle time?????
+    cycleTime: { //change to cycle time?????
         type: String,
         required: true
     },
@@ -54,16 +57,8 @@ const ScheduleSchema = new Schema({
         type: Array,
         required: true
     },
-    sideOneMatches: { //get rid of
-        type: Array,
-        required: true
-    },
-    sideTwoMatches: { //get rid of
-        type: Array,
-        required: true
-    },
-
     //CHANGE TO match schemea SUB DOC
+    match: [MatchSchema],
 
     judging: {
         type: Array,
