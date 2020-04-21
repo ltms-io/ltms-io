@@ -25,7 +25,6 @@ import CreateTeam from './components/CreateTeam';
 import viewRubric from './components/ViewRubrics';
 import CreateJudges from './components/CreateJudges';
 import QuickLinks from './components/QuickLinks';
-const jsonWeb = require('jsonwebtoken');
 
 class App extends Component {
   constructor(props) {

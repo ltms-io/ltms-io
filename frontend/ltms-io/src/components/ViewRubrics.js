@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Form, Button, Col, Row, Card, CardColumns, ListGroup, ListGroupItem } from "react-bootstrap";
+import { Form, Button, Card, CardColumns, ListGroup, ListGroupItem } from "react-bootstrap";
 import axios from "axios";
 const jsonWeb = require('jsonwebtoken');
 
@@ -132,7 +131,7 @@ class ViewRubrics extends Component {
                           );
                         })}
                       </CardColumns>
-                      {item1.rubrics.length == 0 && (
+                      {item1.rubrics.length === 0 && (
                         <h6 className="text-secondary font-italic pl-2">No rubrics for this team</h6>
                       )}
                     </div>
@@ -217,7 +216,7 @@ class ViewRubrics extends Component {
                     );
                   })}
                 </CardColumns>
-                {this.state.dbteamsresults[parseInt(this.state.filter)].rubrics.length == 0 && (
+                {this.state.dbteamsresults[parseInt(this.state.filter)].rubrics.length === 0 && (
                   <h6 className="text-secondary font-italic pl-2">No rubrics for this team</h6>
                 )}
               </div>
