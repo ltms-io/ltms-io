@@ -9,10 +9,17 @@ export default class EditRubrics extends Component {
 
     this.state = {
       teams: [],
-      tourneyId: this.props.match.params.tourneyId
+      tourneyId: this.props.match.params.tourneyId,
+      teamId: this.props.match.params.teamId,
+      dbteamsresults: null
     };
   }
-
+  async componentDidMount() {
+    await axios.get(`/api/teams/tournid/${this.state.tourneyId}`)
+    .then ( (res) => {
+      this.state.dbteamsresults = res.data;
+    });
+  }
   render() {
     return <div>Hello</div>;
   }

@@ -273,5 +273,19 @@ router.patch('/rubricdelete/:id', (req, res) => {
     }
   });
 });
+router.get('/rubrics/:id', (req, res) => {
+  Team.findById(req.params.id).then((team) => {
+ res.status(200).json(team.rubrics);
+})
+});
 
+
+/*router.get('/:id', (req, res) => {
+  Team.findById(req.params.id).then( (team) => {
+    if (!team) {
+      return res.status(404).send("No such team found");
+    }
+    return res.status(200).send(team);
+  });
+});*/
 module.exports = router;

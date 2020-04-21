@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Form, Button, Card, CardColumns, ListGroup, ListGroupItem } from "react-bootstrap";
 import axios from "axios";
+import { Link } from 'react-router-dom'
 const jsonWeb = require('jsonwebtoken');
 
 class ViewRubrics extends Component {
@@ -125,6 +126,9 @@ class ViewRubrics extends Component {
                                   <Card.Text>
                                     <strong>Comments:</strong> <em>{item2.robotDesign.comments}</em>
                                   </Card.Text>
+                                  <Link to={"/editrubrics/" + this.state.tourneyId + "/" + item1.teamNum}>
+                        <Button>Edit Rubric</Button>
+                        </Link>
                                 </ListGroupItem>
                               </ListGroup>
                             </Card>
@@ -210,9 +214,11 @@ class ViewRubrics extends Component {
                             <Card.Text>
                               <strong>Comments:</strong> <em>{item2.robotDesign.comments}</em>
                             </Card.Text>
+
                           </ListGroupItem>
                         </ListGroup>
                       </Card>
+                      
                     );
                   })}
                 </CardColumns>
