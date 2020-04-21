@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Form, Button, Col, Row } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import axios from "axios";
 
 export default class CreateTeam extends Component {
@@ -25,8 +24,8 @@ export default class CreateTeam extends Component {
     console.log(this.state.tourneyID);
     console.log(this.state.teamNum);
     console.log(this.state.teamName);
-    axios
-      .post("http://localhost:5000/api/teams/register", {
+    await axios
+      .post("/api/teams/register", {
         tournamentId: this.state.tourneyID,
         teamNum: this.state.teamNum,
         teamName: this.state.teamName

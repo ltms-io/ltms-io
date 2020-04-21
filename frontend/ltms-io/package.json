@@ -63,5 +63,6 @@
     "chai": "^4.2.0",
     "check-prop-types": "^1.1.2",
     "redux-devtools": "^3.5.0"
-  }
+  },
+  "proxy": "http://localhost:5000"
 }

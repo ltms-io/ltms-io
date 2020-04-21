@@ -1,28 +1,14 @@
 import React from "react";
 import { shallow } from "enzyme";
-import { findByTestAttr, checkProps } from "./../../utils"
-import SetReferee from "./SetReferee";
+import { findByTestAttr } from "./../../utils"
+import ViewRubrics from "./../components/ViewRubrics";
 
 const setUp = (props = {}) => {
-  const component = shallow(<SetReferee {...props} />);
+  const component = shallow(<ViewRubrics {...props} />);
   return component;
 };
 
-describe("SetReferee Component", () => {
-  describe("Checking PropTypes", () => {
-    it("Should not throw a warning", () => {
-      const expectedProps = {
-        match: {
-          params: {
-            tourneyId: "Test tourneyId"
-          }
-        }
-      };
-      const propsErr = checkProps(SetReferee, expectedProps);
-      expect(propsErr).toBeUndefined();
-    });
-  });
-
+describe("ViewRubrics Component", () => {
   describe("Basic Rendering", () => {
     let component;
     beforeEach( () => {
@@ -36,18 +22,13 @@ describe("SetReferee Component", () => {
       component = setUp(props);
     });
 
-    it("Should render the component", () => {
-      const theComponent = findByTestAttr(component, "theComponent");
-      expect(theComponent.length).toBe(1);
-    });
-
-    it("Should render the main header", () => {
-      const theMainHeader = findByTestAttr(component, "theMainHeader");
-      expect(theMainHeader.length).toBe(1);
+    it("Should render without errors", () => {
+      const wrapper = findByTestAttr(component, "theViewRubrics");
+      expect(wrapper.length).toBe(1);
     });
   });
 
-  describe("Authorization", () => {
+  describe("Authorization Rendering", () => {
     let component;
     beforeEach( () => {
       const props = {
@@ -60,15 +41,18 @@ describe("SetReferee Component", () => {
       component = setUp(props);
     });
 
-    it("Should render only the form if authorized", () => {
+    it("Should render the filter by team and rubric cards sections if authorized", () => {
       component.setState({
-        tourneyId: component.state().tourneyId,
+        filter: component.state().filter,
         dbresults: component.state().dbresults,
+        dbteamsresults: component.state().dbteamsresults,
         dbtournresults: component.state().dbtournresults,
-        authresults: component.state().authresults,
+        tourneyId: component.state().tourneyId,
         isAuthorized: true
       });
-      var element = findByTestAttr(component, "theForm");
+      var element = findByTestAttr(component, "theFilter");
+      expect(element.length).toBe(1);
+      element = findByTestAttr(component, "theCards");
       expect(element.length).toBe(1);
       element = findByTestAttr(component, "noAuthMsg");
       expect(element.length).toBe(0);
@@ -76,13 +60,16 @@ describe("SetReferee Component", () => {
 
     it("Should render only the no authorization message if not authorized", () => {
       component.setState({
-        tourneyId: component.state().tourneyId,
+        filter: component.state().filter,
         dbresults: component.state().dbresults,
+        dbteamsresults: component.state().dbteamsresults,
         dbtournresults: component.state().dbtournresults,
-        authresults: component.state().authresults,
+        tourneyId: component.state().tourneyId,
         isAuthorized: false
       });
-      var element = findByTestAttr(component, "theForm");
+      var element = findByTestAttr(component, "theFilter");
+      expect(element.length).toBe(0);
+      element = findByTestAttr(component, "theCards");
       expect(element.length).toBe(0);
       element = findByTestAttr(component, "noAuthMsg");
       expect(element.length).toBe(1);

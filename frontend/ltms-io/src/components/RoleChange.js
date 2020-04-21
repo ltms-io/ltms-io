@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
-import logo from '../logo.svg';
 const axios = require('axios');
 
 class RoleChange extends Component{
@@ -24,7 +22,7 @@ class RoleChange extends Component{
 
         console.log(this.state.userEmail);
 
-        axios.patch('http://localhost:5000/api/users/authorization/', {data:{email: this.state.userEmail}}).then(function(response){
+        axios.patch('/api/users/authorization/', {data:{email: this.state.userEmail}}).then(function(response){
           console.log(response);
         }).catch(function(err){
           console.log(err);

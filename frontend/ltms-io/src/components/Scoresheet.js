@@ -1,5 +1,4 @@
 import React from 'react';
-import {connect} from 'react-redux';
 import {Form, Button, Col, Row, DropdownButton, Dropdown} from 'react-bootstrap';
 import axios from 'axios';
 
@@ -51,7 +50,7 @@ class Sheet extends React.Component{
 
     e.preventDefault();
 
-    if(e.target.elements.teamName.value != ""){
+    if(e.target.elements.teamName.value !== ""){
       this.setState({team: e.target.elements.teamName.value});
       this.setState({readOnly: true});
     }
@@ -73,7 +72,7 @@ class Sheet extends React.Component{
     var newArray = [...this.state.events];
     var cate = (this.state.index+1).toString() + ". " + e.target.elements.category.value;
     e.target.reset();
-    var score; 
+    var score;
     var eventKey = (this.state.index).toString();
 
     if(this.state.scoreType === "Yes/No"){
@@ -162,7 +161,7 @@ class Sheet extends React.Component{
 
     alert("submitting");
 
-    axios.post("http://localhost:5000/api/tournaments/score", {
+    axios.post("/api/tournaments/score", {
       id: "5e7a5410be7af1ae4acc6314",
       fieldTypes: fixedCats,
       fieldValues: fixedScores,
@@ -176,7 +175,7 @@ class Sheet extends React.Component{
       console.log(err);
     })
   }
-    
+
   //render function
   render(){
     console.log(this.state);
@@ -248,8 +247,8 @@ class Sheet extends React.Component{
             Calculate Score
           </Button>
           <Row>
-            <Col xs = "2" font>
-            <Form.Control type = "text" value = {"Final Score: " + this.state.finalscore} readonly = {true}/>
+            <Col xs = "2">
+            <Form.Control type = "text" value = {"Final Score: " + this.state.finalscore} readOnly = {true}/>
             </Col>
           </Row>
         </Form>
@@ -259,4 +258,3 @@ class Sheet extends React.Component{
 }
 
 export default Sheet;
-

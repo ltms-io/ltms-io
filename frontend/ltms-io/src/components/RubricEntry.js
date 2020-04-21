@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import axios from 'axios';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import PropTypes from "prop-types";
@@ -20,16 +19,21 @@ class RubricEntry extends Component {
       dbtournresults: {},
       dbteamresults: {},
       authresults: {},
-      isAuthorized: false
+      isAuthorized: false,
+      isSendAuthorized: false
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleSend = this.handleSend.bind(this);
     this.updateState = this.updateState.bind(this);
   }
 
   async handleSubmit(e) {
     e.preventDefault();
     var rubric = {
+      username: this.state.dbresults.name,
+      email: this.state.dbresults.email,
+      uniqueID: e.target.elements.formUniqueID.value,
       coreValues: {
         inspiration: {
           discovery: e.target.elements.formDiscovery.value,
@@ -85,7 +89,7 @@ class RubricEntry extends Component {
         comments: e.target.elements.formRobotDesignComments.value
       }
     };
-    await axios.patch(`http://localhost:5000/api/teams/${this.state.teamId}`, {
+    await axios.patch(`/api/teams/${this.state.teamId}`, {
       rubric: rubric
     })
     .catch( (error) => {
@@ -100,23 +104,37 @@ class RubricEntry extends Component {
 
   async handleDelete(e) {
     e.preventDefault();
-    if (e.target.elements.deleteInd.value < 0 ||
-        e.target.elements.deleteInd.value >= this.state.dbteamresults.rubrics.length) {
-      alert("Invalid Index");
-    }
-    else {
-      await axios.patch(`http://localhost:5000/api/teams/rubricdelete/${this.state.teamId}`, {
-        index: e.target.elements.deleteInd.value
-      })
-      .catch( (error) => {
-        console.log(error);
-      });
 
-      this.updateState();
-      console.log("UPDATED STATE", this.state);
+    var parsed = JSON.parse(e.target.elements.formDelete.value);
+    await axios.patch(`/api/teams/rubricdelete/${this.state.teamId}`, {
+      email: parsed.email,
+      uniqueID: parsed.uniqueID
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
 
-      alert("Deleted!");
-    }
+    this.updateState();
+    console.log("UPDATED STATE", this.state);
+
+    alert("Deleted!");
+  }
+
+  async handleSend(e) {
+    e.preventDefault();
+
+    await axios.post(`/api/teams/sendrubrics/${this.state.teamId}`, {
+      email: e.target.elements.sendEmail.value,
+      tournName: this.state.dbtournresults.name
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
+
+    this.updateState();
+    console.log("UPDATED STATE", this.state);
+
+    alert("Sent!");
   }
 
   async updateState() {
@@ -136,7 +154,7 @@ class RubricEntry extends Component {
       console.log(error);
     });
 
-    await axios.post(`http://localhost:5000/api/users/getuser`, {
+    await axios.post(`/api/users/getuser`, {
       auth0id: this.state.authresults.sub
     }).then ( (result) => {
         this.state.dbresults = result.data;
@@ -144,19 +162,52 @@ class RubricEntry extends Component {
         console.log(error);
     });
 
-    await axios.get(`http://localhost:5000/api/tournaments/${this.state.tourneyId}`)
+    await axios.get(`/api/tournaments/${this.state.tourneyId}`)
     .then( (result) => {
         this.state.dbtournresults = result.data;
     }).catch( (error) => {
         console.log(error);
     });
 
-    await axios.get(`http://localhost:5000/api/teams/${this.state.teamId}`)
+    await axios.get(`/api/teams/${this.state.teamId}`)
     .then( (result) => {
         this.state.dbteamresults = result.data;
     }).catch( (error) => {
         console.log(error);
     });
+
+    if (this.state.dbtournresults.director === this.state.dbresults._id) {
+      this.state.isAuthorized = true;
+      this.state.isSendAuthorized = true;
+    }
+    else {
+      for (var i = 0; i < this.state.dbtournresults.judgeAdvisor.length; i++) {
+        if (this.state.dbtournresults.judgeAdvisor[i] === this.state.dbresults._id) {
+          this.state.isAuthorized = true;
+          this.state.isSendAuthorized = true;
+        }
+      }
+      if (!this.state.isAuthorized) {
+        for (var j = 0; j < this.state.dbtournresults.judges.length; j++) {
+          if (this.state.dbtournresults.judges[j] === this.state.dbresults._id) {
+            this.state.isAuthorized = true;
+          }
+        }
+      }
+    }
+
+    if (this.state.isSendAuthorized) {
+      this.state.dbrubricsresults = this.state.dbteamresults.rubrics;
+    }
+    else {
+      var rubrics = [];
+      this.state.dbteamresults.rubrics.forEach( (item) => {
+        if (item.email === this.state.dbresults.email) {
+          rubrics.push(item);
+        }
+      });
+      this.state.dbrubricsresults = rubrics;
+    }
 
     this.setState(this.state);
   }
@@ -165,14 +216,39 @@ class RubricEntry extends Component {
     return(
       <div data-test="theComponent">
         <h1 data-test="theMainHeader">Rubric Entry for Team "{this.state.dbteamresults.teamName}" in Tournament "{this.state.dbtournresults.name}"</h1>
+        {this.state.isSendAuthorized && (
+          <div>
+            <div>
+              <h3>Send All Rubrics to Team</h3>
+              <Form data-test="theSendForm" onSubmit={this.handleSend}>
+                <Form.Group controlId="sendEmail">
+                  <Form.Label>What email should the rubrics be sent to?</Form.Label>
+                  <Form.Control placeholder="Enter the email address" />
+                </Form.Group>
+                <Button type="submit">
+                  Send Email
+                </Button>
+              </Form>
+            </div>
+          </div>
+        )}
         {this.state.isAuthorized && (
           <div>
             <div>
               <h3>Rubric Deletion</h3>
               <Form data-test="theDeleteForm" onSubmit={this.handleDelete}>
-                <Form.Group controlId="deleteInd">
+                <Form.Group controlId="formDelete">
                   <Form.Label>Which rubric do you want to delete?</Form.Label>
-                  <Form.Control placeholder="Enter the zero-based index # of the rubric" />
+                  <Form.Control required as="select">
+                    <option></option>
+                    {this.state.dbrubricsresults && (
+                      this.state.dbrubricsresults.map( (item, i) => {
+                        return (
+                          <option data-test="aDeleteOption" value={"{\"email\": \"" + item.email + "\", \"uniqueID\": \"" + item.uniqueID + "\"}"} key={i}>{item.username} - {item.uniqueID}</option>
+                        );
+                      })
+                    )}
+                  </Form.Control>
                 </Form.Group>
                 <Button variant="danger" type="submit">
                   Delete Rubric
@@ -182,6 +258,10 @@ class RubricEntry extends Component {
             <div>
               <h3>Rubric Submission</h3>
               <Form data-test="theSubmitForm" onSubmit={this.handleSubmit}>
+                <Form.Group data-test="anInput" controlId="formUniqueID">
+                  <Form.Label>Unique ID/Name</Form.Label>
+                  <Form.Control required type="text" />
+                </Form.Group>
                 <div>
                   <h4>Core Values</h4>
                   <Container>
@@ -575,57 +655,37 @@ class RubricEntry extends Component {
   }
 
   async componentDidMount() {
-    await axios.get(`http://localhost:5000/api/users`)
+    await axios.get(`/api/users`)
     .then ( (result) => {
-        console.log("USERS", result.data);
+      console.log("USERS", result.data);
     })
     .catch( (error) => {
-        console.log(error);
+      console.log(error);
     });
-    await axios.get(`http://localhost:5000/api/tournaments`)
+    await axios.get(`/api/tournaments`)
     .then ( (result) => {
-        console.log("TOURNAMENTS", result.data);
+      console.log("TOURNAMENTS", result.data);
     })
     .catch( (error) => {
-        console.log(error);
+      console.log(error);
     });
-    await axios.get(`http://localhost:5000/api/teams`)
+    await axios.get(`/api/teams`)
     .then ( (result) => {
-        console.log("ALL TEAMS", result.data);
+      console.log("ALL TEAMS", result.data);
     })
     .catch( (error) => {
-        console.log(error);
+      console.log(error);
     });
-    await axios.get(`http://localhost:5000/api/teams/tournid/${this.state.tourneyId}`)
+    await axios.get(`/api/teams/tournid/${this.state.tourneyId}`)
     .then ( (result) => {
-        console.log(`ALL TEAMS FROM ${this.state.tourneyId}`, result.data);
+      console.log(`ALL TEAMS FROM ${this.state.tourneyId}`, result.data);
     })
     .catch( (error) => {
-        console.log(error);
+      console.log(error);
     });
 
     await this.updateState();
     console.log("INITIAL RUBRIC ENTRY STATE", this.state);
-
-    if (this.state.dbtournresults.director === this.state.dbresults._id) {
-      this.state.isAuthorized = true;
-    }
-    else {
-      for (var i = 0; i < this.state.dbtournresults.judgeAdvisor.length; i++) {
-        if (this.state.dbtournresults.judgeAdvisor[i] === this.state.dbresults._id) {
-          this.state.isAuthorized = true;
-        }
-      }
-      if (!this.state.isAuthorized) {
-        for (var i = 0; i < this.state.dbtournresults.judges.length; i++) {
-          if (this.state.dbtournresults.judges[i] === this.state.dbresults._id) {
-            this.state.isAuthorized = true;
-          }
-        }
-      }
-    }
-
-    this.setState(this.state);
   }
 }
 

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import axios from 'axios';
 import { Form, Button } from 'react-bootstrap';
 import PropTypes from "prop-types";
@@ -23,40 +22,43 @@ class SetReferee extends Component {
   async handleSubmit(e) {
     e.preventDefault();
     alert(e.target.elements.users.value);
-    var strings = e.target.elements.users.value.split(",");
-    var ids = [];
-    var message = "";
-    for (var i = 0; i < strings.length; i++) {
-      strings[i] = strings[i].trim();
-      await axios.post(`http://localhost:5000/api/users/search`, {
-        email: strings[i]
+    let strings = e.target.elements.users.value.split(",");
+    let ids = [];
+    let message = "";
+
+    strings.forEach( async (item, index) => {
+      var temp = item;
+      temp = temp.trim();
+      await axios.post(`/api/users/search`, {
+        email: temp
       })
       .then( (result) => {
-        ids[i] = result.data._id;
-        if (this.state.dbtournresults.referees.includes(ids[i])) {
-          message += ("User " + strings[i] + " already is a referee.\n");
-          ids[i] = "DNE";
+        ids[index] = result.data._id;
+        if (this.state.dbtournresults.referees.includes(ids[index])) {
+          message += ("User " + temp + " already is a referee.\n");
+          ids[index] = "DNE";
         }
       })
       .catch( (error) => {
-        message += ("There was an error finding user " + strings[i] + ".\n");
-        ids[i] = "DNE";
+        message += ("There was an error finding user " + temp + ".\n");
+        ids[index] = "DNE";
         console.log(error);
       });
-    }
+    });
     message += "\n";
 
-    for (var i = 0; i < ids.length; i++) {
-      await axios.patch(`http://localhost:5000/api/tournaments/${this.state.tourneyId}`, {
-        referee: ids[i]
+    ids.forEach( async (item, index) => {
+      var temp = item;
+      await axios.patch(`/api/tournaments/${this.state.tourneyId}`, {
+        referee: temp
       })
       .catch( (error) => {
-        if (ids[i] !== "DNE") {
-          message += ("There was an error adding user ID " + ids[i] + " to the database.\n");
+        if (temp !== "DNE") {
+          message += ("There was an error adding user ID " + temp + " to the database.\n");
         }
         console.log(error);
       });
-    }
+    });
 
     this.updateState();
     console.log("UPDATED STATE", this.state);
@@ -81,7 +83,7 @@ class SetReferee extends Component {
       console.log(error);
     });
 
-    await axios.post(`http://localhost:5000/api/users/getuser`, {
+    await axios.post(`/api/users/getuser`, {
       auth0id: this.state.authresults.sub
     }).then ( (result) => {
         this.state.dbresults = result.data;
@@ -89,7 +91,7 @@ class SetReferee extends Component {
         console.log(error);
     });
 
-    await axios.get(`http://localhost:5000/api/tournaments/${this.state.tourneyId}`)
+    await axios.get(`/api/tournaments/${this.state.tourneyId}`)
     .then( (result) => {
         this.state.dbtournresults = result.data;
     }).catch( (error) => {
@@ -122,28 +124,28 @@ class SetReferee extends Component {
   }
 
   async componentDidMount() {
-    await axios.get(`http://localhost:5000/api/users`)
+    await axios.get(`/api/users`)
     .then ( (result) => {
         console.log("USERS", result.data);
     })
     .catch( (error) => {
         console.log(error);
     });
-    await axios.get(`http://localhost:5000/api/tournaments`)
+    await axios.get(`/api/tournaments`)
     .then ( (result) => {
         console.log("TOURNAMENTS", result.data);
     })
     .catch( (error) => {
         console.log(error);
     });
-    await axios.get(`http://localhost:5000/api/teams`)
+    await axios.get(`/api/teams`)
     .then ( (result) => {
         console.log("ALL TEAMS", result.data);
     })
     .catch( (error) => {
         console.log(error);
     });
-    await axios.get(`http://localhost:5000/api/teams/tournid/5e7c53f30c6d5700d3701567`)
+    await axios.get(`/api/teams/tournid/5e7c53f30c6d5700d3701567`)
     .then ( (result) => {
         console.log("ALL TEAMS FROM 5e7c53f30c6d5700d3701567", result.data);
     })

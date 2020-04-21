@@ -1,8 +1,8 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { shallow } from "enzyme";
-import { findByTestAttr } from "./../utils"
-import App from './App';
+import { findByTestAttr } from "./../../utils"
+import App from './../App';
 
 // test('renders learn react link', () => {
 //   const { getByText } = render(<App />);

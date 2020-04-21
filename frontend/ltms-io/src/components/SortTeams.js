@@ -1,6 +1,5 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {Form, Button, Col, Row, DropdownButton, Dropdown} from 'react-bootstrap';
+import {Form} from 'react-bootstrap';
 import axios from 'axios';
 
 export default class SortTeams extends React.Component {
@@ -27,7 +26,7 @@ export default class SortTeams extends React.Component {
     }
 
     async componentDidMount() {
-        await axios.get(`http://localhost:5000/api/tournaments/${this.state.tourneyId}/scores`).then( (results) => {
+        await axios.get(`/api/tournaments/${this.state.tourneyId}/scores`).then( (results) => {
             var team = results.data;
             for(var j = 0; j<team.length; j++){
                 for(var i = 0; i < team.length - 1; i++) {

@@ -1,10 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios';
-import { Alert, Container, InputGroup, FormControl, Button, ButtonGroup, Modal, Row, Col, Card } from 'react-bootstrap'
-import { throws } from 'assert';
+import { Alert, Container, InputGroup, FormControl, Button, ButtonGroup, Modal, Row, Col } from 'react-bootstrap';
 import UserCard from './UserCard';
-
-
 
 export default class VolunteerAssignmentModal extends Component {
     constructor(props) {
@@ -24,8 +21,8 @@ export default class VolunteerAssignmentModal extends Component {
         const body = {
             email: this.emailInput.current.value,
         }
-    
-       axios({method: 'post', url: 'http://localhost:5000/api/users/search', data: body})
+
+       axios({method: 'post', url: '/api/users/search', data: body})
         .then((x) => {
             console.log(x.data);
             this.setState({showAlert: false, showVolunteer: true});
@@ -57,7 +54,7 @@ export default class VolunteerAssignmentModal extends Component {
                     <Modal.Body>
                         <Row>
                             <Col>
-                                <Alert 
+                                <Alert
                                     variant="danger"
                                     show={this.state.showAlert}
                                     dismissible
@@ -69,12 +66,12 @@ export default class VolunteerAssignmentModal extends Component {
                         <Row>
                             <Col>
                                 <InputGroup className="mb-2">
-                                    <FormControl 
+                                    <FormControl
                                         type="email"
                                         placeholder="User Email"
                                         ref={this.emailInput}/>
                                     <InputGroup.Append>
-                                        <Button type="button" variant="primary"  onClick={this.searchFunction}>Search</Button> 
+                                        <Button type="button" variant="primary"  onClick={this.searchFunction}>Search</Button>
                                     </InputGroup.Append>
                                 </InputGroup>
                             </Col>

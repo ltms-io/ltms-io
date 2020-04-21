@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-//import axios from 'axios';
-
 
 class Home extends Component {
   render() {
@@ -30,21 +28,17 @@ class Home extends Component {
             <a href="/accountdetails">Edit Account Details</a>
           </div>
         )}
-{this.props.auth.isAuthenticated() && (
+        {this.props.auth.isAuthenticated() && (
         <div>
           <a href="/pictureuploadtest">Picture Upload Test</a>
         </div>)}
-  {this.props.auth.isAuthenticated() && (
+        {this.props.auth.isAuthenticated() && (
         <div>
           <a href="/createscoresheet">Create A Scoresheet</a>
         </div>)}
-  {this.props.auth.isAuthenticated() && (
-        <div>
-            <a href="/volunteermodaltest">Volunteer Assignment Modal Test</a>
-        </div>)}
         {this.props.auth.isAuthenticated() && (
         <div>
-            <a href="/tournamentsearch">Find a Tournament</a>
+            <a href="/volunteermodaltest">Volunteer Assignment Modal Test</a>
         </div>)}
         {this.props.auth.isAuthenticated() && (
         <div>
