@@ -27,9 +27,8 @@ import viewRubric from './components/ViewRubrics';
 import CreateJudges from './components/CreateJudges';
 import EditRubrics from './components/EditRubrics';
 import Timer from './components/Timer';
-const jsonWeb = require('jsonwebtoken');
 import QuickLinks from './components/QuickLinks';
-
+const jsonWeb = require('jsonwebtoken');
 class App extends Component {
   constructor(props) {
     super(props);
@@ -63,6 +62,8 @@ class App extends Component {
             <Route path="/createtournament" component={CreateTournament} />
             <Route path="/createteam/:tourneyId" component={CreateTeam} />
             <Route path="/viewrubrics/:tourneyId" component={viewRubric} />
+            <Route path="/editrubrics/:tourneyId" component={EditRubrics} />
+            <Route path="/timer" component={Timer} />
             <Route path="/createjudge/:tourneyId" component={CreateJudges} />
             <Route path="/accountdetails" component={() => <AccountDetails auth={this.props.auth} />} />
             <Route path="/createscoresheet" component={ Sheet }/>
@@ -76,6 +77,7 @@ class App extends Component {
             <Route path="/rolechange" component={ RoleChange }/>
             <Route path="/t/:tourneyId/mscores" component={ MatchScoreListing } />
             <Route path="/t/:tourneyId/editscore/:scoreId" component={ EditScoreEntry } />
+
             <Route path="/matchranking/:tourneyId" component={ SortTeams } />
             <Route path="/quicklinks" component={ QuickLinks } />
           </Switch>
