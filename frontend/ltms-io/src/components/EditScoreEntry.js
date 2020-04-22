@@ -112,6 +112,7 @@ export default class EditScoreEntry extends Component {
 
         alert("submitting");
 
+        this.setState({notesBox: this.state.notesBox + ` [Change to final score: ${score - this.state.scoreResults.finalScore}]`});
         axios.patch(`/api/tournaments/${this.state.tourneyId}/scores/${this.state.scoreId}`, {
             id: "5e7a5410be7af1ae4acc6314",
             fieldTypes: fixedCats,
@@ -120,7 +121,7 @@ export default class EditScoreEntry extends Component {
             scoreType: "match",
             finalScore: score,
             rawData: JSON.stringify(this.state.events),
-            changeNotes: this.state.notesBox += ` [Change to final score: ${score - this.state.scoreResults.finalScore}]`
+            changeNotes: this.state.notesBox
         }).then(res => {
             window.location = '/maindashboard';
         }).catch(err => {
@@ -150,7 +151,7 @@ export default class EditScoreEntry extends Component {
             },
             json: true
         }).then((result) => {
-            this.state.authresults = result.data;
+            this.setState({authresults: result.data});
         }).catch((error) => {
             console.log(error);
         });
@@ -158,14 +159,14 @@ export default class EditScoreEntry extends Component {
         await axios.post(`/api/users/getuser`, {
             auth0id: this.state.authresults.sub
         }).then((result) => {
-            this.state.userResults = result.data;
+            this.setState({userResults: result.data});
         }).catch((error) => {
             console.log(error);
         });
 
         await axios.get(`/api/tournaments/${this.state.tourneyId}/scores/${this.state.scoreId}`).then((result) => {
-            this.state.scoreResults = result.data;
-            this.state.rawData = JSON.parse(result.data.rawData);
+            this.setState({scoreResults: result.data});
+            this.setState({rawData: JSON.parse(result.data.rawData)});
             this.state.rawData.forEach(item => {
                 this.handleInsert(item.categ.props.value, item.explicitType);
             });

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Form, Button, Col, Row } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import axios from "axios";
 
 export default class CreateTeam extends Component {

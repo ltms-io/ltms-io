@@ -33,9 +33,34 @@ class MainDashboard extends Component {
         this.state.dbresults = decoded;
         this.state.uid = decoded.auth0id;
       }
+      else {
+        await axios({
+          method: 'GET',
+          url: `https://dev-s68c-q-y.auth0.com/userinfo`,
+          headers: {
+            'content-type': 'application/json',
+            'authorization': 'Bearer ' + localStorage.getItem("access_token")
+          },
+          json: true
+        })
+        .then( (result) => {
+          this.state.uid = result.data.sub;
+        })
+        .catch( (error) => {
+          console.log(error);
+        });
+
+        await axios.post(`/api/users/getuser`, {
+          auth0id: this.state.uid
+        }).then ( (result) => {
+            this.state.dbresults = result.data;
+        }).catch( (error) => {
+            console.log(error);
+        });
+      }
       this.setState(this.state);
 
-      await axios.post("/api/tournaments/user", {auth0id: decoded.auth0id})
+      await axios.post("/api/tournaments/user", {auth0id: this.state.uid})
       .then(res => {
         this.setState({
           director: res.data.director,
@@ -109,7 +134,7 @@ class MainDashboard extends Component {
                             <Col>
                             <Alert
                                 variant="danger"
-                                show={this.state.errMsg != ''}
+                                show={this.state.errMsg !== ''}
                                 dismissible
                                 onClose={() => {this.setState({errMsg: ''})}}>
                                 {this.state.errMsg}</Alert>
@@ -132,7 +157,7 @@ class MainDashboard extends Component {
                                         <Col>
                                             <SingleDatePicker
                                                 showClearDate
-                                                numberOfMonths="1"
+                                                numberOfMonths={1}
                                                 date={this.state.date}
                                                 onDateChange={date => this.setState({ date })}
                                                 focused={this.state.focused}
@@ -147,7 +172,7 @@ class MainDashboard extends Component {
                                 </Form>
                             </Col>
                         </Row>
-                        {this.state.results && this.state.results != 0 && (
+                        {this.state.results && this.state.results !== 0 && (
                           <Row>
                             <CardColumns className="pl-5 mt-3">
                                 {this.state.results.map( (item, i) => {
@@ -171,7 +196,7 @@ class MainDashboard extends Component {
                             </CardColumns>
                           </Row>
                         )}
-                        {this.state.results && this.state.results.length == 0 && (
+                        {this.state.results && this.state.results.length === 0 && (
                           <h6 className="text-center text-secondary font-italic pt-2">No matching tournaments</h6>
                         )}
                     </Container>
@@ -189,7 +214,7 @@ class MainDashboard extends Component {
                                   <Card key={item._id}>
                                       <Card.Header>{item.name}</Card.Header>
                                       <Card.Text className="m-3">
-                                          <p>Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}</p>
+                                          Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}
                                       </Card.Text>
                                       <Link to={"/tournamentdashboard/" + item._id} >
                                           <Button className="m-3">Access Tournament</Button>
@@ -211,7 +236,7 @@ class MainDashboard extends Component {
                                   <Card key={item._id}>
                                       <Card.Header>{item.name}</Card.Header>
                                       <Card.Text className="m-3">
-                                          <p>Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}</p>
+                                          Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}
                                       </Card.Text>
                                       <Link to={"/tournamentdashboard/" + item._id} >
                                           <Button className="m-3">Access Tournament</Button>
@@ -233,7 +258,7 @@ class MainDashboard extends Component {
                                   <Card key={item._id}>
                                       <Card.Header>{item.name}</Card.Header>
                                       <Card.Text className="m-3">
-                                          <p>Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}</p>
+                                          Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}
                                       </Card.Text>
                                       <Link to={"/tournamentdashboard/" + item._id} >
                                           <Button className="m-3">Access Tournament</Button>
@@ -255,7 +280,7 @@ class MainDashboard extends Component {
                                   <Card key={item._id}>
                                       <Card.Header>{item.name}</Card.Header>
                                       <Card.Text className="m-3">
-                                          <p>Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}</p>
+                                          Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}
                                       </Card.Text>
                                       <Link to={"/tournamentdashboard/" + item._id} >
                                           <Button className="m-3">Access Tournament</Button>
@@ -277,7 +302,7 @@ class MainDashboard extends Component {
                                   <Card key={item._id}>
                                       <Card.Header>{item.name}</Card.Header>
                                       <Card.Text className="m-3">
-                                          <p>Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}</p>
+                                          Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}
                                       </Card.Text>
                                       <Link to={"/tournamentdashboard/" + item._id} >
                                           <Button className="m-3">Access Tournament</Button>
@@ -299,7 +324,7 @@ class MainDashboard extends Component {
                                   <Card key={item._id}>
                                       <Card.Header>{item.name}</Card.Header>
                                       <Card.Text className="m-3">
-                                          <p>Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}</p>
+                                          Dates {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}
                                       </Card.Text>
                                       <Link to={"/tournamentdashboard/" + item._id} >
                                           <Button className="m-3">Access Tournament</Button>

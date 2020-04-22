@@ -73,7 +73,7 @@ describe("Tournament Backend Routes", () => {
       chai.request(app)
       .post("/api/tournaments/search")
       .send({
-        user_name: "ltmstest"
+        user_name: "John"
       })
       .end( (err, res) => {
         expect(res).to.have.status(200);
@@ -94,7 +94,7 @@ describe("Tournament Backend Routes", () => {
       .post("/api/tournaments/search")
       .send({
         tournament_name: "test",
-        user_name: "ltmstest"
+        user_name: "John"
       })
       .end( (err, res) => {
         expect(res).to.have.status(200);
@@ -104,7 +104,7 @@ describe("Tournament Backend Routes", () => {
       chai.request(app)
       .post("/api/tournaments/search")
       .send({
-        user_name: "ltmstest",
+        user_name: "John",
         date: "2020-04-20T19:00:00.000Z"
       })
       .end( (err, res) => {
@@ -127,7 +127,7 @@ describe("Tournament Backend Routes", () => {
       .post("/api/tournaments/search")
       .send({
         tournament_name: "test",
-        user_name: "ltmstest",
+        user_name: "John",
         date: "2020-04-20T19:00:00.000Z"
       })
       .end( (err, res) => {
