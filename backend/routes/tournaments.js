@@ -100,6 +100,20 @@ router.post('/user', (req, res) => {
     });
 });
 
+/* GET most recent schedule for tournament. */
+router.get('/schedule/:id', (req, res) => {
+    Tournament.findById(req.params.id).then((tournament) => {
+        if(!tournament) {
+            return res.status(404).send("No tournament found");
+        }
+        if(!tournament.schedule.length) {
+            return res.status(400).send("No schedule generated for tournament");
+        }
+
+        return res.status(200).send(tournament.schedule);
+    })
+})
+
 /* GET all scores for tournament given tourney id */
 router.get('/:id/scores', (req, res) => {
     Tournament.findById(req.params.id).then(tournament => {
@@ -293,6 +307,39 @@ router.post('/score', (req, res) => {
     })
 })
 
+router.post('/schedule', (req, res) => {
+    Tournament.findById(req.body.id).then((tournament) => {
+        if(!tournament) {
+            return res.status(404).send("tourney not found");
+        }
+
+    
+        var array = [];
+        for(var i = 0; i < req.body.match.length; i++) {
+            for(var j = 0; j < req.body.match[i].length; j++) {
+                array.push(req.body.match[i][j]);
+            }
+        }
+
+        var schedule = {
+            startTime: req.body.startTime,
+            cycleTime: req.body.cycleTime,
+            rawData: req.body.rawData,
+            match: array
+        }
+
+        tournament.schedule[0] = schedule;
+
+        tournament.save().then(() => {
+            res.status(200).send("schedule successfully saved");
+        }).catch(err => {
+            console.log(err);
+            res.status(500).send(err);
+        })
+        
+    })
+})
+
 /* PATCH specific tournament. */
 router.patch('/:id', (req, res) => {
     // if (!req.headers.auth) { // TODO: replace with correct authorization field or auth handler module
@@ -447,6 +494,23 @@ router.delete('/scores/yesimsure', (req, res) => {
         }).catch(err => {
             console.log(err)
             return res.status(500).send(err) ;
+        })
+    })
+})
+
+router.delete('/schedules/byebye', (req, res) => {
+    Tournament.findById(req.body.id).then(tournament => {
+        if(!tournament) {
+            return res.status(404).send("tourney not found");
+        }
+
+        tournament.schedule = [];
+
+        tournament.save().then(tournament => {
+            return res.status(200).send(tournament);
+        }).catch(err => {
+            console.log(err);
+            return res.status(500).send(err);
         })
     })
 })

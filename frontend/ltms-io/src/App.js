@@ -24,6 +24,7 @@ import SortTeams from './components/SortTeams';
 import CreateTeam from './components/CreateTeam';
 import viewRubric from './components/ViewRubrics';
 import CreateJudges from './components/CreateJudges';
+import Schedule from './components/Schedule';
 import QuickLinks from './components/QuickLinks';
 
 class App extends Component {
@@ -74,6 +75,7 @@ class App extends Component {
             <Route path="/t/:tourneyId/editscore/:scoreId" component={ EditScoreEntry } />
             <Route path="/matchranking/:tourneyId" component={ SortTeams } />
             <Route path="/quicklinks" component={ QuickLinks } />
+            <Route path="/tournamentschedule/:tourneyId" component={ Schedule } />
           </Switch>
         </div>
       </Router>

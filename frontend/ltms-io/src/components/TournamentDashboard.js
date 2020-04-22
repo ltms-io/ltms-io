@@ -19,7 +19,8 @@ export default class TournamentDashboard extends Component {
             judgeAuthorized: false,
             createTeamAuthorized: false,
             viewRubricsAuthorized: false,
-            headRef: false
+            headRef: false,
+            tournamentDirector: false
         }
 
         this.updateState = this.updateState.bind(this);
@@ -32,6 +33,10 @@ export default class TournamentDashboard extends Component {
         if (this.state.dbtournresults.headReferee === this.state.dbresults._id ||
             this.state.dbtournresults.director === this.state.dbresults._id) {
             this.state.setRefereeAuthorized = true;
+        }
+
+        if(this.state.dbtournresults.director === this.state.dbresults._id) {
+            this.state.tournamentDirector = true;
         }
 
         if (this.state.dbtournresults.director === this.state.dbresults._id) {
@@ -112,7 +117,12 @@ export default class TournamentDashboard extends Component {
                         <Link to={"/createjudge/" + this.state.tourneyId}>
                         <Button disabled = {!this.state.viewRubricsAuthorized}> Create Judges</Button>
                         </Link>
-
+                        {this.state.tournamentDirector && (
+                            <Link to={"/tournamentschedule/" + this.state.tourneyId}>
+                                <Button>Schedule</Button>
+                            </Link>
+                        )}
+                        
                     </Col>
                 </Row>
             </Container>
