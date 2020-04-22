@@ -17,9 +17,9 @@ class QuickLinks extends Component {
       <div>
         <h1>Quick Links</h1>
         <ListGroup>
-          <ListGroup.Item><a target="_blank" href="https://www.firstinspires.org/robotics/fll">FLL Homepage</a></ListGroup.Item>
-          <ListGroup.Item><a target="_blank" href="https://www.firstinspires.org/robotics/fll/challenge-and-season-info">FLL Challenge & Season Info</a></ListGroup.Item>
-          <ListGroup.Item><a target="_blank" href="https://www.firstinspires.org/resource-library?flagged=All&combine=&field_content_type_value%5B%5D=first_lego_league&field_resource_library_tags_tid=All&field_resource_library_tags_tid=All&sort_by=created_1">FLL Resource Library</a></ListGroup.Item>
+          <ListGroup.Item><a target="_blank" rel="noopener noreferrer" href="https://www.firstinspires.org/robotics/fll">FLL Homepage</a></ListGroup.Item>
+          <ListGroup.Item><a target="_blank" rel="noopener noreferrer" href="https://www.firstinspires.org/robotics/fll/challenge-and-season-info">FLL Challenge & Season Info</a></ListGroup.Item>
+          <ListGroup.Item><a target="_blank" rel="noopener noreferrer" href="https://www.firstinspires.org/resource-library?flagged=All&combine=&field_content_type_value%5B%5D=first_lego_league&field_resource_library_tags_tid=All&field_resource_library_tags_tid=All&sort_by=created_1">FLL Resource Library</a></ListGroup.Item>
         </ListGroup>
       </div>
     );

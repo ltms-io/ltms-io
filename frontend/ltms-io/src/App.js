@@ -36,7 +36,7 @@ class App extends Component {
 
   async initializeCookie() {
     if (!document.cookie) {
-      await axios.post('api/users/login', {data: localStorage.getItem("auth0_id")})
+      await axios.post('/api/users/login', {data: localStorage.getItem("auth0_id")})
       .then( (result) => {
         document.cookie = "UserIdentity=" + result.data;
         //localStorage.removeItem("auth0_id");

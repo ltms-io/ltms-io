@@ -26,20 +26,6 @@ router.get('/:id', (req, res) => {
     });
 });
 
-/* GET most recent schedule for tournament. */
-router.get('/schedule/:id', (req, res) => {
-    Tournament.findById(req.params.id).then((tournament) => {
-        if(!tournament) {
-            return res.status(404).send("No tournament found");
-        }
-        if(!tournament.schedule) {
-            return res.status(400).send("No schedule generated for tournament");
-        }
-
-        return res.status(200).send(tournament.schedule);
-    })
-})
-
 
 /* GET tournaments by user id */
 router.post('/user', (req, res) => {
@@ -113,6 +99,20 @@ router.post('/user', (req, res) => {
         res.status(200).send(results);
     });
 });
+
+/* GET most recent schedule for tournament. */
+router.get('/schedule/:id', (req, res) => {
+    Tournament.findById(req.params.id).then((tournament) => {
+        if(!tournament) {
+            return res.status(404).send("No tournament found");
+        }
+        if(!tournament.schedule) {
+            return res.status(400).send("No schedule generated for tournament");
+        }
+
+        return res.status(200).send(tournament.schedule);
+    })
+})
 
 /* GET all scores for tournament given tourney id */
 router.get('/:id/scores', (req, res) => {
@@ -400,7 +400,7 @@ router.patch('/:id', (req, res) => {
         }
 
         if (req.body.endDate) {
-            tournament.endDate = req.body.endDate;
+            tournament.startDate = req.body.endDate;
         }
 
         tournament.save().then((tournament) => res.send(tournament)).catch((err) => console.log(err));
@@ -498,7 +498,6 @@ router.delete('/scores/yesimsure', (req, res) => {
     })
 })
 
-//delete all schedules
 router.delete('/schedules/byebye', (req, res) => {
     Tournament.findById(req.body.id).then(tournament => {
         if(!tournament) {

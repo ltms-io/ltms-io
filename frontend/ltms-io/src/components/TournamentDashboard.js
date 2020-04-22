@@ -53,8 +53,8 @@ export default class TournamentDashboard extends Component {
                 }
             }
             if (!this.state.isAuthorized) {
-                for (var i = 0; i < this.state.dbtournresults.judges.length; i++) {
-                    if (this.state.dbtournresults.judges[i] === this.state.dbresults._id) {
+                for (var j = 0; j < this.state.dbtournresults.judges.length; j++) {
+                    if (this.state.dbtournresults.judges[j] === this.state.dbresults._id) {
                         this.state.rubricEntryAuthorized = true;
                         this.state.rubricEntryAuthorized = true;
                         this.state.judgeAuthorized = true;
@@ -63,8 +63,8 @@ export default class TournamentDashboard extends Component {
             }
         }
 
-        for (var i = 0; i < this.state.dbtournresults.headReferee.length; i++) {
-            if (this.state.dbtournresults.headReferee[i] === this.state.dbresults._id) {
+        for (var k = 0; k < this.state.dbtournresults.headReferee.length; k++) {
+            if (this.state.dbtournresults.headReferee[k] === this.state.dbresults._id) {
                 this.state.headRef = true;
             }
         }
@@ -89,7 +89,7 @@ export default class TournamentDashboard extends Component {
                             <div>
                                 {this.state.dbtournresults.teams.map((item, i) => {
                                     return (
-                                        <Link to={"/rubricentry/" + this.state.tourneyId + "/" + item}>
+                                        <Link key={i} to={"/rubricentry/" + this.state.tourneyId + "/" + item}>
                                             <Button disabled={!this.state.rubricEntryAuthorized}>Rubric Entry for {this.state.dbteamnames[i]}</Button>
                                         </Link>
                                     );
@@ -160,7 +160,7 @@ export default class TournamentDashboard extends Component {
                 console.log(error);
             });
 
-        for (var i = 0; i < this.state.dbtournresults.teams.length; i++) {
+        for (let i = 0; i < this.state.dbtournresults.teams.length; i++) {
             await axios.get(`/api/teams/${this.state.dbtournresults.teams[i]}`)
                 .then((result) => {
                     this.state.dbteamnames[i] = result.data.teamName;
