@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Form, Button, Col, Row, Container } from 'react-bootstrap';
+import { Form, Button, Col, Row } from 'react-bootstrap';
 
 
 class Schedule extends React.Component {
@@ -16,7 +16,7 @@ class Schedule extends React.Component {
             numTables: 0,
             teams: [],
             tableLayout: [],
-            disabled: false
+            disabled: true
         }
         this.handleSchedule = this.handleSchedule.bind(this);
         this.randomizeTeams = this.randomizeTeams.bind(this);
@@ -465,12 +465,13 @@ class Schedule extends React.Component {
         )
     }
 
-    async componentDidMount() {
-        await axios.get(`/api/tournaments/schedule/5e7c53f30c6d5700d3701567`).then(result => {
+    componentDidMount() {
+        axios.get(`/api/tournaments/schedule/5e7c53f30c6d5700d3701567`).then(result => {
             var stat = JSON.parse(result.data.rawData);
             this.setState(stat);
             console.log(this.state);
         }).catch(err => {
+            this.setState({disabled: false})
             console.log(err);
         })
     }
