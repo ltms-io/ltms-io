@@ -29,6 +29,7 @@ router.get('/:id', (req, res) => {
 
 /* GET tournaments by user id */
 router.post('/user', (req, res) => {
+    console.log(req.body.auth0id);
     User.findOne({ auth0id: req.body.auth0id }).then(async function(user) {
         if(!user) {
             return res.status(404).send("user not found");
