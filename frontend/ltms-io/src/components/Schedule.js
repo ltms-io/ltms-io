@@ -466,8 +466,8 @@ class Schedule extends React.Component {
     }
 
     componentDidMount() {
-        axios.get(`/api/tournaments/schedule/5e7c53f30c6d5700d3701567`).then(result => {
-            var stat = JSON.parse(result.data.rawData);
+        axios.get(`/api/tournaments/schedule/${this.state.tourneyId}`).then(result => {
+            var stat = JSON.parse(result.data[0].rawData);
             this.setState(stat);
             console.log(this.state);
         }).catch(err => {
