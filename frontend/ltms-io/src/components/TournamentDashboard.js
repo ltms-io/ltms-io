@@ -122,6 +122,11 @@ export default class TournamentDashboard extends Component {
                                 <Button>Schedule</Button>
                             </Link>
                         )}
+                        {this.state.tournamentDirector && (
+                            <Link to={"/schedulemodify/" + this.state.tourneyId}>
+                                <Button>Modify Schedule</Button>
+                            </Link>
+                        )}
                         
                     </Col>
                 </Row>

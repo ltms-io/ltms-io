@@ -26,6 +26,7 @@ import viewRubric from './components/ViewRubrics';
 import CreateJudges from './components/CreateJudges';
 import Schedule from './components/Schedule';
 import QuickLinks from './components/QuickLinks';
+import ModifySchedule from './components/ModifySchedule';
 
 class App extends Component {
   constructor(props) {
@@ -76,6 +77,7 @@ class App extends Component {
             <Route path="/matchranking/:tourneyId" component={ SortTeams } />
             <Route path="/quicklinks" component={ QuickLinks } />
             <Route path="/tournamentschedule/:tourneyId" component={ Schedule } />
+            <Route path="/schedulemodify/:tourneyId" component={ ModifySchedule } />
           </Switch>
         </div>
       </Router>
