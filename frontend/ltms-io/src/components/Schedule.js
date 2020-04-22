@@ -16,7 +16,7 @@ class Schedule extends React.Component {
             numTables: 0,
             teams: [],
             tableLayout: [],
-            disabled: true
+            disabled: false
         }
         this.handleSchedule = this.handleSchedule.bind(this);
         this.randomizeTeams = this.randomizeTeams.bind(this);
@@ -471,7 +471,6 @@ class Schedule extends React.Component {
             this.setState(stat);
             console.log(this.state);
         }).catch(err => {
-            this.setState({disabled: false})
             console.log(err);
         })
     }
