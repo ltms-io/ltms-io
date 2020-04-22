@@ -62,7 +62,7 @@ class App extends Component {
             <Route path="/createtournament" component={CreateTournament} />
             <Route path="/createteam/:tourneyId" component={CreateTeam} />
             <Route path="/viewrubrics/:tourneyId" component={viewRubric} />
-            <Route path="/editrubrics/:teamId/:email/:uniqueID" component={EditRubrics} />
+            <Route path="/editrubrics/:teamId/:email/:uniqueID/:username/:tourneyId" component={EditRubrics} />
             <Route path="/timer" component={Timer} />
             <Route path="/createjudge/:tourneyId" component={CreateJudges} />
             <Route path="/accountdetails" component={() => <AccountDetails auth={this.props.auth} />} />

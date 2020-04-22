@@ -9,18 +9,90 @@ export default class EditRubrics extends Component {
 
     this.state = {
       teams: [],
+      tourneyId: this.props.match.params.tourneyId,
       teamId: this.props.match.params.teamId,
       email: this.props.match.params.email,
       uniqueID: this.props.match.params.uniqueID,
-      rubric: [],
+      username: this.props.match.params.username,
+      rubrics: [],
       dbteamsresults: null
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   async handleSubmit(e) {
+    e.preventDefault();
+    e.persist()
     await axios.patch(`/api/teams/rubricdelete/${this.state.teamId}`, {
       email: this.state.email,
       uniqueID: this.state.uniqueID
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
+    var rubric = {
+      username: this.state.username,
+      email: this.state.email,
+      uniqueID: this.state.uniqueID,
+      coreValues: {
+        inspiration: {
+          discovery: e.target.elements.formDiscovery.value,
+          teamIdentity: e.target.elements.formTeamIdentity.value,
+          impact: e.target.elements.formImpact.value
+        },
+        teamwork: {
+          effectiveness: e.target.elements.formEffectiveness.value,
+          efficiency: e.target.elements.formEfficiency.value,
+          kidsDoTheWork: e.target.elements.formKidsDoTheWork.value
+        },
+        graciousProfessionalism: {
+          inclusion: e.target.elements.formInclusion.value,
+          respect: e.target.elements.formRespect.value,
+          coopertition: e.target.elements.formCoopertition.value
+        },
+        comments: e.target.elements.formCoreValuesComments.value
+      },
+      innovationProject: {
+        research: {
+          problemIdentificaton: e.target.elements.formProblemIdentification.value,
+          sourcesOfInformation: e.target.elements.formSourcesOfInformation.value,
+          problemAnalysis: e.target.elements.formProblemAnalysis.value
+        },
+        innovativeSolution: {
+          teamSolution: e.target.elements.formTeamSolution.value,
+          innovation: e.target.elements.formInnovation1.value,
+          solutionDevelopment: e.target.elements.formSolutionDevelopment.value
+        },
+        presentation: {
+          sharing: e.target.elements.formSharing.value,
+          creativity: e.target.elements.formCreativity.value,
+          presentationEffectiveness: e.target.elements.formPresentationEffectiveness.value
+        },
+        comments: e.target.elements.formInnovationProjectComments.value
+      },
+      robotDesign: {
+        mechanicalDesign: {
+          durability: e.target.elements.formDurability.value,
+          mechanicalEfficiency: e.target.elements.formMechanicalEfficiency.value,
+          mechanization: e.target.elements.formMechanization.value
+        },
+        programming: {
+          programmingQuality: e.target.elements.formProgrammingQuality.value,
+          programmingEfficiency: e.target.elements.formProgrammingEfficiency.value,
+          automationNavigation: e.target.elements.formAutomationNavigation.value
+        },
+        strategyInnovation: {
+          designProcess: e.target.elements.formDesignProcess.value,
+          missionStrategy: e.target.elements.formMissionStrategy.value,
+          innovation: e.target.elements.formInnovation2.value
+        },
+        comments: e.target.elements.formRobotDesignComments.value
+      }
+    };
+    await axios.patch(`/api/teams/${this.state.teamId}`, {
+      rubric: rubric
+    })
+    .then( (res) => {
+      window.location = `/viewrubrics/` + this.state.tourneyId;
     })
     .catch( (error) => {
       console.log(error);
@@ -38,10 +110,34 @@ export default class EditRubrics extends Component {
     });
     console.log(this.state.rubric)*/
   }
+  /*
+  render() {
+    return(
+      <div>
+        <h3>Rubric Edit for {this.state.username} - {this.state.uniqueID}</h3>
+        <Form data-test="theSubmitForm" onSubmit={this.handleSubmit}>
+        <Form.Group data-test="anInput" controlId="formDiscovery">
+                          <Form.Label>Discovery</Form.Label>
+                          <Form.Control required as="select">
+                            <option></option>
+                            <option value="1">Beginning</option>
+                            <option value="2">Developing</option>
+                            <option value="3">Accomplished</option>
+                            <option value="4">Exemplary</option>
+                          </Form.Control>
+                        </Form.Group>
+                        <Button type="submit">
+                  Submit Rubric
+                </Button>
+        </Form>
+        
+      </div>
+    )
+  }*/
   render() {
   return (
   <div>
-  <h3>Rubric Edit for {this.state.email} - {this.state.uniqueID}</h3>
+  <h3>Rubric Edit for {this.state.username} - {this.state.uniqueID}</h3>
               <Form data-test="theSubmitForm" onSubmit={this.handleSubmit}>
                 <div>
                   <h4>Core Values</h4>
