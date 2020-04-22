@@ -126,7 +126,7 @@ class ViewRubrics extends Component {
                                   <Card.Text>
                                     <strong>Comments:</strong> <em>{item2.robotDesign.comments}</em>
                                   </Card.Text>
-                                  <Link to={"/editrubrics/" + this.state.tourneyId + "/" + item1.teamNum}>
+                                  <Link to={"/editrubrics/" + item1._id + "/" + item2.email + "/" + item2.uniqueID}>
                         <Button>Edit Rubric</Button>
                         </Link>
                                 </ListGroupItem>

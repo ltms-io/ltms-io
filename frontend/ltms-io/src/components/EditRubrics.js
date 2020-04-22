@@ -9,16 +9,24 @@ export default class EditRubrics extends Component {
 
     this.state = {
       teams: [],
-      tourneyId: this.props.match.params.tourneyId,
       teamId: this.props.match.params.teamId,
+      email: this.props.match.params.email,
+      uniqueID: this.props.match.params.uniqueID,
+      rubric: [],
       dbteamsresults: null
     };
   }
   async componentDidMount() {
-    await axios.get(`/api/teams/tournid/${this.state.tourneyId}`)
+    console.log(this.state);
+    await axios.post(`/api/teams/rubricget/${this.state.teamId}`, {
+      email: this.state.email,
+      uniqueID: this.state.uniqueID
+    }
+    )
     .then ( (res) => {
-      this.state.dbteamsresults = res.data;
+      this.setState({rubric: res.data});
     });
+    console.log(this.state.rubric)
   }
   render() {
     return <div>Hello</div>;
