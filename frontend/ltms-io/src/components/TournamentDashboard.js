@@ -119,7 +119,7 @@ export default class TournamentDashboard extends Component {
                         </Link>
                         {this.state.tournamentDirector && (
                             <Link to={"/tournamentschedule/" + this.state.tourneyId}>
-                                <Button>Generate Schedule</Button>
+                                <Button>Schedule</Button>
                             </Link>
                         )}
                         

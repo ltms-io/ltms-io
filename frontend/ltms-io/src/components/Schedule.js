@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Form, Button, Col, Row } from 'react-bootstrap';
+import { Form, Button, Col, Row, Container } from 'react-bootstrap';
 
 
 class Schedule extends React.Component {
@@ -20,6 +20,7 @@ class Schedule extends React.Component {
         }
         this.handleSchedule = this.handleSchedule.bind(this);
         this.randomizeTeams = this.randomizeTeams.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
 
     //Very ugly may need to find better way to do this
@@ -233,6 +234,22 @@ class Schedule extends React.Component {
         this.setState({ teams: sched });
     }
 
+    handleChange(e) {
+        e.preventDefault();
+        var stat = {
+            tourneyId: this.props.match.params.tourneyId,
+            startTime: "",
+            cycleTime: 0,
+            numJudgeRooms: 0,
+            numMatches: 0,
+            numTables: 0,
+            teams: [],
+            tableLayout: [],
+            disabled: false
+        }
+        this.setState(stat);
+    }
+
     async handleSchedule(e) {
         e.preventDefault();
         if(!e.target.elements.startTime.value || !e.target.elements.cycleTime.value) {
@@ -269,9 +286,9 @@ class Schedule extends React.Component {
                 var tempMin = "0" + min;
                 var match = {
                     match: j + 1,
-                    tableNum: table,
-                    teamNameA: this.state.teams[i].teamName,
-                    teamNameB: this.state.teams[i+1].teamName,
+                    table: table,
+                    teamA: this.state.teams[i].teamName,
+                    teamB: this.state.teams[i+1].teamName,
                     startTime: hour + ":" + tempMin.substring(tempMin.length - 2)
                 }
 
@@ -294,27 +311,58 @@ class Schedule extends React.Component {
         }
 
         var tableArr = [];
-        for(var k = 0; k < this.state.numTables; k++) {
+        for(var k = 0; k < matchSchema.length; k += this.state.numTables) {
             var temp = [];
-            for(var m = 0; m < matchSchema.length; m++) {
-                if(matchSchema[m].tableNum === k + 1) {
-                    temp.push(matchSchema[m]);
+            for(var m = 0; m < this.state.numTables; m++) {
+                if(!matchSchema[k+m]){
+                    break;
                 }
+                temp.push(matchSchema[k+m]);
             }
             tableArr.push(temp);
         }
 
+
+        // var tableArr = [];
+        // //Go through each table
+        // for(var fml = 0; fml < this.state.numMatches; fml++) {
+        //     var tableTemp = [];
+        //     for(var mat = 0; mat < matchArr.length; mat++) {
+        //         var temp2 = [];
+        //         for(var ack = 0; ack < matchArr[mat].length; ack++) {
+        //             if(matchArr[mat][ack].match === fml + 1) {
+        //                 temp2.push(matchArr[mat][ack]);
+        //             }
+        //         }
+        //         tableTemp.push(temp2);
+        //     }
+        //     tableArr.push(tableTemp);
+        // }
+        
         console.log(tableArr);
         this.setState({ tableLayout: tableArr });
-        this.setState({ disabled: false });
+        this.setState({ disabled: true });
         this.setState({ startTime: startTime });
         this.setState({ cycleTime: cycleTime });
+
+        await axios.post(`/api/tournament/schedule`, {
+            id: this.state.tourneyId,
+            startTime: this.state.startTime,
+            cycleTime: this.state.cycleTime,
+            rawData: JSON.stringify(this.state),
+            match: this.state.tableLayout
+        }).then(result => {
+            console.log(result);
+        }).catch(err => {
+            console.log(err);
+        })
 
     }
 
     render() {
         return (
             <div>
+                {!this.state.disabled && (
                 <Form onSubmit={this.handleSchedule}>
                     <Row>
                         <Col xs="2">
@@ -332,6 +380,33 @@ class Schedule extends React.Component {
                         <Button variant="outline-primary" type="submit">Generate Tournament Schedule</Button>
                     </Form.Group>
                 </Form>
+                )}
+
+                <Form>
+                    
+                            {this.state.tableLayout.map((sched, index) => (
+                                <Form.Group>
+                                <Row>
+                                {sched.map((robot, ind) => (
+                                    <Col xs = "4">
+                                        {!index && (
+                                            <h5>Table {ind + 1}</h5>
+                                        )}
+                                        <Form.Control type="text" value={robot.startTime + " " + robot.teamA + " | " + robot.teamB } readOnly={true} />
+                                    </Col>
+                                ))}
+                                </Row>
+                                </Form.Group>
+                            ))}
+                </Form>
+
+                {this.state.disabled && (
+                    <Form onSubmit={this.handleChange}>
+                        <Form.Group>
+                            <Button variant="outline-danger" type="submit">Generate New Schedule</Button>
+                        </Form.Group>
+                    </Form>
+                )}
 
                 {/* <Form>
                     <Row>
@@ -388,6 +463,16 @@ class Schedule extends React.Component {
                 </Form> */}
             </div>
         )
+    }
+
+    async componentDidMount() {
+        await axios.get(`/api/tournaments/schedule/5e7c53f30c6d5700d3701567`).then(result => {
+            var stat = JSON.parse(result.data.rawData);
+            this.setState(stat);
+            console.log(this.state);
+        }).catch(err => {
+            console.log(err);
+        })
     }
 }
 

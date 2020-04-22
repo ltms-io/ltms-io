@@ -31,7 +31,7 @@ const MatchSchema = new Schema({
         required: true
     },
     table: {
-        type: String
+        type: Number
     },
     match: {
         type: Number
@@ -51,20 +51,14 @@ const ScheduleSchema = new Schema({
     },
     cycleTime: { //change to cycle time?????
         type: String,
-        required: true
+        
     },
     rawData: { //do we need this????
         type: Array,
         required: true
     },
     //CHANGE TO match schemea SUB DOC
-    match: [MatchSchema],
-
-    judging: {
-        type: Array,
-        required: true
-    }
-
+    match: [MatchSchema]
 })
 
 //Create Tournament Schema

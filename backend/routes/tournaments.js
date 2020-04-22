@@ -314,7 +314,21 @@ router.post('/schedule', (req, res) => {
         }
 
     
-        tournament.schedule = req.body;
+        var array = [];
+        for(var i = 0; i < req.body.match.length; i++) {
+            for(var j = 0; j < req.body.match[i].length; j++) {
+                array.push(req.body.match[i][j]);
+            }
+        }
+
+        var schedule = {
+            startTime: req.body.startTime,
+            cycleTime: req.body.cycleTime,
+            rawData: req.body.rawData,
+            match: array
+        }
+
+        tournament.schedule = schedule;
 
         tournament.save().then(() => {
             res.status(200).send("schedule successfully saved");
@@ -386,7 +400,7 @@ router.patch('/:id', (req, res) => {
         }
 
         if (req.body.endDate) {
-            tournament.startDate = req.body.endDate;
+            tournament.endDate = req.body.endDate;
         }
 
         tournament.save().then((tournament) => res.send(tournament)).catch((err) => console.log(err));
