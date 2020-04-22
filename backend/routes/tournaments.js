@@ -106,7 +106,7 @@ router.get('/schedule/:id', (req, res) => {
         if(!tournament) {
             return res.status(404).send("No tournament found");
         }
-        if(!tournament.schedule) {
+        if(!tournament.schedule.length) {
             return res.status(400).send("No schedule generated for tournament");
         }
 
@@ -328,7 +328,7 @@ router.post('/schedule', (req, res) => {
             match: array
         }
 
-        tournament.schedule = schedule;
+        tournament.schedule[0] = schedule;
 
         tournament.save().then(() => {
             res.status(200).send("schedule successfully saved");

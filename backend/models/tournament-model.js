@@ -28,7 +28,6 @@ const SchoresheetSchema = new Schema({
 const MatchSchema = new Schema({
     startTime: {
         type: String,
-        required: true
     },
     table: {
         type: Number
@@ -47,7 +46,6 @@ const MatchSchema = new Schema({
 const ScheduleSchema = new Schema({
     startTime: {
         type: String,
-        required: true
     },
     cycleTime: { //change to cycle time?????
         type: String,
@@ -55,7 +53,6 @@ const ScheduleSchema = new Schema({
     },
     rawData: { //do we need this????
         type: Array,
-        required: true
     },
     //CHANGE TO match schemea SUB DOC
     match: [MatchSchema]
@@ -128,10 +125,7 @@ const TournamentSchema = new Schema({
         default: Date.now,
     },
     scores: [SchoresheetSchema],
-    schedule: {
-        type: ScheduleSchema,
-        required: true
-    }
+    schedule: [ScheduleSchema]
 });
 
 //Instance methods of the Schema
