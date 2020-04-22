@@ -110,7 +110,7 @@ router.get('/schedule/:id', (req, res) => {
             return res.status(400).send("No schedule generated for tournament");
         }
 
-        return res.status(200).send(tournament.schedule);
+        return res.status(200).send(tournament.schedule[0]);
     })
 })
 
