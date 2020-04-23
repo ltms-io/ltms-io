@@ -25,6 +25,49 @@ class MainDashboard extends Component {
     this.handleVol = this.handleVol.bind(this);
   }
 
+  async handleSearch(e) {
+    e.preventDefault();
+
+    const searchName = e.target.elements.tournament_name.value;
+    const searchDate = this.state.date;
+    const searchUser = e.target.elements.user_name.value;
+    if (!searchName && !searchDate && !searchUser) {
+      await this.setState({errMsg: "No search parameters!"});
+      return;
+    }
+
+    var req = {};
+    if (searchName) {
+      req.tournament_name = searchName;
+    }
+    if (searchDate) {
+      req.date = searchDate;
+    }
+    if (searchUser) {
+      req.user_name = searchUser;
+    }
+
+    await axios.post('/api/tournaments/search', req)
+    .then( async (res) => {
+      await this.setState({results: res.data});
+    })
+    .catch( (err) => {
+      console.log(err);
+    });
+  }
+
+  async handleVol(id) {
+    await axios.patch(`/api/tournaments/${id}`, {
+      viewOnlyVol: this.state.dbresults._id
+    })
+    .then( (res) => {
+      window.location = `/tournamentdashboard/${id}`;
+    })
+    .catch( (err) => {
+      console.log(err);
+    });
+  }
+  
   async componentDidMount() {
     if (document.cookie.length) {
       var token = document.cookie.substring(13);
@@ -77,49 +120,6 @@ class MainDashboard extends Component {
     });
 
     console.log("INITIAL MAIN DASHBOARD STATE", this.state);
-  }
-
-  async handleSearch(e) {
-    e.preventDefault();
-
-    const searchName = e.target.elements.tournament_name.value;
-    const searchDate = this.state.date;
-    const searchUser = e.target.elements.user_name.value;
-    if (!searchName && !searchDate && !searchUser) {
-      await this.setState({errMsg: "No search parameters!"});
-      return;
-    }
-
-    var req = {};
-    if (searchName) {
-      req.tournament_name = searchName;
-    }
-    if (searchDate) {
-      req.date = searchDate;
-    }
-    if (searchUser) {
-      req.user_name = searchUser;
-    }
-
-    await axios.post('/api/tournaments/search', req)
-    .then( async (res) => {
-      await this.setState({results: res.data});
-    })
-    .catch( (err) => {
-      console.log(err);
-    });
-  }
-
-  async handleVol(id) {
-    await axios.patch(`/api/tournaments/${id}`, {
-      viewOnlyVol: this.state.dbresults._id
-    })
-    .then( (res) => {
-      window.location = `/tournamentdashboard/${id}`;
-    })
-    .catch( (err) => {
-      console.log(err);
-    });
   }
 
   render() {

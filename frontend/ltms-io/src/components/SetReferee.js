@@ -20,27 +20,6 @@ class SetReferee extends Component {
     this.updateState = this.updateState.bind(this);
   }
 
-  async updateState() {
-    if (document.cookie.length) {
-      var token = document.cookie.substring(13);
-      var decoded = jsonWeb.verify(token, "123456");
-
-      await this.setState({
-        dbresults: decoded,
-        uid: decoded.auth0id
-      });
-    }
-
-    await axios.get(`/api/tournaments/${this.state.tourneyId}`)
-    .then( async (result) => {
-      await this.setState({
-        dbtournresults: result.data
-      });
-    }).catch( (error) => {
-      console.log(error);
-    });
-  }
-
   async handleSubmit(e) {
     e.preventDefault();
     let strings = e.target.elements.users.value.split(",");
@@ -87,6 +66,40 @@ class SetReferee extends Component {
     alert(message);
   }
 
+  async updateState() {
+    if (document.cookie.length) {
+      var token = document.cookie.substring(13);
+      var decoded = jsonWeb.verify(token, "123456");
+
+      await this.setState({
+        dbresults: decoded,
+        uid: decoded.auth0id
+      });
+    }
+
+    await axios.get(`/api/tournaments/${this.state.tourneyId}`)
+    .then( async (result) => {
+      await this.setState({
+        dbtournresults: result.data
+      });
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
+
+    if (this.state.dbtournresults.headReferee.includes(this.state.dbresults._id) ||
+        this.state.dbtournresults.director === this.state.dbresults._id) {
+      await this.setState({
+        isAuthorized: true
+      })
+    }
+  }
+
+  async componentDidMount() {
+    await this.updateState();
+    console.log("INITIAL SET REFEREE STATE", this.state);
+  }
+
   render() {
     return(
       <div data-test="theComponent" className="pl-3 pr-3 pt-2">
@@ -98,56 +111,15 @@ class SetReferee extends Component {
                 <Form.Label>Enter user(s) below</Form.Label>
                 <Form.Control type="text" placeholder="Enter user email(s) separated by commas" />
               </Form.Group>
-              <Button variant="outline-primary" type="submit">Submit</Button>
+              <Button type="submit">Submit</Button>
             </Form>
           )}
           {!this.state.isAuthorized && (
-            <h3 data-test="noAuthMsg">You are not authorized for set referee in this tournament.</h3>
+            <h3 data-test="noAuthMsg">You are not authorized for set referees in this tournament.</h3>
           )}
         </div>
       </div>
     );
-  }
-
-  async componentDidMount() {
-    await axios.get(`/api/users`)
-    .then ( (result) => {
-        console.log("USERS", result.data);
-    })
-    .catch( (error) => {
-        console.log(error);
-    });
-    await axios.get(`/api/tournaments`)
-    .then ( (result) => {
-        console.log("TOURNAMENTS", result.data);
-    })
-    .catch( (error) => {
-        console.log(error);
-    });
-    await axios.get(`/api/teams`)
-    .then ( (result) => {
-        console.log("ALL TEAMS", result.data);
-    })
-    .catch( (error) => {
-        console.log(error);
-    });
-    await axios.get(`/api/teams/tournid/5e7c53f30c6d5700d3701567`)
-    .then ( (result) => {
-        console.log("ALL TEAMS FROM 5e7c53f30c6d5700d3701567", result.data);
-    })
-    .catch( (error) => {
-        console.log(error);
-    });
-
-    await this.updateState();
-    console.log("INITIAL SET REFEREE STATE", this.state);
-
-    if (this.state.dbtournresults.headReferee === this.state.dbresults._id ||
-        this.state.dbtournresults.director === this.state.dbresults._id) {
-      this.state.isAuthorized = true;
-    }
-
-    this.setState(this.state);
   }
 }
 

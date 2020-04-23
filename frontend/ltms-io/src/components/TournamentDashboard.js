@@ -32,9 +32,9 @@ export default class TournamentDashboard extends Component {
     this.handleRubricEntry = this.handleRubricEntry.bind(this);
   }
 
-  async componentDidMount() {
-    await this.updateState();
-    console.log("INITIAL TOURNAMENT DASHBOARD STATE", this.state);
+  handleRubricEntry(e) {
+    e.preventDefault();
+    window.location = "/rubricentry/" + this.state.tourneyId + "/" + e.target.elements.formRubricEntry.value;
   }
 
   async updateState() {
@@ -53,10 +53,10 @@ export default class TournamentDashboard extends Component {
       await this.setState({
         dbtournresults: res.data
       });
-    }).catch((error) => {
+    })
+    .catch((error) => {
       console.log(error);
     });
-
 
     await axios.get(`/api/users/${this.state.dbtournresults.director}`)
     .then( (res) => {
@@ -135,35 +135,27 @@ export default class TournamentDashboard extends Component {
         setRefereeAuthorized: true
       });
     }
-    else {
-      for (var i = 0; i < this.state.dbtournresults.judgeAdvisor.length; i++) {
-        if (this.state.dbtournresults.judgeAdvisor[i] === this.state.dbresults._id) {
-          await this.setState({
-            rubricEntryAuthorized: true,
-            viewRubricsAuthorized: true
-          });
-        }
-      }
-      for (var j = 0; j < this.state.dbtournresults.judges.length; j++) {
-        if (this.state.dbtournresults.judges[j] === this.state.dbresults._id) {
-          await this.setState({
-            rubricEntryAuthorized: true
-          });
-        }
-      }
-      for (var k = 0; k < this.state.dbtournresults.headReferee.length; k++) {
-        if (this.state.dbtournresults.headReferee[k] === this.state.dbresults._id) {
-          await this.setState({
-            setRefereeAuthorized: true
-          });
-        }
-      }
+    if (this.state.dbtournresults.judgeAdvisor.includes(this.state.dbresults._id)) {
+      await this.setState({
+        rubricEntryAuthorized: true,
+        viewRubricsAuthorized: true
+      });
+    }
+    if (this.state.dbtournresults.judges.includes(this.state.dbresults._id)) {
+      await this.setState({
+        rubricEntryAuthorized: true
+      });
+    }
+    if (this.state.dbtournresults.headReferee.includes(this.state.dbresults._id)) {
+      await this.setState({
+        setRefereeAuthorized: true
+      });
     }
   }
 
-  handleRubricEntry(e) {
-    e.preventDefault();
-    window.location = "/rubricentry/" + this.state.tourneyId + "/" + e.target.elements.formRubricEntry.value;
+  async componentDidMount() {
+    await this.updateState();
+    console.log("INITIAL TOURNAMENT DASHBOARD STATE", this.state);
   }
 
   render() {
