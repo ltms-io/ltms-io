@@ -289,11 +289,13 @@ export default class TournamentDashboard extends Component {
               <Link className="pl-1 pr-1" to={"/createscoresheet/" + this.state.tourneyId}>
                 <Button className="mb-1" disabled={!this.state.scoresheetsAuthorized}>Create Scoresheet</Button>
               </Link>
-              {this.state.tournamentDirector && (
-                <Link to={"/tournamentschedule/" + this.state.tourneyId}>
-                    <Button>Schedule</Button>
-                </Link>
-              )}
+              <hr />
+            </div>
+            <div>
+              <h3 className="pb-1">Timekeeping</h3>
+              <Link className="pl-1 pr-1" to={"/tournamentschedule/" + this.state.tourneyId}>
+                <Button className="mb-1" disabled={!this.state.createTeamAuthorized}>Generate Schedule</Button>
+              </Link>
             </div>
           </Col>
         </Row>
