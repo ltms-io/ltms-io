@@ -70,19 +70,19 @@ class Schedule extends React.Component {
       var notInDroppedTeams = true
       for(let index = 0; index < this.state.teams.length; index++)
       {
-          if(this.state.teams[index].teamName == e.target.elements.teamDrops.value)
+          if(this.state.teams[index].teamName === e.target.elements.teamDrops.value)
           {
               inTeams = true
           }
       }
       for(let index = 0; index < this.state.droppedTeams.length; index++)
       {
-          if(this.state.droppedTeams[index] == e.target.elements.teamDrops.value)
+          if(this.state.droppedTeams[index] === e.target.elements.teamDrops.value)
           {
               notInDroppedTeams = false
           }
       }
-      if((inTeams == true) && (notInDroppedTeams == true))
+      if((inTeams === true) && (notInDroppedTeams === true))
       {
           sss.push(e.target.elements.teamDrops.value)
       }

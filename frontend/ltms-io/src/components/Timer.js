@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Form, Button, Col, Row } from "react-bootstrap";
-import axios from "axios";
+import { Form, Button } from "react-bootstrap";
 
 const ms = require('pretty-ms')
 
@@ -58,10 +56,10 @@ export default class Timer extends Component {
     return (
     <div>
         <h3>Timer: {ms(this.state.counter)}</h3>
-        <button disabled = {!(this.state.counter == this.state.initalCounter)} onClick={this.startTimer}>start</button>
-        <button disabled = {!this.state.go} onClick={this.stopTimer}>stop</button>
-        <button disabled={!(!(this.state.counter == this.state.initalCounter) && !this.state.go)} onClick={this.resetTimer}>reset</button>
-        <button disabled={!(!(this.state.counter == this.state.initalCounter) && !this.state.go)} onClick={this.startTimer}>resume</button>
+        <button disabled={!(this.state.counter === this.state.initalCounter)} onClick={this.startTimer}>start</button>
+        <button disabled={!this.state.go} onClick={this.stopTimer}>stop</button>
+        <button disabled={!(!(this.state.counter === this.state.initalCounter) && !this.state.go)} onClick={this.resetTimer}>reset</button>
+        <button disabled={!(!(this.state.counter === this.state.initalCounter) && !this.state.go)} onClick={this.startTimer}>resume</button>
         <Form onSubmit={this.handleSubmit}>
         <Form.Label>Input time</Form.Label>
         <Form.Control
@@ -76,7 +74,7 @@ export default class Timer extends Component {
             name="sec"
             onChange={this.handleChange}
           />
-          <Button disabled = {!(this.state.counter == this.state.initalCounter)} className="mt-5" type="submit">
+          <Button disabled = {!(this.state.counter === this.state.initalCounter)} className="mt-5" type="submit">
             Input time
           </Button>
         </Form>

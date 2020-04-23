@@ -280,9 +280,6 @@ export default class TournamentDashboard extends Component {
               <Link className="pl-1 pr-1" to={"/viewrubrics/" + this.state.tourneyId}>
                 <Button className="mb-1" disabled={!this.state.viewRubricsAuthorized}>View Rubrics</Button>
               </Link>
-              <Link className="pl-1 pr-1" to={"/editrubrics/" + this.state.tourneyId}>
-                <Button className="mb-1" disabled={!this.state.viewRubricsAuthorized}>Edit Rubrics</Button>
-              </Link>
               <Link className="pl-1 pr-1" to={"/t/" + this.state.tourneyId + "/mscores"}>
                 <Button className="mb-1" disabled={!this.state.setRefereeAuthorized}>View Match Scores</Button>
               </Link>

@@ -22,14 +22,12 @@ import axios from 'axios';
 import RoleChange from './components/RoleChange';
 import SortTeams from './components/SortTeams';
 import CreateTeam from './components/CreateTeam';
-import CreateT from './components/CreateT';
 import viewRubric from './components/ViewRubrics';
 import CreateJudges from './components/CreateJudges';
 import EditRubrics from './components/EditRubrics';
 import Timer from './components/Timer';
 import Schedule from './components/Schedule';
 import QuickLinks from './components/QuickLinks';
-const jsonWeb = require('jsonwebtoken');
 
 class App extends Component {
   constructor(props) {
