@@ -65,7 +65,7 @@ export default class TournamentDashboard extends Component {
     .catch( (err) => {
       console.log(err);
     });
-    this.setState(this.state);
+    await this.setState(this.state);
     this.state.dbtournresults.headReferee.forEach( async (item, i) => {
       await axios.get(`/api/users/${item}`)
       .then( (res) => {
@@ -74,7 +74,7 @@ export default class TournamentDashboard extends Component {
       .catch( (err) => {
         console.log(err);
       });
-      this.setState(this.state);
+      await this.setState(this.state);
     });
     this.state.dbtournresults.judgeAdvisor.forEach( async (item, i) => {
       await axios.get(`/api/users/${item}`)
@@ -84,7 +84,7 @@ export default class TournamentDashboard extends Component {
       .catch( (err) => {
         console.log(err);
       });
-      this.setState(this.state);
+      await this.setState(this.state);
     });
     this.state.dbtournresults.judges.forEach( async (item, i) => {
       await axios.get(`/api/users/${item}`)
@@ -94,7 +94,7 @@ export default class TournamentDashboard extends Component {
       .catch( (err) => {
         console.log(err);
       });
-      this.setState(this.state);
+      await this.setState(this.state);
     });
     this.state.dbtournresults.referees.forEach( async (item, i) => {
       await axios.get(`/api/users/${item}`)
@@ -104,7 +104,7 @@ export default class TournamentDashboard extends Component {
       .catch( (err) => {
         console.log(err);
       });
-      this.setState(this.state);
+      await this.setState(this.state);
     });
     this.state.dbtournresults.viewOnlyVols.forEach( async (item, i) => {
       await axios.get(`/api/users/${item}`)
@@ -114,7 +114,7 @@ export default class TournamentDashboard extends Component {
       .catch( (err) => {
         console.log(err);
       });
-      this.setState(this.state);
+      await this.setState(this.state);
     });
     this.state.dbtournresults.teams.forEach( async (item, i) => {
       await axios.get(`/api/teams/${item}`)
@@ -124,7 +124,7 @@ export default class TournamentDashboard extends Component {
       .catch( (err) => {
         console.log(err);
       });
-      this.setState(this.state);
+      await this.setState(this.state);
     });
 
     if (this.state.dbtournresults.director === this.state.dbresults._id) {
@@ -171,7 +171,7 @@ export default class TournamentDashboard extends Component {
       <Container style={{paddingLeft: 0, marginLeft: 0}}>
         <Row>
           <Col style={{background: "#868e96", height: "100vh"}}>
-            <div className="pl-3 pt-2" >
+            <div className="pl-3 pt-2">
               <h1>{this.state.dbtournresults.name}</h1>
               <hr />
               <h3>{new Date(this.state.dbtournresults.startDate).toLocaleDateString()} - {new Date(this.state.dbtournresults.endDate).toLocaleDateString()}</h3>

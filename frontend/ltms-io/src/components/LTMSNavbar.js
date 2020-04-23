@@ -38,7 +38,7 @@ class LTMSNavbar extends Component {
                 <img data-test="theRealProfilePic" src={this.state.dbresults.profilePic.imgUrl} alt="profile" width="30" height="30" className="d-inline-block align-top" />
               </Navbar.Brand>
             )}
-            <NavDropdown alignRight title="Menu">
+            <NavDropdown className="pl-3"alignRight title="Menu">
               <NavDropdown.Item data-test="theQuickLinksOption" href="/quicklinks">Quick Links</NavDropdown.Item>
               {((this.props.auth && this.props.auth.isAuthenticated()) || (this.props.testAuthorized)) && (
                 <NavDropdown.Item data-test="theCreateTournamentOption" href="/createtournament">Create a Tournament</NavDropdown.Item>

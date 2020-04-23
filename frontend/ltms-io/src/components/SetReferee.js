@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Form, Button } from 'react-bootstrap';
 import PropTypes from "prop-types";
+import jsonWeb from 'jsonwebtoken';
 
 class SetReferee extends Component {
   constructor(props) {
@@ -9,9 +10,9 @@ class SetReferee extends Component {
 
     this.state = {
       tourneyId: this.props.match.params.tourneyId,
+      uid: "",
       dbresults: {},
       dbtournresults: {},
-      authresults: {},
       isAuthorized: false
     };
 
@@ -19,9 +20,29 @@ class SetReferee extends Component {
     this.updateState = this.updateState.bind(this);
   }
 
+  async updateState() {
+    if (document.cookie.length) {
+      var token = document.cookie.substring(13);
+      var decoded = jsonWeb.verify(token, "123456");
+
+      await this.setState({
+        dbresults: decoded,
+        uid: decoded.auth0id
+      });
+    }
+
+    await axios.get(`/api/tournaments/${this.state.tourneyId}`)
+    .then( async (result) => {
+      await this.setState({
+        dbtournresults: result.data
+      });
+    }).catch( (error) => {
+      console.log(error);
+    });
+  }
+
   async handleSubmit(e) {
     e.preventDefault();
-    alert(e.target.elements.users.value);
     let strings = e.target.elements.users.value.split(",");
     let ids = [];
     let message = "";
@@ -66,45 +87,10 @@ class SetReferee extends Component {
     alert(message);
   }
 
-  async updateState() {
-    await axios({
-      method: 'GET',
-      url: `https://dev-s68c-q-y.auth0.com/userinfo`,
-      headers: {
-        'content-type': 'application/json',
-        'authorization': 'Bearer ' + localStorage.getItem("access_token")
-      },
-      json: true
-    })
-    .then( (result) => {
-      this.state.authresults = result.data;
-    })
-    .catch( (error) => {
-      console.log(error);
-    });
-
-    await axios.post(`/api/users/getuser`, {
-      auth0id: this.state.authresults.sub
-    }).then ( (result) => {
-        this.state.dbresults = result.data;
-    }).catch( (error) => {
-        console.log(error);
-    });
-
-    await axios.get(`/api/tournaments/${this.state.tourneyId}`)
-    .then( (result) => {
-        this.state.dbtournresults = result.data;
-    }).catch( (error) => {
-        console.log(error);
-    });
-
-    this.setState(this.state);
-  }
-
   render() {
     return(
-      <div data-test="theComponent">
-        <h1 data-test="theMainHeader">Set Referee for {this.state.dbtournresults.name}</h1>
+      <div data-test="theComponent" className="pl-3 pr-3 pt-2">
+        <h1 data-test="theMainHeader">Set Referees for Tournament "{this.state.dbtournresults.name}"</h1>
         <div>
           {this.state.isAuthorized && (
             <Form data-test="theForm" onSubmit={this.handleSubmit}>
