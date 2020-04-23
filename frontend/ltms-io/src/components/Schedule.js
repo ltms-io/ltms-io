@@ -208,7 +208,7 @@ class Schedule extends React.Component {
 
     render() {
         return (
-            <div>
+            <div data-test="theSchedule">
                 {!this.state.disabled && (
                 <Form onSubmit={this.handleSchedule}>
                     <Row>

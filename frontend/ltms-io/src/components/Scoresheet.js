@@ -8,6 +8,7 @@ class Sheet extends React.Component{
   constructor(props){
     super(props);
     this.state = {
+      tourneyId: this.props.match.params.tourneyId,
       modal: false,
       team: 0,
       readOnly: false,
@@ -26,6 +27,45 @@ class Sheet extends React.Component{
     this.handleScoreSelect = this.handleScoreSelect.bind(this);
     this.handleTeam = this.handleTeam.bind(this);
     this.changeTeam = this.changeTeam.bind(this);
+    this.autoPopulate = this.autoPopulate.bind(this);
+
+  }
+
+  autoPopulate(e) {
+    e.preventDefault();
+
+    axios.get(`/api/tournaments/5ea207a2b67532364020b8e0/scores/5ea21339b67532364020b8e2`).then(result => {
+      var event = JSON.parse(result.data.rawData);
+      var newArray = [];
+      for(var i = 0; i < event.length; i++) {
+        var score;
+        if(event[i].explicitType === "Yes/No"){
+          score = <div>
+                    <Dropdown.Item key="yes" eventKey={"y0"}>Yes</Dropdown.Item>
+                    <Dropdown.Item key="no" eventKey={"n0"}>No</Dropdown.Item>
+                  </div>
+        }else{
+          score = <div>
+                    <Dropdown.Item key="1" eventKey={"11"}>1</Dropdown.Item>
+                    <Dropdown.Item key="2" eventKey={"21"}>2</Dropdown.Item>
+                    <Dropdown.Item key="3" eventKey={"31"}>3</Dropdown.Item>
+                    <Dropdown.Item key="4" eventKey={"41"}>4</Dropdown.Item>
+                    <Dropdown.Item key="5" eventKey={"51"}>5</Dropdown.Item>
+                  </div>
+        }
+        var cate = event[i].categ.props.value
+        newArray.push({
+          categ: <Form.Control type = "text" defaultValue = {cate} readOnly={false}/>,
+          scoretype: score,
+          tempScore: "Score",
+          explicitType: event[i].explicitType
+        })
+      }
+
+      this.setState({events: newArray});
+    }).catch(err => {
+      console.log(err);
+    })
   }
 
   handleScoreSelect(eventKey){
@@ -91,7 +131,7 @@ class Sheet extends React.Component{
     }
 
     newArray.push({
-      categ: <Form.Control type = "text" value = {cate}/>,
+      categ: <Form.Control type = "text" defaultValue = {cate} />,
       scoretype: score,
       tempScore: "Score",
       explicitType: this.state.scoreType
@@ -145,6 +185,9 @@ class Sheet extends React.Component{
       }else if(this.state.events[i].tempScore === "No"){
         continue;
       }else{
+        if(this.state.events[i].tempScore === "Score"){
+          continue;
+        }
         score += parseInt(this.state.events[i].tempScore, 10);
       }
 
@@ -195,6 +238,9 @@ class Sheet extends React.Component{
               <Button variant = "outline-primary" type="submit">
                 Set Team
               </Button>
+            </Col>
+            <Col>
+              <Button variant = "outline-primary" onClick={this.autoPopulate}>Auto Populate Score Sheet</Button>
             </Col>
             <Col>
               <Button variant = "outline-danger" onClick={this.changeTeam}>
