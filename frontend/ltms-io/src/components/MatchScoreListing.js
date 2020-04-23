@@ -48,14 +48,14 @@ export default class MatchScoreListing extends Component {
 
   render() {
     return (
-      <div>
-        <h1 className="text-center">Match Scores</h1>
+      <div className="pl-3 pr-3 pt-2">
+        <h1 className="pl-1">Match Scores</h1>
         {this.state.dbscoreresults && (
           <ListGroup>
             {this.state.dbscoreresults.map( (item, i) => {
               return (
                 <ListGroup.Item action href={`/t/${this.state.tourneyId}/editscore/${item._id}`}>
-                  <h4>Match: {item._id}</h4>
+                  <h4>Match ID: {item._id}</h4>
                   <hr />
                   <h5>Final Score: {item.finalScore}</h5>
                   <h5 className="text-right">Team: {item.teamNum}</h5>
