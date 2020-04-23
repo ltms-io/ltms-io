@@ -419,6 +419,23 @@ router.patch('/setofficialevent/:id', (req, res) => {
         tournament.save().then((tournament) => res.send(tournament)).catch((err) => console.log(err));
     });
 });
+// Drops team and turn it to NULL. If NULL exists, delete both teams
+
+router.patch('/teamdrop/:id/:teamid', (req, res) => {
+    Tournament.findById(req.params.id).then(tournament => {
+        if(!tournament){
+            return res.status(404).send("tournament not found");
+        }
+        for(let index = 0; index < tournament.teams.length; index++)
+        {
+            if(tournament.teams[index] == req.params.teamid)
+            {
+                tournament.teams[index] = "NULL";
+            }
+        }
+        tournament.save().then((tournament) => res.send(tournament)).catch((err) => console.log(err));
+    })
+})
 
 //update a score given tourney and score ids
 router.patch('/:id/scores/:scoreid', (req, res) => {

@@ -22,10 +22,14 @@ import axios from 'axios';
 import RoleChange from './components/RoleChange';
 import SortTeams from './components/SortTeams';
 import CreateTeam from './components/CreateTeam';
+import CreateT from './components/CreateT';
 import viewRubric from './components/ViewRubrics';
 import CreateJudges from './components/CreateJudges';
+import EditRubrics from './components/EditRubrics';
+import Timer from './components/Timer';
 import Schedule from './components/Schedule';
 import QuickLinks from './components/QuickLinks';
+const jsonWeb = require('jsonwebtoken');
 
 class App extends Component {
   constructor(props) {
@@ -60,6 +64,8 @@ class App extends Component {
             <Route path="/createtournament" component={CreateTournament} />
             <Route path="/createteam/:tourneyId" component={CreateTeam} />
             <Route path="/viewrubrics/:tourneyId" component={viewRubric} />
+            <Route path="/editrubrics/:teamId/:email/:uniqueID/:username/:tourneyId" component={EditRubrics} />
+            <Route path="/timer" component={Timer} />
             <Route path="/createjudge/:tourneyId" component={CreateJudges} />
             <Route path="/accountdetails" component={() => <AccountDetails auth={this.props.auth} />} />
             <Route path="/createscoresheet/:tourneyId" component={ Sheet }/>

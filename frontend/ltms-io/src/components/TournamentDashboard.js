@@ -280,6 +280,9 @@ export default class TournamentDashboard extends Component {
               <Link className="pl-1 pr-1" to={"/viewrubrics/" + this.state.tourneyId}>
                 <Button className="mb-1" disabled={!this.state.viewRubricsAuthorized}>View Rubrics</Button>
               </Link>
+              <Link className="pl-1 pr-1" to={"/editrubrics/" + this.state.tourneyId}>
+                <Button className="mb-1" disabled={!this.state.viewRubricsAuthorized}>Edit Rubrics</Button>
+              </Link>
               <Link className="pl-1 pr-1" to={"/t/" + this.state.tourneyId + "/mscores"}>
                 <Button className="mb-1" disabled={!this.state.setRefereeAuthorized}>View Match Scores</Button>
               </Link>
@@ -295,6 +298,9 @@ export default class TournamentDashboard extends Component {
               <h3 className="pb-1">Timekeeping</h3>
               <Link className="pl-1 pr-1" to={"/tournamentschedule/" + this.state.tourneyId}>
                 <Button className="mb-1" disabled={!this.state.createTeamAuthorized}>Generate Schedule</Button>
+              </Link>
+              <Link className="pl-1 pr-1" to={"/timer/"}>
+                  <Button className="mb-1">Timer</Button>
               </Link>
             </div>
           </Col>
