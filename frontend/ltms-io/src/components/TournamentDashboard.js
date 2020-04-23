@@ -278,6 +278,9 @@ export default class TournamentDashboard extends Component {
               <Link className="pl-1 pr-1" to={"/matchranking/" + this.state.tourneyId}>
                 <Button disabled={!true}>See Tournament Rankings</Button>
               </Link>
+              <Link className="pl-1 pr-1" to={"/createscoresheet/" + this.state.tourneyId}>
+                <Button disabled={!true}>Create Scoresheet</Button>
+              </Link>
             </div>
           </Col>
         </Row>

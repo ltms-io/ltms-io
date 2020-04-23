@@ -1,6 +1,7 @@
 import React from 'react';
 import {Form, Button, Col, Row, DropdownButton, Dropdown} from 'react-bootstrap';
 import axios from 'axios';
+const jsonWeb = require('jsonwebtoken');
 
 class Sheet extends React.Component{
 
@@ -8,6 +9,10 @@ class Sheet extends React.Component{
   constructor(props){
     super(props);
     this.state = {
+      tourneyId: this.props.match.params.tourneyId,
+      uid: "",
+      dbresults: {},
+      dbtournresults: {},
       modal: false,
       team: 0,
       readOnly: false,
@@ -28,44 +33,36 @@ class Sheet extends React.Component{
     this.changeTeam = this.changeTeam.bind(this);
   }
 
-  handleScoreSelect(eventKey){
-
-    if(eventKey === "yes"){
-      this.setState({scoreType: "Yes/No"});
-    }else{
-      this.setState({scoreType: "1-5"});
+  async handleScoreSelect(eventKey) {
+    if (eventKey === "yes") {
+      await this.setState({scoreType: "Yes/No"});
     }
-
+    else {
+      await this.setState({scoreType: "1-5"});
+    }
   }
 
   //function to allow edits to team scored
-  changeTeam(e) {
-
-    this.setState({readOnly: false});
-
+  async changeTeam(e) {
+    await this.setState({readOnly: false});
   }
 
   //function saves the team being scored
-  handleTeam(e) {
-
+  async handleTeam(e) {
     e.preventDefault();
-
     if(e.target.elements.teamName.value !== ""){
-      this.setState({team: e.target.elements.teamName.value});
-      this.setState({readOnly: true});
+      await this.setState({team: e.target.elements.teamName.value});
+      await this.setState({readOnly: true});
     }
-
   }
 
   //function to handle the calculate score call
-  handleInsert(e) {
-
+  async handleInsert(e) {
     e.preventDefault()
-
-    if(e.target.elements.category.value === "") {
+    if (e.target.elements.category.value === "") {
       return;
     }
-    if(this.state.scoreType === "Score Type"){
+    if (this.state.scoreType === "Score Type") {
       return;
     }
 
@@ -75,12 +72,13 @@ class Sheet extends React.Component{
     var score;
     var eventKey = (this.state.index).toString();
 
-    if(this.state.scoreType === "Yes/No"){
+    if (this.state.scoreType === "Yes/No") {
       score = <div>
                 <Dropdown.Item key="yes" eventKey={"y"+eventKey}>Yes</Dropdown.Item>
                 <Dropdown.Item key="no" eventKey={"n"+eventKey}>No</Dropdown.Item>
               </div>
-    }else{
+    }
+    else{
       score = <div>
                 <Dropdown.Item key="1" eventKey={"1"+eventKey}>1</Dropdown.Item>
                 <Dropdown.Item key="2" eventKey={"2"+eventKey}>2</Dropdown.Item>
@@ -97,40 +95,38 @@ class Sheet extends React.Component{
       explicitType: this.state.scoreType
     })
 
-    this.setState({events: newArray});
-    var index = this.state.index+1;
-    this.setState({index: index});
-    this.setState({scoreType: "Score Type"})
+    await this.setState({events: newArray});
+    var index = this.state.index + 1;
+    await this.setState({index: index});
+    await this.setState({scoreType: "Score Type"})
   }
 
   //function to save the score type for a specific category
-  handleChange(eventKey){
-
+  async handleChange(eventKey){
     console.log(this.state.events[parseInt(eventKey.substring(1), 10)].tempScore);
     console.log(eventKey);
     var newArray = [...this.state.events];
 
-    if(eventKey.substring(0,1) === "y" || eventKey.substring(0,1) === "n"){
-
-      if(eventKey.substring(0,1) === "y"){
+    if (eventKey.substring(0,1) === "y" || eventKey.substring(0,1) === "n") {
+      if (eventKey.substring(0,1) === "y") {
         newArray[parseInt(eventKey.substring(1), 10)].tempScore = "Yes";
-      }else{
+      }
+      else {
         newArray[parseInt(eventKey.substring(1), 10)].tempScore = "No";
       }
-
-    }else{
+    }
+    else {
       newArray[parseInt(eventKey.substring(1), 10)].tempScore = eventKey.substring(0,1);
     }
 
-    this.setState({events: newArray});
+    await this.setState({events: newArray});
   }
 
   //function to calculate team score
-  handleCalculate(e){
-
+  async handleCalculate(e){
     e.preventDefault();
 
-    if(this.state.readOnly === false){
+    if (this.state.readOnly === false) {
       alert("Please set the team being scored");
       return;
     }
@@ -138,92 +134,115 @@ class Sheet extends React.Component{
     var index = this.state.index;
     var score = 0;
 
-    for(var i = 0; i<index; i++){
+    for (var i = 0; i < index; i++) {
 
-      if(this.state.events[i].tempScore === "Yes"){
+      if (this.state.events[i].tempScore === "Yes") {
         score += 5;
-      }else if(this.state.events[i].tempScore === "No"){
+      }
+      else if (this.state.events[i].tempScore === "No") {
         continue;
-      }else{
+      }
+      else {
         score += parseInt(this.state.events[i].tempScore, 10);
       }
-
     }
 
-    this.setState({finalscore: score});
+    await this.setState({finalscore: score});
 
     var fixedCats = [];
     var fixedScores = [];
-    this.state.events.forEach(event => {
+    this.state.events.forEach( (event) => {
       fixedCats.push(event.categ.props.value);
       fixedScores.push(event.tempScore);
     });
 
-    alert("submitting");
-
-    axios.post("/api/tournaments/score", {
-      id: "5e7a5410be7af1ae4acc6314",
+    await axios.post("/api/tournaments/score", {
+      id: this.state.tourneyId,
       fieldTypes: fixedCats,
       fieldValues: fixedScores,
       teamNum: this.state.team,
       scoreType: "match",
       finalScore: score,
       rawData: JSON.stringify(this.state.events)
-    }).then(res => {
-      alert("done submitting");
-    }).catch(err => {
-      console.log(err);
     })
+    .catch( (err) => {
+      console.log(err);
+    });
+  }
+
+  async componentDidMount() {
+    if (document.cookie.length) {
+      var token = document.cookie.substring(13);
+      var decoded = jsonWeb.verify(token, "123456");
+
+      await this.setState({
+        dbresults: decoded,
+        uid: decoded.auth0id
+      });
+    }
+
+    await axios.get(`/api/tournaments/${this.state.tourneyId}`)
+    .then( async (result) => {
+      await this.setState({
+        dbtournresults: result.data
+      });
+    }).catch( (error) => {
+      console.log(error);
+    });
+
+    if (this.state.dbtournresults.director === this.state.dbresults._id ||
+        this.state.dbtournresults.judgeAdvisor.includes(this.state.dbresults._id)) {
+      await this.setState({
+        isAuthorized: true
+      });
+    }
+
+    console.log("INITIAL VIEW RUBRICS STATE", this.state);
   }
 
   //render function
   render(){
-    console.log(this.state);
-
     return(
-      <div>
-        <h2>NOTE: All scores are entered into event 5e7a5410be7af1ae4acc6314 for use in testing modify scores UI</h2>
+      <div className="pl-3 pr-3 pt-2">
+        <h1>Create Scoresheet for Tournament "{this.state.dbtournresults.name}"</h1>
         <h3>Enter Team</h3>
-        <Form onSubmit={this.handleTeam}>
-          <Row>
-            <Col>
-          <Form.Group controlId = "teamName">
-            <Form.Control type = "text" placeholder = "Team" readOnly={this.state.readOnly}/>
-          </Form.Group>
-            </Col>
-            <Col>
-              <Button variant = "outline-primary" type="submit">
-                Set Team
-              </Button>
-            </Col>
-            <Col>
-              <Button variant = "outline-danger" onClick={this.changeTeam}>
-                Change Team
-              </Button>
-            </Col>
-          </Row>
-        </Form>
-        <Form onSubmit={this.handleInsert}>
-          <h3>Add a category</h3>
-          <Row>
-            <Col>
-              <Form.Group controlId = "category">
-                <Form.Control type = "text" placeholder = "Category"/>
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group controlId = "score">
-                <DropdownButton title={this.state.scoreType} onSelect={this.handleScoreSelect}>
-                  <Dropdown.Item key="yes" eventKey="yes">Yes/No</Dropdown.Item>
-                  <Dropdown.Item key="15" eventKey="15">1-5</Dropdown.Item>
-                </DropdownButton>
-              </Form.Group>
-            </Col>
-          </Row>
-          <Button variant = "outline-primary" type = "submit">
-            Add Category
-          </Button>
-        </Form>
+        <div className="pb-2">
+          <Form onSubmit={this.handleTeam}>
+            <Form.Group controlId="teamName">
+              <Form.Control type="text" placeholder="Team" readOnly={this.state.readOnly}/>
+            </Form.Group>
+            <Button className="mr-1" variant="primary" type="submit">
+              Set Team
+            </Button>
+            <Button className="ml-1" variant="danger" onClick={this.changeTeam}>
+              Change Team
+            </Button>
+          </Form>
+        </div>
+        <hr />
+        <div className="pb-2">
+          <Form onSubmit={this.handleInsert}>
+            <h3>Add a category</h3>
+            <Row>
+              <Col>
+                <Form.Group controlId = "category">
+                  <Form.Control type = "text" placeholder = "Category"/>
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group controlId = "score">
+                  <DropdownButton title={this.state.scoreType} onSelect={this.handleScoreSelect}>
+                    <Dropdown.Item key="yes" eventKey="yes">Yes/No</Dropdown.Item>
+                    <Dropdown.Item key="15" eventKey="15">1-5</Dropdown.Item>
+                  </DropdownButton>
+                </Form.Group>
+              </Col>
+            </Row>
+            <Button variant = "primary" type = "submit">
+              Add Category
+            </Button>
+          </Form>
+        </div>
         <Form>
           {this.state.events.map(event => (
             <Row>
@@ -243,12 +262,12 @@ class Sheet extends React.Component{
           ))}
         </Form>
         <Form>
-          <Button variant = "outline-primary" onClick={this.handleCalculate}>
-            Calculate Score
+          <Button className="mb-2" variant="primary" onClick={this.handleCalculate}>
+            Calculate and Submit Score
           </Button>
           <Row>
-            <Col xs = "2">
-            <Form.Control type = "text" value = {"Final Score: " + this.state.finalscore} readOnly = {true}/>
+            <Col xs="2">
+              <Form.Control type = "text" value = {"Final Score: " + this.state.finalscore} readOnly = {true}/>
             </Col>
           </Row>
         </Form>
