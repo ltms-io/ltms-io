@@ -172,9 +172,6 @@ export default class ModifySchedule extends Component {
           min -= 60;
           hour++;
         }
-        if(hour > 12) {
-          hour -= 12;
-        }
       }
     }
 
