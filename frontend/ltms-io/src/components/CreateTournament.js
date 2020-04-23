@@ -28,24 +28,25 @@ export default class CreateEvent extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChange = event => {
+    async handleChange(event) {
         const name = event.target.name;
         const value = event.target.value;
-        this.setState({ [name]: value });
+        await this.setState({ [name]: value });
     }
 
-    handleSubmit = event => {
+    async handleSubmit(event) {
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
             event.preventDefault();
             event.stopPropagation();
-            this.setState({validated: true});
-        } else {
+            await this.setState({validated: true});
+        }
+        else {
             event.preventDefault();
-          
+
             var token = document.cookie.substring(13);
             var decoded = jsonWeb.verify(token, "123456");
-            axios.post("/api/tournaments/register", {
+            await axios.post("/api/tournaments/register", {
                 auth0id: decoded.auth0id, //TODO: add director from authed user
                 name: this.state.tourneyName,
                 teams: "",
@@ -56,10 +57,12 @@ export default class CreateEvent extends Component {
                 matchesPerTeam: this.state.numMatches,
                 startDate: this.state.date,
                 endDate: this.state.date
-            }).then(res => {
+            })
+            .then(res => {
                 console.log(res);
                 window.location = '/dashboard';
-            }).catch(err => {
+            })
+            .catch(err => {
                 console.log(err);
             })
         }
@@ -67,9 +70,8 @@ export default class CreateEvent extends Component {
 
     render() {
         return (
-            <Container>
-                {/* <Row><Col> */}
-                <h2 className="mb-4">Create a Tournament</h2>
+            <Container className="pl-3 pr-3 pt-2">
+                <h2 className="mb-4 text-center">Create a Tournament</h2>
                 <Form noValidate validated={this.state.validated} onSubmit={this.handleSubmit}>
                     <Row className="mt-5">
                         <Col>
@@ -144,14 +146,15 @@ export default class CreateEvent extends Component {
 
                         <Col>
                             <h3>Teams</h3>
-                            <Form.Group as={Row} controlId="formGridInputTeams">
+                            <Form.Group className="pl-3" as={Row} controlId="formGridInputTeams">
                                 <Form.Label>Team Input</Form.Label>
                                 <Form.Control disabled as="textarea" placeholder="Coming Soon" />
                             </Form.Group>
                         </Col>
                     </Row>
-
-                    <Button className="mt-5" type="submit">Create Event!</Button>
+                    <div className="text-center">
+                      <Button className="mt-5" type="submit">Create Event!</Button>
+                    </div>
                 </Form>
                 {/* </Col></Row> */}
             </Container>
