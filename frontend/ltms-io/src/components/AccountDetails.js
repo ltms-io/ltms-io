@@ -61,18 +61,19 @@ class AccountDetails extends Component {
 
   render() {
     return(
-      <div>
-        <h1>Edit Account Details</h1>
+      <div className="pl-3 pr-3 pt-2">
+        <h1 className="text-center pb-2">Edit Account Details</h1>
         <div>
           <Container>
             <Row>
               <Col>
                 <div>
                   <h3>Edit Profile Picture</h3>
-                  {this.state.dbresults.profilePic ? <img src={this.state.dbresults.profilePic.imgUrl} width="250" height="250" alt="account" /> : <img src={logo} width="250" height="250" alt="account" />}
+                  {(this.state.dbresults.profilePic && this.state.dbresults.profilePic.imgUrl.length !== 0) ? <img src={this.state.dbresults.profilePic.imgUrl} width="250" height="250" alt="account" /> : <img src={logo} width="250" height="250" alt="account" />}
                 </div>
+                <hr />
                 <div>
-                  <h3>Edit Name</h3>
+                  <h3 className="pb-1">Edit Name</h3>
                   <Form onSubmit={this.handleName}>
                     <Row>
                       <Col>
@@ -81,7 +82,7 @@ class AccountDetails extends Component {
                         </Form.Group>
                       </Col>
                     </Row>
-                    <Button variant="outline-primary" type="submit">
+                    <Button type="submit">
                       Submit
                     </Button>
                   </Form>
@@ -91,10 +92,11 @@ class AccountDetails extends Component {
                 <ResetLogin />
               </Col>
             </Row>
+            <hr />
           </Container>
         </div>
-        <div>
-          <Button variant="outline-danger" onClick={this.handleDelete}>
+        <div className="text-center">
+          <Button variant="danger" onClick={this.handleDelete}>
             Delete my Account
           </Button>
         </div>
