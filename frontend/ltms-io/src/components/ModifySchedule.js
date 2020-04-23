@@ -16,17 +16,20 @@ export default class ModifySchedule extends Component {
 
   findTeams(teamA, teamB, match) {
     var array = this.state.schedule.tableLayout;
-    var ret = new Array(2).fill(0);
+    var temp = parseInt(match, 10);
+    var ret = new Array(4).fill(0);
     var a = false;
     var b = false;
     for(var i = 0; i < array.length; i++) {
       for(var j = 0; j < array[i].length; j++) {
-        if(array[i][j].teamA === teamA || array[i][j].teamB === teamA) {
-          ret[0] = array[i][j].table
+        if((array[i][j].teamA === teamA || array[i][j].teamB === teamA) && array[i][j].match === temp) {
+          ret[0] = i;
+          ret[1] = j;
           a = true;
         }
-        if(array[i][j].teamA === teamB || array[i][j].teamB === teamB) {
-          ret[1] = array[i][j].table
+        if((array[i][j].teamA === teamB || array[i][j].teamB === teamB) && array[i][j].match === temp) {
+          ret[2] = i;
+          ret[3] = j;
           b = true;
         }
         if(a && b) {
