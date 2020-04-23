@@ -62,45 +62,28 @@ class Schedule extends React.Component {
   }
 
   async handleDrop(e) {
-      e.preventDefault()
-      console.log(this.state.teams)
+    e.preventDefault();
 
-      var sss = this.state.droppedTeams
-      var inTeams = false
-      var notInDroppedTeams = true
-      for(let index = 0; index < this.state.teams.length; index++)
-      {
-          if(this.state.teams[index].teamName === e.target.elements.teamDrops.value)
-          {
-              inTeams = true
-          }
+    var sss = this.state.droppedTeams
+    var inTeams = false
+    var notInDroppedTeams = true
+    for (let index = 0; index < this.state.teams.length; index++) {
+      if (this.state.teams[index].teamName === e.target.elements.teamDrops.value) {
+        inTeams = true
       }
-      for(let index = 0; index < this.state.droppedTeams.length; index++)
-      {
-          if(this.state.droppedTeams[index] === e.target.elements.teamDrops.value)
-          {
-              notInDroppedTeams = false
-          }
+    }
+    for (let index = 0; index < this.state.droppedTeams.length; index++) {
+      if (this.state.droppedTeams[index] === e.target.elements.teamDrops.value) {
+        notInDroppedTeams = false
       }
-      if((inTeams === true) && (notInDroppedTeams === true))
-      {
-          sss.push(e.target.elements.teamDrops.value)
-      }
-      this.setState({droppedTeams: sss});
+    }
+    if ((inTeams === true) && (notInDroppedTeams === true)) {
+      sss.push(e.target.elements.teamDrops.value)
+    }
+    this.setState({droppedTeams: sss});
 
-      console.log(this.state.droppedTeams)
-      /*
-      var temp = [];
-      for(let index = 0; index < this.state.teams.length; index++)
-      {
-          if(this.state.teams[index].teamName != e.target.elements.teamDrops.value)
-          {
-              temp.push(this.state.teams[index])
-              console.log("YIPPY")
-          }
-      }
-      this.setState({teams: temp})
-      console.log(this.state.teams)*/
+    console.log(this.state.droppedTeams)
+
   }
 
   async handleSchedule(e) {
@@ -289,19 +272,21 @@ class Schedule extends React.Component {
               </Form>
             )}
 
-
             {this.state.disabled && (
-            <Form onSubmit={this.handleDrop}>
-                    <div>
-                    <Form.Group data-test="aCommentInput" controlId="teamDrops">
-                  <Form.Label>Team Name</Form.Label>
-                  <Form.Control as="textarea"/>
-                </Form.Group>
-                    </div>
-                    <Button type="submit">
-              Drop Team
-            </Button>
-                </Form>)}
+              <Form onSubmit={this.handleDrop}>
+                <hr/>
+                <h3 className="pb-1">Drop Team from Schedule</h3>
+                <div className="pb-1">
+                  <Form.Group data-test="aCommentInput" controlId="teamDrops">
+                    <Form.Label>Team Name</Form.Label>
+                    <Form.Control as="input"/>
+                  </Form.Group>
+                </div>
+                <Button type="submit">
+                  Drop Team
+                </Button>
+              </Form>
+            )}
           </div>
         )}
         {!this.state.isAuthorized && (
