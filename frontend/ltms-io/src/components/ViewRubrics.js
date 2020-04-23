@@ -9,6 +9,7 @@ class ViewRubrics extends Component {
 
     this.state = {
       filter: "all-teams",
+      uid: "",
       dbresults: {},
       dbteamsresults: [],
       dbtournresults: {},
@@ -19,22 +20,59 @@ class ViewRubrics extends Component {
     this.handleFilter = this.handleFilter.bind(this);
   }
 
-  handleFilter(e) {
+  async handleFilter(e) {
     e.preventDefault();
-    this.setState({
+    await this.setState({
       filter: e.target.elements.formFilter.value
     });
 
     console.log("UPDATED STATE", this.state);
   }
 
+  async componentDidMount() {
+    if (document.cookie.length) {
+      var token = document.cookie.substring(13);
+      var decoded = jsonWeb.verify(token, "123456");
+
+      await this.setState({
+        dbresults: decoded,
+        uid: decoded.auth0id
+      });
+    }
+
+    await axios.get(`/api/teams/tournid/${this.state.tourneyId}`)
+    .then ( async (res) => {
+      await this.setState({
+        dbteamsresults: res.data
+      });
+    });
+
+    await axios.get(`/api/tournaments/${this.state.tourneyId}`)
+    .then( async (result) => {
+      await this.setState({
+        dbtournresults: result.data
+      });
+    }).catch( (error) => {
+      console.log(error);
+    });
+
+    if (this.state.dbtournresults.director === this.state.dbresults._id ||
+        this.state.dbtournresults.judgeAdvisor.includes(this.state.dbresults._id)) {
+      await this.setState({
+        isAuthorized: true
+      });
+    }
+
+    console.log("INITIAL VIEW RUBRICS STATE", this.state);
+  }
+
   render() {
     return (
-      <div data-test="theViewRubrics">
-        <h2 className="text-center pt-2">View Rubrics for "{this.state.dbtournresults.name}"</h2>
+      <div data-test="theViewRubrics" className="pl-3 pr-3 pt-2">
+        <h2 className="pt-2 pb-2">View Rubrics for Tournament "{this.state.dbtournresults.name}"</h2>
         {(this.state.isAuthorized) && (
           <div data-test="theFilter">
-            <div className="pl-2">
+            <div>
               <h3>Filter by Team</h3>
               <Form onSubmit={this.handleFilter}>
                 <Form.Group controlId="formFilter">
@@ -52,11 +90,12 @@ class ViewRubrics extends Component {
               </Form>
             </div>
             {this.state.filter === "all-teams" && (
-              <div data-test="theCards">
+              <div data-test="theCards" className="pb-3">
                 {this.state.dbteamsresults.map( (item1, i1) => {
                   return(
-                    <div className="pl-2" key={i1}>
-                      <h3>{item1.teamName}</h3>
+                    <div key={i1}>
+                      <hr />
+                      <h3 className="pb-2">{item1.teamName}</h3>
                       <CardColumns>
                         {item1.rubrics.map( (item2, i2) => {
                           return(
@@ -140,8 +179,9 @@ class ViewRubrics extends Component {
               </div>
             )}
             {this.state.filter !== "all-teams" && (
-              <div data-test="theCards" className="pl-2">
-                <h3>{this.state.dbteamsresults[parseInt(this.state.filter)].teamName}</h3>
+              <div data-test="theCards" className="pb-3">
+                <hr />
+                <h3 className="pb-2">{this.state.dbteamsresults[parseInt(this.state.filter)].teamName}</h3>
                 <CardColumns>
                   {this.state.dbteamsresults[parseInt(this.state.filter)].rubrics.map( (item2, i2) => {
                     return(
@@ -228,42 +268,6 @@ class ViewRubrics extends Component {
         )}
       </div>
     );
-  }
-
-  async componentDidMount() {
-    await axios.get(`/api/teams/tournid/${this.state.tourneyId}`)
-    .then ( (res) => {
-      this.state.dbteamsresults = res.data;
-    });
-
-    await axios.get(`/api/tournaments/${this.state.tourneyId}`)
-    .then( (result) => {
-      this.state.dbtournresults = result.data;
-    }).catch( (error) => {
-      console.log(error);
-    });
-
-    if (document.cookie.length) {
-      var token = document.cookie.substring(13);
-      var decoded = jsonWeb.verify(token, "123456");
-
-      this.state.dbresults = decoded;
-    }
-
-    if (this.state.dbtournresults.director === this.state.dbresults._id) {
-      this.state.isAuthorized = true;
-    }
-    else {
-      for (var i = 0; i < this.state.dbtournresults.judgeAdvisor.length; i++) {
-        if (this.state.dbtournresults.judgeAdvisor[i] === this.state.dbresults._id) {
-          this.state.isAuthorized = true;
-        }
-      }
-    }
-
-    this.setState(this.state);
-
-    console.log("INITIAL VIEW RUBRICS STATE", this.state);
   }
 }
 

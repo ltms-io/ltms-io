@@ -145,7 +145,7 @@ class RubricEntry extends Component {
 
     await axios.get(`/api/tournaments/${this.state.tourneyId}`)
     .then( async (result) => {
-      this.setState({
+      await this.setState({
         dbtournresults: result.data
       });
     })
@@ -155,7 +155,7 @@ class RubricEntry extends Component {
 
     await axios.get(`/api/teams/${this.state.teamId}`)
     .then( async (result) => {
-      this.setState({
+      await this.setState({
         dbteamresults: result.data
       });
     })
@@ -165,19 +165,19 @@ class RubricEntry extends Component {
 
     if (this.state.dbtournresults.director === this.state.dbresults._id ||
         this.state.dbtournresults.judgeAdvisor.includes(this.state.dbresults._id)) {
-      this.setState({
+      await this.setState({
         isAuthorized: true,
         isSendAuthorized: true
       });
     }
     if (this.state.dbtournresults.judges.includes(this.state.dbresults._id)) {
-      this.setState({
+      await this.setState({
         isAuthorized: true
       });
     }
 
     if (this.state.isSendAuthorized) {
-      this.setState({
+      await this.setState({
         dbrubricsresults: this.state.dbteamresults.rubrics
       });
     }
@@ -188,7 +188,7 @@ class RubricEntry extends Component {
           rubrics.push(item);
         }
       });
-      this.setState({
+      await this.setState({
         dbrubricsresults: rubrics
       });
     }
