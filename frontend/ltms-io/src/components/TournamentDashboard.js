@@ -239,13 +239,13 @@ export default class TournamentDashboard extends Component {
             <div>
               <h3 className="pb-1">User Management</h3>
               <Link className="pl-1 pr-1" to={"/setreferee/" + this.state.tourneyId}>
-                <Button disabled={!this.state.setRefereeAuthorized}>Set Referees</Button>
+                <Button className="mb-1" disabled={!this.state.setRefereeAuthorized}>Set Referees</Button>
               </Link>
               <Link className="pl-1 pr-1" to={"/createjudge/" + this.state.tourneyId}>
-                <Button disabled={!this.state.viewRubricsAuthorized}>Set Judges</Button>
+                <Button className="mb-1" disabled={!this.state.viewRubricsAuthorized}>Set Judges</Button>
               </Link>
               <Link className="pl-1 pr-1" to={"/createteam/" + this.state.tourneyId}>
-                <Button disabled={!this.state.createTeamAuthorized}>Create Team</Button>
+                <Button className="mb-1" disabled={!this.state.createTeamAuthorized}>Create Team</Button>
               </Link>
               <hr />
             </div>
@@ -270,16 +270,16 @@ export default class TournamentDashboard extends Component {
             <div>
               <h3 className="pb-1">Rubric & Score Management</h3>
               <Link className="pl-1 pr-1" to={"/viewrubrics/" + this.state.tourneyId}>
-                <Button disabled={!this.state.viewRubricsAuthorized}>View Rubrics</Button>
+                <Button className="mb-1" disabled={!this.state.viewRubricsAuthorized}>View Rubrics</Button>
               </Link>
               <Link className="pl-1 pr-1" to={"/t/" + this.state.tourneyId + "/mscores"}>
-                <Button disabled={!this.state.setRefereeAuthorized}>See Scores</Button>
+                <Button className="mb-1" disabled={!this.state.setRefereeAuthorized}>View Match Scores</Button>
               </Link>
               <Link className="pl-1 pr-1" to={"/matchranking/" + this.state.tourneyId}>
-                <Button disabled={!true}>See Tournament Rankings</Button>
+                <Button className="mb-1" disabled={!true}>See Tournament Rankings</Button>
               </Link>
               <Link className="pl-1 pr-1" to={"/createscoresheet/" + this.state.tourneyId}>
-                <Button disabled={!true}>Create Scoresheet</Button>
+                <Button className="mb-1" disabled={!true}>Create Scoresheet</Button>
               </Link>
             </div>
           </Col>

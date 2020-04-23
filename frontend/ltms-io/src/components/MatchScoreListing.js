@@ -11,6 +11,7 @@ export default class MatchScoreListing extends Component {
       tourneyId: this.props.match.params.tourneyId,
       uid: "",
       dbresults: {},
+      dbtournresults: {},
       dbscoreresults: []
     }
 
@@ -27,6 +28,16 @@ export default class MatchScoreListing extends Component {
         uid: decoded.auth0id
       });
     }
+
+    await axios.get(`/api/tournaments/${this.state.tourneyId}`)
+    .then( async (result) => {
+      await this.setState({
+        dbtournresults: result.data
+      });
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
 
     await axios.get(`/api/tournaments/${this.state.tourneyId}/scores`)
     .then( async (res) => {
@@ -49,7 +60,7 @@ export default class MatchScoreListing extends Component {
   render() {
     return (
       <div className="pl-3 pr-3 pt-2">
-        <h1 className="pl-1">Match Scores</h1>
+        <h1 className="pl-1 pb-2">View Match Scores for Tournament "{this.state.dbtournresults.name}"</h1>
         {this.state.dbscoreresults && (
           <ListGroup>
             {this.state.dbscoreresults.map( (item, i) => {
@@ -58,7 +69,7 @@ export default class MatchScoreListing extends Component {
                   <h4>Match ID: {item._id}</h4>
                   <hr />
                   <h5>Final Score: {item.finalScore}</h5>
-                  <h5 className="text-right">Team: {item.teamNum}</h5>
+                  <h5 className="text-right">Team #{item.teamNum}</h5>
                 </ListGroup.Item>
               );
             })}
