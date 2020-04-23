@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Form, Button, Col, Row, DropdownButton, Dropdown} from 'react-bootstrap';
+import {Form, Button, Col, Row} from 'react-bootstrap';
 import axios from 'axios';
 
 export default class ModifySchedule extends Component {
@@ -12,6 +12,7 @@ export default class ModifySchedule extends Component {
     }
 
     this.handleSwitch = this.handleSwitch.bind(this);
+    this.moveBackTime = this.moveBackTime.bind(this);
   }
 
   findTeams(teamA, teamB, match) {
@@ -83,7 +84,122 @@ export default class ModifySchedule extends Component {
 
     var ans = this.findTeams(teamA, teamB, match);
     console.log(ans);
+
+    var tabArray = this.state.schedule.tableLayout;
+
+    if(tabArray[ans[0]][ans[1]].teamA === teamA) {
+      tabArray[ans[0]][ans[1]].teamA = teamB;
+    } else {
+      tabArray[ans[0]][ans[1]].teamB = teamB;
+    }
+
+    if(tabArray[ans[2]][ans[3]].teamA === teamB) {
+      tabArray[ans[2]][ans[3]].teamA = teamA;
+    } else {
+      tabArray[ans[2]][ans[3]].teamB = teamA;
+    }
+
+    this.setState({tableLayout: tabArray});
+    console.log(this.state);
+
+    var match2 = [];
+    for(var k = 0; k < tabArray.length; k++) {
+      for(var m = 0; m < tabArray[k].length; m++) {
+        match2.push(tabArray[k][m]);
+      }
+    }
+
+    await axios.patch(`/api/tournament/${this.state.tourneyId}/schedule`, {
+      rawData: JSON.stringify(this.state.schedule),
+      match: match2
+    }).then(result => {
+        console.log(result);
+    }).catch(err => {
+        console.log(err);
+    });
     
+  }
+
+  async moveBackTime(e){
+    e.preventDefault();
+
+    if(!e.target.elements.oldTime.value || !e.target.elements.newTime.value) {
+      alert("Please enter old time and new time");
+      return;
+    }
+
+    var sched = this.state.schedule;
+
+    var array = this.state.schedule.tableLayout;
+    var oldTime = e.target.elements.oldTime.value;
+    var newTime = e.target.elements.newTime.value;
+    var cycleTime = this.state.schedule.cycleTime;
+
+    var i = 0;
+    var j = 0;
+    var isHere = false;
+    for(i = 0; i < array.length; i++) {
+      for(j = 0; j < array[i].length; j++) {
+        if(array[i][j].startTime === oldTime) {
+          isHere = true;
+          break;
+        }
+      }
+      if(isHere) {
+        break;
+      }
+    }
+
+    if(!isHere) {
+      alert("Match/Table does not exist");
+      return;
+    }
+
+    if(i === 0 && j === 0) {
+      sched.startTime = newTime;
+    }
+
+    var min = parseInt(newTime.substring(newTime.length-2), 10);
+    var hour = parseInt(newTime.substring(0, newTime.indexOf(":")));
+
+    for(var n = i; n < array.length; n++) {
+      for(var p = j; p < array[n].length; p++) {
+        j = 0;
+        var tempMin = "0" + min;
+        array[n][p].startTime = hour + ":" + tempMin.substring(tempMin.length - 2);
+        min += cycleTime;
+        if(min > 59) {
+          min -= 60;
+          hour++;
+        }
+        if(hour > 12) {
+          hour -= 12;
+        }
+      }
+    }
+
+    sched.tableLayout = array;
+
+    var match = [];
+    for(var k = 0; k < array.length; k++) {
+      for(var m = 0; m < array[k].length; m++) {
+        match.push(array[k][m]);
+      }
+    }
+
+    this.setState({schedule: sched});
+
+    await axios.patch(`/api/tournament/${this.state.tourneyId}/schedule`, {
+      rawData: JSON.stringify(this.state.schedule),
+      match: match,
+      startTime: this.state.schedule.startTime
+    }).then(result => {
+        console.log(result);
+    }).catch(err => {
+        console.log(err);
+    });
+
+
   }
 
   render() {
@@ -103,11 +219,30 @@ export default class ModifySchedule extends Component {
             </Col>
             <Col>
               <Form.Group controlId="match">
-                <Form.Control type="text" placeholder="match" />
+                <Form.Control type="text" placeholder="Match Number" />
               </Form.Group>
             </Col>
           </Row>
-          <Button variant="outline-primary" type="submit">Switch Teams</Button>
+          <Form.Group>
+            <Button variant="outline-primary" type="submit">Switch Teams</Button>
+          </Form.Group>
+        </Form>
+        <Form onSubmit={this.moveBackTime}>
+          <Row>
+            <Col>
+              <Form.Group controlId="oldTime">
+                <Form.Control type="text" placeholder="Original Start Time" />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group controlId="newTime">
+                <Form.Control type="text" placeholder="New Start Time" />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Form.Group>
+            <Button variant="outline-primary" type="submit">Change Match Time</Button>
+          </Form.Group>
         </Form>
       </div>
     );
@@ -115,11 +250,10 @@ export default class ModifySchedule extends Component {
 
   async componentDidMount() {
     await axios.get(`/api/tournaments/schedule/${this.state.tourneyId}`).then(result => {
-      this.setState({schedule: JSON.parse(result.data[0].rawData)});
+      this.setState({schedule: JSON.parse(result.data.rawData)});
       console.log(this.state);
     }).catch(err => {
       console.log(err);
     })
-  }
-  
+  }  
 }

@@ -51,18 +51,8 @@ class Schedule extends React.Component {
 
     handleChange(e) {
         e.preventDefault();
-        var stat = {
-            tourneyId: this.props.match.params.tourneyId,
-            startTime: "",
-            cycleTime: 0,
-            numJudgeRooms: 0,
-            numMatches: 0,
-            numTables: 0,
-            teams: [],
-            tableLayout: [],
-            disabled: false
-        }
-        this.setState(stat);
+        this.setState({tableLayout: []});
+        this.setState({disabled: false});
     }
 
     async handleSchedule(e) {
@@ -78,6 +68,7 @@ class Schedule extends React.Component {
         var min = parseInt(startTime.substring(startTime.indexOf(":") + 1), 10);
 
         //gets all teams in a tournament
+
         await axios.get(`/api/teams/tournid/${this.state.tourneyId}`).then((result) => {
             this.setState({ teams: result.data });
         }).catch((err) => {
@@ -92,6 +83,7 @@ class Schedule extends React.Component {
         }).catch((err) => {
             console.log(err);
         });
+        
 
         var matchSchema = [];
         var table = 1;
