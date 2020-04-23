@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import axios from "axios";
 

@@ -135,6 +135,17 @@ export default class ModifySchedule extends Component {
     var newTime = e.target.elements.newTime.value;
     var cycleTime = this.state.schedule.cycleTime;
 
+    if(parseInt(newTime.substring(0, newTime.indexOf(":")), 10) < parseInt(oldTime.substring(0, oldTime.indexOf(":")), 10)) {
+      alert("Not a valid new time.");
+      return;
+    }
+
+    if(parseInt(newTime.substring(0, newTime.indexOf(":")), 10) === parseInt(oldTime.substring(0, oldTime.indexOf(":")), 10)) {
+      if(parseInt(newTime.substring(newTime.length - 2), 10) < parseInt(oldTime.substring(oldTime.length - 2), 10)) {
+        alert("Not a valid new time");
+      }
+    }
+
     var i = 0;
     var j = 0;
     var isHere = false;
