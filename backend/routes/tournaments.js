@@ -426,7 +426,7 @@ router.patch('/teamdrop/:id/:teamid', (req, res) => {
         if(!tournament){
             return res.status(404).send("tournament not found");
         }
-        for(let index = 0; i < tournament.teams.length; i++)
+        for(let index = 0; index < tournament.teams.length; index++)
         {
             if(tournament.teams[index] == req.params.teamid)
             {
