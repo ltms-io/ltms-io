@@ -331,7 +331,7 @@ router.post('/schedule', (req, res) => {
         tournament.schedule[0] = schedule;
 
         tournament.save().then(() => {
-            res.status(200).send("schedule successfully saved");
+            res.status(200).send(tournament);
         }).catch(err => {
             console.log(err);
             res.status(500).send(err);
@@ -470,6 +470,32 @@ router.patch('/:id/scores/:scoreid', (req, res) => {
 
         if(req.body.changeNotes) {
             tournament.scores.id(req.params.scoreid).changeNotes.push(req.body.changeNotes);
+        }
+
+        tournament.save().then(tournament => {
+            res.status(200).send(tournament);
+        }).catch(err => {
+            res.status(500).send(err);
+        })
+    })
+})
+
+router.patch('/:id/schedule', (req, res) => {
+    Tournament.findById(req.params.id).then(tournament => {
+        if(!tournament) {
+            return res.status(404).send("tournament not found");
+        }
+
+        if(req.body.rawData) {
+            tournament.schedule[0].rawData = req.body.rawData;
+        }
+
+        if(req.body.startTime) {
+            tournament.schedule[0].startTime = req.body.startTime;
+        }
+
+        if(req.body.match) {
+            tournament.schedule[0].match = req.body.match;
         }
 
         tournament.save().then(tournament => {

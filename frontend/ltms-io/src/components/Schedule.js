@@ -15,7 +15,7 @@ class Schedule extends React.Component {
             numMatches: 0,
             numTables: 0,
             teams: [],
-            droppedTeams: [],
+            droppedTeams: false,
             tableLayout: [],
             disabled: false
         }
@@ -60,7 +60,7 @@ class Schedule extends React.Component {
         e.preventDefault()
         console.log(this.state.teams)
 
-        var sss = this.state.droppedTeams
+        /*var sss = this.state.droppedTeams
         var inTeams = false
         var notInDroppedTeams = true
         for(let index = 0; index < this.state.teams.length; index++)
@@ -83,19 +83,35 @@ class Schedule extends React.Component {
         }
         this.setState({droppedTeams: sss});
 
-        console.log(this.state.droppedTeams)
-        /*
+        console.log(this.state.droppedTeams)*/
+    
         var temp = [];
-        for(let index = 0; index < this.state.teams.length; index++)
-        {
-            if(this.state.teams[index].teamName != e.target.elements.teamDrops.value)
+
+        if(this.state.droppedTeams){
+            for(let index = 0; index < this.state.teams.length; index++)
             {
-                temp.push(this.state.teams[index])
-                console.log("YIPPY")
+                if(this.state.teams[index].teamName !== e.target.elements.teamDrops.value && this.state.teams[index].teamName !== "NULL")
+                {
+                    temp.push(this.state.teams[index])
+                    console.log("YIPPY")
+                }
             }
+            this.setState({droppedTeams: false});
+        } else {
+            for(let index = 0; index < this.state.teams.length; index++)
+            {
+                if(this.state.teams[index].teamName === e.target.elements.teamDrops.value) {
+                    var t = this.state.teams[index];
+                    t.teamName = "NULL";
+                    temp.push(t);
+                } else {
+                    temp.push(this.state.teams[index]);
+                }
+            }
+            this.setState({droppedTeams: true});
         }
         this.setState({teams: temp})
-        console.log(this.state.teams)*/
+        console.log(this.state.teams)
     }
     async handleSchedule(e) {
         e.preventDefault();
@@ -110,8 +126,11 @@ class Schedule extends React.Component {
         var min = parseInt(startTime.substring(startTime.indexOf(":") + 1), 10);
 
         //gets all teams in a tournament
+
         await axios.get(`/api/teams/tournid/${this.state.tourneyId}`).then((result) => {
-            this.setState({ teams: result.data });
+            if(this.state.teams.length === 0) {
+                this.setState({ teams: result.data });
+            }
         }).catch((err) => {
             console.log(err);
         });
@@ -124,6 +143,7 @@ class Schedule extends React.Component {
         }).catch((err) => {
             console.log(err);
         });
+        
 
         var matchSchema = [];
         var table = 1;
@@ -143,9 +163,6 @@ class Schedule extends React.Component {
                 if(min > 59) {
                     min -= 60;
                     hour++;
-                    if(hour > 12) {
-                        hour -= 12;
-                    }
                 }
 
                 matchSchema.push(match);
@@ -247,8 +264,8 @@ class Schedule extends React.Component {
                     </Form.Group>
                         </div>
                         <Button type="submit">
-                  Drop Team
-                </Button>
+                            Drop Team
+                        </Button>
                     </Form>)}
             </div>
         )
