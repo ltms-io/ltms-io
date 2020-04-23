@@ -27,6 +27,7 @@ import viewRubric from './components/ViewRubrics';
 import CreateJudges from './components/CreateJudges';
 import EditRubrics from './components/EditRubrics';
 import Timer from './components/Timer';
+import Schedule from './components/Schedule';
 import QuickLinks from './components/QuickLinks';
 const jsonWeb = require('jsonwebtoken');
 class App extends Component {
@@ -79,6 +80,7 @@ class App extends Component {
             <Route path="/t/:tourneyId/editscore/:scoreId" component={ EditScoreEntry } />
             <Route path="/matchranking/:tourneyId" component={ SortTeams } />
             <Route path="/quicklinks" component={ QuickLinks } />
+            <Route path="/tournamentschedule/:tourneyId" component={ Schedule } />
           </Switch>
         </div>
       </Router>
