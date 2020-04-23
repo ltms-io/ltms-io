@@ -73,7 +73,7 @@ describe("Tournament Backend Routes", () => {
       chai.request(app)
       .post("/api/tournaments/search")
       .send({
-        user_name: "ltmstest"
+        user_name: "John"
       })
       .end( (err, res) => {
         expect(res).to.have.status(200);
@@ -94,7 +94,7 @@ describe("Tournament Backend Routes", () => {
       .post("/api/tournaments/search")
       .send({
         tournament_name: "test",
-        user_name: "ltmstest"
+        user_name: "John"
       })
       .end( (err, res) => {
         expect(res).to.have.status(200);
@@ -104,7 +104,7 @@ describe("Tournament Backend Routes", () => {
       chai.request(app)
       .post("/api/tournaments/search")
       .send({
-        user_name: "ltmstest",
+        user_name: "John",
         date: "2020-04-20T19:00:00.000Z"
       })
       .end( (err, res) => {
@@ -127,7 +127,7 @@ describe("Tournament Backend Routes", () => {
       .post("/api/tournaments/search")
       .send({
         tournament_name: "test",
-        user_name: "ltmstest",
+        user_name: "John",
         date: "2020-04-20T19:00:00.000Z"
       })
       .end( (err, res) => {
@@ -135,6 +135,26 @@ describe("Tournament Backend Routes", () => {
         expect(res.body).to.not.be.empty;
         done();
       });
+    });
+    it("GET call should return success given valid tournament", (done) => {
+      chai.request(app)
+      .get("/api/tournaments/schedule/5e7c53f30c6d5700d3701567")
+      .send()
+      .end( (err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
+        done();
+      })
+    });
+    it("GET call should return error given invalid tournament", (done) => {
+      chai.request(app)
+      .get("/api/tournaments/schedule/5e834fd76221c1118acfcf2d")
+      .send()
+      .end( (err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body).to.be.empty;
+        done();
+      })
     });
   });
 });

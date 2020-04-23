@@ -90,7 +90,7 @@ router.post('/sendrubrics/:id', (req, res) => {
     rubricsText += `Included below are the rubrics for team "${team.teamName}" in tournament "${req.body.tournName}"\n\n`;
     for (var i = 0; i < team.rubrics.length; i++) {
       rubricsText += "---\n\n";
-      rubricsText += "Rubric " + (i + 1) + "\n";
+      rubricsText += team.rubrics[i].username + " - " + team.rubrics[i].uniqueID + "\n";
       rubricsText += "Core Values\n";
       rubricsText += "Inspiration: (Discovery: " + team.rubrics[i].coreValues.inspiration.discovery + ", " +
                                    "Team Identity: " + team.rubrics[i].coreValues.inspiration.teamIdentity + ", " +
@@ -132,7 +132,7 @@ router.post('/sendrubrics/:id', (req, res) => {
     rubricsHTML += `Included below are the rubrics for team "${team.teamName}" in tournament "${req.body.tournName}"<br><br>`;
     for (var i = 0; i < team.rubrics.length; i++) {
       rubricsHTML += "<hr>"
-      rubricsHTML += "<h1>Rubric " + (i + 1) + "</h1>";
+      rubricsHTML += "<h1>" + team.rubrics[i].username + " - " + team.rubrics[i].uniqueID + "</h1>";
       rubricsHTML += "<h3>Core Values</h3>";
       rubricsHTML += "<strong>Inspiration:</strong> (<em>Discovery:</em> " + team.rubrics[i].coreValues.inspiration.discovery + ", " +
                                    "<em>Team Identity:</em> " + team.rubrics[i].coreValues.inspiration.teamIdentity + ", " +
@@ -273,5 +273,39 @@ router.patch('/rubricdelete/:id', (req, res) => {
     }
   });
 });
+router.post('/rubricget/:id', (req, res) => {
+  if(!req.body.email || !req.body.uniqueID) {
+    return res.status(400).send("No unique ID or email given");
+  }
 
+  Team.findById(req.params.id).then( (team) => {
+    if (!team) {
+      return res.status(404).send("Team not found");
+    }
+
+    var index = -1;
+    team.rubrics.forEach( (item, i) => {
+      if (item.email === req.body.email && item.uniqueID === req.body.uniqueID) {
+        index = i;
+      }
+    });
+
+    if (index == -1) {
+      return res.status(404).send("Rubric not found");
+    }
+    else {
+      return res.status(200).send(team.rubrics[index]);
+    }
+  });
+});
+
+
+/*router.get('/:id', (req, res) => {
+  Team.findById(req.params.id).then( (team) => {
+    if (!team) {
+      return res.status(404).send("No such team found");
+    }
+    return res.status(200).send(team);
+  });
+});*/
 module.exports = router;

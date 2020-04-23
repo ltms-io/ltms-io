@@ -72,7 +72,7 @@ class Sheet extends React.Component{
     var newArray = [...this.state.events];
     var cate = (this.state.index+1).toString() + ". " + e.target.elements.category.value;
     e.target.reset();
-    var score; 
+    var score;
     var eventKey = (this.state.index).toString();
 
     if(this.state.scoreType === "Yes/No"){
@@ -175,7 +175,7 @@ class Sheet extends React.Component{
       console.log(err);
     })
   }
-    
+
   //render function
   render(){
     console.log(this.state);
@@ -247,8 +247,8 @@ class Sheet extends React.Component{
             Calculate Score
           </Button>
           <Row>
-            <Col xs = "2" font>
-            <Form.Control type = "text" value = {"Final Score: " + this.state.finalscore} readonly = {true}/>
+            <Col xs = "2">
+            <Form.Control type = "text" value = {"Final Score: " + this.state.finalscore} readOnly = {true}/>
             </Col>
           </Row>
         </Form>
@@ -258,4 +258,3 @@ class Sheet extends React.Component{
 }
 
 export default Sheet;
-

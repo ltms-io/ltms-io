@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import axios from 'axios';
 import { Form, Button } from 'react-bootstrap';
 import PropTypes from "prop-types";
@@ -23,40 +22,43 @@ class SetReferee extends Component {
   async handleSubmit(e) {
     e.preventDefault();
     alert(e.target.elements.users.value);
-    var strings = e.target.elements.users.value.split(",");
-    var ids = [];
-    var message = "";
-    for (var i = 0; i < strings.length; i++) {
-      strings[i] = strings[i].trim();
+    let strings = e.target.elements.users.value.split(",");
+    let ids = [];
+    let message = "";
+
+    strings.forEach( async (item, index) => {
+      var temp = item;
+      temp = temp.trim();
       await axios.post(`/api/users/search`, {
-        email: strings[i]
+        email: temp
       })
       .then( (result) => {
-        ids[i] = result.data._id;
-        if (this.state.dbtournresults.referees.includes(ids[i])) {
-          message += ("User " + strings[i] + " already is a referee.\n");
-          ids[i] = "DNE";
+        ids[index] = result.data._id;
+        if (this.state.dbtournresults.referees.includes(ids[index])) {
+          message += ("User " + temp + " already is a referee.\n");
+          ids[index] = "DNE";
         }
       })
       .catch( (error) => {
-        message += ("There was an error finding user " + strings[i] + ".\n");
-        ids[i] = "DNE";
+        message += ("There was an error finding user " + temp + ".\n");
+        ids[index] = "DNE";
         console.log(error);
       });
-    }
+    });
     message += "\n";
 
-    for (var i = 0; i < ids.length; i++) {
+    ids.forEach( async (item, index) => {
+      var temp = item;
       await axios.patch(`/api/tournaments/${this.state.tourneyId}`, {
-        referee: ids[i]
+        referee: temp
       })
       .catch( (error) => {
-        if (ids[i] !== "DNE") {
-          message += ("There was an error adding user ID " + ids[i] + " to the database.\n");
+        if (temp !== "DNE") {
+          message += ("There was an error adding user ID " + temp + " to the database.\n");
         }
         console.log(error);
       });
-    }
+    });
 
     this.updateState();
     console.log("UPDATED STATE", this.state);

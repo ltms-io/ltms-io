@@ -19,7 +19,8 @@ export default class TournamentDashboard extends Component {
             judgeAuthorized: false,
             createTeamAuthorized: false,
             viewRubricsAuthorized: false,
-            headRef: false
+            headRef: false,
+            tournamentDirector: false
         }
 
         this.updateState = this.updateState.bind(this);
@@ -32,6 +33,10 @@ export default class TournamentDashboard extends Component {
         if (this.state.dbtournresults.headReferee === this.state.dbresults._id ||
             this.state.dbtournresults.director === this.state.dbresults._id) {
             this.state.setRefereeAuthorized = true;
+        }
+
+        if(this.state.dbtournresults.director === this.state.dbresults._id) {
+            this.state.tournamentDirector = true;
         }
 
         if (this.state.dbtournresults.director === this.state.dbresults._id) {
@@ -48,8 +53,8 @@ export default class TournamentDashboard extends Component {
                 }
             }
             if (!this.state.isAuthorized) {
-                for (var i = 0; i < this.state.dbtournresults.judges.length; i++) {
-                    if (this.state.dbtournresults.judges[i] === this.state.dbresults._id) {
+                for (var j = 0; j < this.state.dbtournresults.judges.length; j++) {
+                    if (this.state.dbtournresults.judges[j] === this.state.dbresults._id) {
                         this.state.rubricEntryAuthorized = true;
                         this.state.rubricEntryAuthorized = true;
                         this.state.judgeAuthorized = true;
@@ -58,8 +63,8 @@ export default class TournamentDashboard extends Component {
             }
         }
 
-        for (var i = 0; i < this.state.dbtournresults.headReferee.length; i++) {
-            if (this.state.dbtournresults.headReferee[i] === this.state.dbresults._id) {
+        for (var k = 0; k < this.state.dbtournresults.headReferee.length; k++) {
+            if (this.state.dbtournresults.headReferee[k] === this.state.dbresults._id) {
                 this.state.headRef = true;
             }
         }
@@ -84,7 +89,7 @@ export default class TournamentDashboard extends Component {
                             <div>
                                 {this.state.dbtournresults.teams.map((item, i) => {
                                     return (
-                                        <Link to={"/rubricentry/" + this.state.tourneyId + "/" + item}>
+                                        <Link key={i} to={"/rubricentry/" + this.state.tourneyId + "/" + item}>
                                             <Button disabled={!this.state.rubricEntryAuthorized}>Rubric Entry for {this.state.dbteamnames[i]}</Button>
                                         </Link>
                                     );
@@ -109,12 +114,25 @@ export default class TournamentDashboard extends Component {
                         <Link to={"/viewrubrics/" + this.state.tourneyId}>
                         <Button disabled = {!this.state.viewRubricsAuthorized}> View Rubrics</Button>
                         </Link>
+                        <Link to={"/editrubrics/" + this.state.tourneyId}>
+                        <Button disabled = {!this.state.viewRubricsAuthorized}> Edit Rubrics</Button>
+                        </Link>
                         <Link to={"/createjudge/" + this.state.tourneyId}>
                         <Button disabled = {!this.state.viewRubricsAuthorized}> Create Judges</Button>
                         </Link>
-                        <Link to={"/tournamentschedule/" + this.state.tourneyId}>
-                            <Button>Generate Schedule</Button>
+                        <Link to={"/timer/"}>
+                            <Button>Timer</Button>
                         </Link>
+                        {this.state.tournamentDirector && (
+                            <Link to={"/tournamentschedule/" + this.state.tourneyId}>
+                                <Button>Schedule</Button>
+                            </Link>
+                        )}
+                        {this.state.tournamentDirector && (
+                            <Link to={"/schedulemodify/" + this.state.tourneyId}>
+                                <Button>Modify Schedule</Button>
+                            </Link>
+                        )}
                         
                     </Col>
                 </Row>
@@ -153,7 +171,7 @@ export default class TournamentDashboard extends Component {
                 console.log(error);
             });
 
-        for (var i = 0; i < this.state.dbtournresults.teams.length; i++) {
+        for (let i = 0; i < this.state.dbtournresults.teams.length; i++) {
             await axios.get(`/api/teams/${this.state.dbtournresults.teams[i]}`)
                 .then((result) => {
                     this.state.dbteamnames[i] = result.data.teamName;

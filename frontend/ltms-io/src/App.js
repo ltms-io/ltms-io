@@ -24,8 +24,11 @@ import SortTeams from './components/SortTeams';
 import CreateTeam from './components/CreateTeam';
 import viewRubric from './components/ViewRubrics';
 import CreateJudges from './components/CreateJudges';
+import EditRubrics from './components/EditRubrics';
+import Timer from './components/Timer';
 import Schedule from './components/Schedule';
 import QuickLinks from './components/QuickLinks';
+import ModifySchedule from './components/ModifySchedule';
 
 class App extends Component {
   constructor(props) {
@@ -36,10 +39,10 @@ class App extends Component {
 
   async initializeCookie() {
     if (!document.cookie) {
-      await axios.post('api/users/login', {data: localStorage.getItem("auth0_id")})
+      await axios.post('/api/users/login', {data: localStorage.getItem("auth0_id")})
       .then( (result) => {
         document.cookie = "UserIdentity=" + result.data;
-        //localStorage.removeItem("auth0_id");
+        localStorage.removeItem("auth0_id");
       })
       .catch( (err) => {
         console.log(err);
@@ -60,6 +63,8 @@ class App extends Component {
             <Route path="/createtournament" component={CreateTournament} />
             <Route path="/createteam/:tourneyId" component={CreateTeam} />
             <Route path="/viewrubrics/:tourneyId" component={viewRubric} />
+            <Route path="/editrubrics/:teamId/:email/:uniqueID/:username/:tourneyId" component={EditRubrics} />
+            <Route path="/timer" component={Timer} />
             <Route path="/createjudge/:tourneyId" component={CreateJudges} />
             <Route path="/accountdetails" component={() => <AccountDetails auth={this.props.auth} />} />
             <Route path="/createscoresheet" component={ Sheet }/>
@@ -76,6 +81,7 @@ class App extends Component {
             <Route path="/matchranking/:tourneyId" component={ SortTeams } />
             <Route path="/quicklinks" component={ QuickLinks } />
             <Route path="/tournamentschedule/:tourneyId" component={ Schedule } />
+            <Route path="/schedulemodify/:tourneyId" component={ ModifySchedule } />
           </Switch>
         </div>
       </Router>
