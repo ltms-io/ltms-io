@@ -15,12 +15,14 @@ class Schedule extends React.Component {
             numMatches: 0,
             numTables: 0,
             teams: [],
+            droppedTeams: [],
             tableLayout: [],
             disabled: false
         }
         this.handleSchedule = this.handleSchedule.bind(this);
         this.randomizeTeams = this.randomizeTeams.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handleDrop = this.handleDrop.bind(this);
     }
 
     randomizeTeams() {
@@ -54,7 +56,47 @@ class Schedule extends React.Component {
         this.setState({tableLayout: []});
         this.setState({disabled: false});
     }
+    async handleDrop(e) {
+        e.preventDefault()
+        console.log(this.state.teams)
 
+        var sss = this.state.droppedTeams
+        var inTeams = false
+        var notInDroppedTeams = true
+        for(let index = 0; index < this.state.teams.length; index++)
+        {
+            if(this.state.teams[index].teamName == e.target.elements.teamDrops.value)
+            {
+                inTeams = true
+            }
+        }
+        for(let index = 0; index < this.state.droppedTeams.length; index++)
+        {
+            if(this.state.droppedTeams[index] == e.target.elements.teamDrops.value)
+            {
+                notInDroppedTeams = false
+            }
+        }
+        if((inTeams == true) && (notInDroppedTeams == true))
+        {
+            sss.push(e.target.elements.teamDrops.value)
+        }
+        this.setState({droppedTeams: sss});
+
+        console.log(this.state.droppedTeams)
+        /*
+        var temp = [];
+        for(let index = 0; index < this.state.teams.length; index++)
+        {
+            if(this.state.teams[index].teamName != e.target.elements.teamDrops.value)
+            {
+                temp.push(this.state.teams[index])
+                console.log("YIPPY")
+            }
+        }
+        this.setState({teams: temp})
+        console.log(this.state.teams)*/
+    }
     async handleSchedule(e) {
         e.preventDefault();
         if(!e.target.elements.startTime.value || !e.target.elements.cycleTime.value) {
@@ -196,7 +238,20 @@ class Schedule extends React.Component {
                             <Button variant="outline-danger" type="submit">Generate New Schedule</Button>
                         </Form.Group>
                     </Form>
+
                 )}
+                {this.state.disabled && (
+                <Form onSubmit={this.handleDrop}>
+                        <div>
+                        <Form.Group data-test="aCommentInput" controlId="teamDrops">
+                      <Form.Label>Team Name</Form.Label>
+                      <Form.Control as="textarea"/>
+                    </Form.Group>
+                        </div>
+                        <Button type="submit">
+                  Drop Team
+                </Button>
+                    </Form>)}
             </div>
         )
     }

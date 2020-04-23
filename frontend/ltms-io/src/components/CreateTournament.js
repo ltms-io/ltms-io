@@ -141,14 +141,6 @@ export default class CreateEvent extends Component {
                                 <Col><Button>Select</Button></Col>
                             </Form.Group>
                         </Col>
-
-                        <Col>
-                            <h3>Teams</h3>
-                            <Form.Group as={Row} controlId="formGridInputTeams">
-                                <Form.Label>Team Input</Form.Label>
-                                <Form.Control disabled as="textarea" placeholder="Coming Soon" />
-                            </Form.Group>
-                        </Col>
                     </Row>
 
                     <Button className="mt-5" type="submit">Create Event!</Button>
