@@ -21,7 +21,8 @@ class Sheet extends React.Component{
       finalscore: 0,
       scoreType: "Score Type",
       index: 0,
-      category: "Category"
+      category: "Category",
+      isAuthorized: false
     }
 
     //binds the fuction
@@ -191,7 +192,8 @@ class Sheet extends React.Component{
     });
 
     if (this.state.dbtournresults.director === this.state.dbresults._id ||
-        this.state.dbtournresults.judgeAdvisor.includes(this.state.dbresults._id)) {
+        this.state.dbtournresults.headReferee.includes(this.state.dbresults._id) ||
+        this.state.dbtournresults.referees.includes(this.state.dbresults._id)) {
       await this.setState({
         isAuthorized: true
       });
@@ -205,72 +207,79 @@ class Sheet extends React.Component{
     return(
       <div className="pl-3 pr-3 pt-2">
         <h1>Create Scoresheet for Tournament "{this.state.dbtournresults.name}"</h1>
-        <h3>Enter Team</h3>
-        <div className="pb-2">
-          <Form onSubmit={this.handleTeam}>
-            <Form.Group controlId="teamName">
-              <Form.Control type="text" placeholder="Team" readOnly={this.state.readOnly}/>
-            </Form.Group>
-            <Button className="mr-1" variant="primary" type="submit">
-              Set Team
-            </Button>
-            <Button className="ml-1" variant="danger" onClick={this.changeTeam}>
-              Change Team
-            </Button>
-          </Form>
-        </div>
-        <hr />
-        <div className="pb-2">
-          <Form onSubmit={this.handleInsert}>
-            <h3>Add a category</h3>
-            <Row>
-              <Col>
-                <Form.Group controlId = "category">
-                  <Form.Control type = "text" placeholder = "Category"/>
+        {this.state.isAuthorized && (
+          <div>
+            <h3>Enter Team</h3>
+            <div className="pb-2">
+              <Form onSubmit={this.handleTeam}>
+                <Form.Group controlId="teamName">
+                  <Form.Control type="text" placeholder="Team" readOnly={this.state.readOnly}/>
                 </Form.Group>
-              </Col>
-              <Col>
-                <Form.Group controlId = "score">
-                  <DropdownButton title={this.state.scoreType} onSelect={this.handleScoreSelect}>
-                    <Dropdown.Item key="yes" eventKey="yes">Yes/No</Dropdown.Item>
-                    <Dropdown.Item key="15" eventKey="15">1-5</Dropdown.Item>
-                  </DropdownButton>
-                </Form.Group>
-              </Col>
-            </Row>
-            <Button variant = "primary" type = "submit">
-              Add Category
-            </Button>
-          </Form>
-        </div>
-        <Form>
-          {this.state.events.map(event => (
-            <Row>
-              <Col>
-                <Form.Group controlId = "category">
-                  {event.categ}
-                </Form.Group>
-              </Col>
-              <Col>
-                <Form.Group controlId = "score">
-                  <DropdownButton title={event.tempScore} onSelect={this.handleChange}>
-                    {event.scoretype}
-                  </DropdownButton>
-                </Form.Group>
-              </Col>
-            </Row>
-          ))}
-        </Form>
-        <Form>
-          <Button className="mb-2" variant="primary" onClick={this.handleCalculate}>
-            Calculate and Submit Score
-          </Button>
-          <Row>
-            <Col xs="2">
-              <Form.Control type = "text" value = {"Final Score: " + this.state.finalscore} readOnly = {true}/>
-            </Col>
-          </Row>
-        </Form>
+                <Button className="mr-1" variant="primary" type="submit">
+                  Set Team
+                </Button>
+                <Button className="ml-1" variant="danger" onClick={this.changeTeam}>
+                  Change Team
+                </Button>
+              </Form>
+            </div>
+            <hr />
+            <div className="pb-2">
+              <Form onSubmit={this.handleInsert}>
+                <h3>Add a category</h3>
+                <Row>
+                  <Col>
+                    <Form.Group controlId = "category">
+                      <Form.Control type = "text" placeholder = "Category"/>
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group controlId = "score">
+                      <DropdownButton title={this.state.scoreType} onSelect={this.handleScoreSelect}>
+                        <Dropdown.Item key="yes" eventKey="yes">Yes/No</Dropdown.Item>
+                        <Dropdown.Item key="15" eventKey="15">1-5</Dropdown.Item>
+                      </DropdownButton>
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Button variant = "primary" type = "submit">
+                  Add Category
+                </Button>
+              </Form>
+            </div>
+            <Form>
+              {this.state.events.map(event => (
+                <Row>
+                  <Col>
+                    <Form.Group controlId = "category">
+                      {event.categ}
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group controlId = "score">
+                      <DropdownButton title={event.tempScore} onSelect={this.handleChange}>
+                        {event.scoretype}
+                      </DropdownButton>
+                    </Form.Group>
+                  </Col>
+                </Row>
+              ))}
+            </Form>
+            <Form>
+              <Button className="mb-2" variant="primary" onClick={this.handleCalculate}>
+                Calculate and Submit Score
+              </Button>
+              <Row>
+                <Col xs="2">
+                  <Form.Control type = "text" value = {"Final Score: " + this.state.finalscore} readOnly = {true}/>
+                </Col>
+              </Row>
+            </Form>
+          </div>
+        )}
+        {!this.state.isAuthorized && (
+          <h3 data-test="noAuthMsg">You are not authorized for create scoresheet in this tournament.</h3>
+        )}
       </div>
     );
   }

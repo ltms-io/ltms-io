@@ -18,7 +18,8 @@ export default class EditScoreEntry extends Component {
       events: [],
       insertIdx: 0,
       finalscore: 0,
-      notesBox: ""
+      notesBox: "",
+      isAuthorized: false
     }
 
     this.handleInsert = this.handleInsert.bind(this);
@@ -171,6 +172,13 @@ export default class EditScoreEntry extends Component {
       console.log(error);
     });
 
+    if (this.state.dbtournresults.headReferee.includes(this.state.dbresults._id) ||
+        this.state.dbtournresults.director === this.state.dbresults._id) {
+      await this.setState({
+        isAuthorized: true
+      })
+    }
+
     console.log("UPDATED STATE")
     console.log(this.state);
   }
@@ -179,52 +187,59 @@ export default class EditScoreEntry extends Component {
     return (
       <div className="pl-3 pr-3 pt-2">
         <h1 className="text-center">Edit Score for Match ID "{this.state.scoreId}" in Tournament "{this.state.dbtournresults.name}"</h1>
-        <h3 className="text-center">Score Type: {this.state.scoreResults.scoreType}</h3>
+        {this.state.isAuthorized && (
+          <div>
+            <h3 className="text-center">Score Type: {this.state.scoreResults.scoreType}</h3>
 
-        <Container>
-          <Form>
-            {this.state.rawData &&
-              this.state.events.map((event, i) => (
-                <Row key={i}>
+            <Container>
+              <Form>
+                {this.state.rawData &&
+                  this.state.events.map((event, i) => (
+                    <Row key={i}>
+                      <Col>
+                        <Form.Group controlId="category">
+                          {event.categ}
+                        </Form.Group>
+                      </Col>
+                      <Col>
+                        <Form.Group controlId="score">
+                          <DropdownButton title={event.tempScore} onSelect={this.handleChange}>
+                            {event.scoretype}
+                          </DropdownButton>
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                  ))}
+                <hr />
+                <Row>
                   <Col>
-                    <Form.Group controlId="category">
-                      {event.categ}
-                    </Form.Group>
-                  </Col>
-                  <Col>
-                    <Form.Group controlId="score">
-                      <DropdownButton title={event.tempScore} onSelect={this.handleChange}>
-                        {event.scoretype}
-                      </DropdownButton>
+                    <h5>Notes</h5>
+                    <ul>
+                      {this.state.scoreResults.changeNotes &&
+                        this.state.scoreResults.changeNotes.map((item, i) => {
+                          return (
+                            <li key={i}>
+                              {item}
+                            </li>
+                          );
+                        })
+                      }
+                    </ul>
+                    <Form.Group controlId="notes">
+                      <Form.Control as="textarea" onChange={this.notesUpdate}/>
                     </Form.Group>
                   </Col>
                 </Row>
-              ))}
-            <hr />
-            <Row>
-              <Col>
-                <h5>Notes</h5>
-                <ul>
-                  {this.state.scoreResults.changeNotes &&
-                    this.state.scoreResults.changeNotes.map((item, i) => {
-                      return (
-                        <li key={i}>
-                          {item}
-                        </li>
-                      );
-                    })
-                  }
-                </ul>
-                <Form.Group controlId="notes">
-                  <Form.Control as="textarea" onChange={this.notesUpdate}/>
-                </Form.Group>
-              </Col>
-            </Row>
-          </Form>
-          <Button onClick={this.handleUpdate}>
-            Submit Changes
-          </Button>
-        </Container>
+              </Form>
+              <Button onClick={this.handleUpdate}>
+                Submit Changes
+              </Button>
+            </Container>
+          </div>
+        )}
+        {!this.state.isAuthorized && (
+          <h3>You are not authorized to edit score in this tournament.</h3>
+        )}
       </div>
     )
   }

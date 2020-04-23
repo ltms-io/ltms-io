@@ -12,7 +12,8 @@ export default class MatchScoreListing extends Component {
       uid: "",
       dbresults: {},
       dbtournresults: {},
-      dbscoreresults: []
+      dbscoreresults: [],
+      isAuthorized: false
     }
 
     this.updateState = this.updateState.bind(this);
@@ -49,6 +50,13 @@ export default class MatchScoreListing extends Component {
       console.log(err);
     });
 
+    if (this.state.dbtournresults.headReferee.includes(this.state.dbresults._id) ||
+        this.state.dbtournresults.director === this.state.dbresults._id) {
+      await this.setState({
+        isAuthorized: true
+      })
+    }
+
     console.log("UPDATED STATE");
     console.log(this.state);
   }
@@ -61,19 +69,26 @@ export default class MatchScoreListing extends Component {
     return (
       <div className="pl-3 pr-3 pt-2">
         <h1 className="pl-1 pb-2">View Match Scores for Tournament "{this.state.dbtournresults.name}"</h1>
-        {this.state.dbscoreresults && (
-          <ListGroup>
-            {this.state.dbscoreresults.map( (item, i) => {
-              return (
-                <ListGroup.Item action href={`/t/${this.state.tourneyId}/editscore/${item._id}`}>
-                  <h4>Match ID: {item._id}</h4>
-                  <hr />
-                  <h5>Final Score: {item.finalScore}</h5>
-                  <h5 className="text-right">Team #{item.teamNum}</h5>
-                </ListGroup.Item>
-              );
-            })}
-          </ListGroup>
+        {this.state.isAuthorized && (
+          <div>
+            {this.state.dbscoreresults && (
+              <ListGroup>
+                {this.state.dbscoreresults.map( (item, i) => {
+                  return (
+                    <ListGroup.Item action href={`/t/${this.state.tourneyId}/editscore/${item._id}`}>
+                      <h4>Match ID: {item._id}</h4>
+                      <hr />
+                      <h5>Final Score: {item.finalScore}</h5>
+                      <h5 className="text-right">Team #{item.teamNum}</h5>
+                    </ListGroup.Item>
+                  );
+                })}
+              </ListGroup>
+            )}
+          </div>
+        )}
+        {!this.state.isAuthorized && (
+          <h3>You are not authorized to view match scores in this tournament.</h3>
         )}
       </div>
     );

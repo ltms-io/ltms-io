@@ -25,7 +25,8 @@ export default class TournamentDashboard extends Component {
       setRefereeAuthorized: false,
       rubricEntryAuthorized: false,
       createTeamAuthorized: false,
-      viewRubricsAuthorized: false
+      viewRubricsAuthorized: false,
+      scoresheetsAuthorized: false
     }
 
     this.updateState = this.updateState.bind(this);
@@ -132,7 +133,8 @@ export default class TournamentDashboard extends Component {
         rubricEntryAuthorized: true,
         createTeamAuthorized: true,
         viewRubricsAuthorized: true,
-        setRefereeAuthorized: true
+        setRefereeAuthorized: true,
+        scoresheetsAuthorized: true
       });
     }
     if (this.state.dbtournresults.judgeAdvisor.includes(this.state.dbresults._id)) {
@@ -148,7 +150,13 @@ export default class TournamentDashboard extends Component {
     }
     if (this.state.dbtournresults.headReferee.includes(this.state.dbresults._id)) {
       await this.setState({
-        setRefereeAuthorized: true
+        setRefereeAuthorized: true,
+        scoresheetsAuthorized: true
+      });
+    }
+    if (this.state.dbtournresults.referees.includes(this.state.dbresults._id)) {
+      await this.setState({
+        scoresheetsAuthorized: true
       });
     }
   }
@@ -276,10 +284,10 @@ export default class TournamentDashboard extends Component {
                 <Button className="mb-1" disabled={!this.state.setRefereeAuthorized}>View Match Scores</Button>
               </Link>
               <Link className="pl-1 pr-1" to={"/matchranking/" + this.state.tourneyId}>
-                <Button className="mb-1" disabled={!true}>See Tournament Rankings</Button>
+                <Button className="mb-1">See Tournament Rankings</Button>
               </Link>
               <Link className="pl-1 pr-1" to={"/createscoresheet/" + this.state.tourneyId}>
-                <Button className="mb-1" disabled={!true}>Create Scoresheet</Button>
+                <Button className="mb-1" disabled={!this.state.scoresheetsAuthorized}>Create Scoresheet</Button>
               </Link>
             </div>
           </Col>
