@@ -318,7 +318,7 @@ class MainDashboard extends Component {
 
             {this.state.viewOnlyVol.length > 0 ?
             <div>
-                <h3 className="pl-3">View Only</h3>
+                <h3 className="pl-3">View-Only Volunteer</h3>
                 <CardColumns className="pl-5 mt-3">
                     {this.state.viewOnlyVol.map((item, i) => {
                         return(
