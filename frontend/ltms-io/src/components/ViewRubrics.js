@@ -70,7 +70,7 @@ class ViewRubrics extends Component {
   render() {
     return (
       <div data-test="theViewRubrics" className="pl-3 pr-3 pt-2">
-        <h2 className="pt-2 pb-2">View Rubrics for Tournament "{this.state.dbtournresults.name}"</h2>
+        <h1 className="pt-2 pb-2">View Rubrics for Tournament "{this.state.dbtournresults.name}"</h1>
         {(this.state.isAuthorized) && (
           <div data-test="theFilter">
             <div>
@@ -258,7 +258,7 @@ class ViewRubrics extends Component {
                           </ListGroupItem>
                         </ListGroup>
                       </Card>
-                      
+
                     );
                   })}
                 </CardColumns>

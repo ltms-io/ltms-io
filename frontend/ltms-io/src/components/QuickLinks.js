@@ -5,7 +5,7 @@ class QuickLinks extends Component {
   render() {
     return(
       <div className="pl-3 pr-3 pt-2">
-        <h1>Quick Links</h1>
+        <h1 className="pb-2">Quick Links</h1>
         <ListGroup>
           <ListGroup.Item action target="_blank" rel="noopener noreferrer" href="https://www.firstinspires.org/robotics/fll">FLL Homepage</ListGroup.Item>
           <ListGroup.Item action target="_blank" rel="noopener noreferrer" href="https://www.firstinspires.org/robotics/fll/challenge-and-season-info">FLL Challenge & Season Info</ListGroup.Item>

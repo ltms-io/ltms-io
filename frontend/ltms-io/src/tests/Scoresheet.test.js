@@ -38,6 +38,7 @@ describe("Scoresheet Component", () => {
         scoreType: component.state().scoreType,
         index: component.state().index,
         category: component.state().category,
+        isAuthorized: true,
         disabled: true
       })
       var wrapper = findByTestAttr(component, "theFinalScore");

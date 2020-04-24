@@ -294,7 +294,7 @@ class Schedule extends React.Component {
         {this.state.isAuthorized && (
           <div>
             {!this.state.disabled && (
-            <Form onSubmit={this.handleSchedule}>
+            <Form data-test="theTime" onSubmit={this.handleSchedule}>
               <Row className="pb-2">
                 <Col xs="2">
                   <Form.Group controlId="startTime">
@@ -331,7 +331,7 @@ class Schedule extends React.Component {
             </Form>
 
             {this.state.disabled && (
-              <Form onSubmit={this.handleChange}>
+              <Form data-test="theChange" onSubmit={this.handleChange}>
                 <Form.Group>
                   <Button variant="danger" type="submit">Generate New Schedule</Button>
                 </Form.Group>

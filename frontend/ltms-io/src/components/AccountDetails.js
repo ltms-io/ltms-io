@@ -62,7 +62,7 @@ class AccountDetails extends Component {
   render() {
     return(
       <div className="pl-3 pr-3 pt-2">
-        <h1 className="text-center pb-2">Edit Account Details</h1>
+        <h1 className="text-center pb-2">Account Details</h1>
         <div>
           <Container>
             <Row>

@@ -268,7 +268,7 @@ export default class ModifySchedule extends Component {
           </div>
         )}
         {!this.state.isAuthorized && (
-          <h3 data-test="noAuthMsg">You are not authorized for set referees in this tournament.</h3>
+          <h3 data-test="noAuthMsg">You are not authorized for modify schedule in this tournament.</h3>
         )}
       </div>
     );

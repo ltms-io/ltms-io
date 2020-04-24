@@ -71,9 +71,9 @@ export default class CreateEvent extends Component {
     render() {
         return (
             <Container className="pl-3 pr-3 pt-2">
-                <h2 className="mb-4 text-center">Create a Tournament</h2>
+                <h1 className="text-center">Create a Tournament</h1>
                 <Form noValidate validated={this.state.validated} onSubmit={this.handleSubmit}>
-                    <Row className="mt-5">
+                    <Row className="mt-4">
                         <Col>
                             <h3>Basic Info</h3>
                             <Form.Group as={Row} controlId="formGridTourneyName">
@@ -153,7 +153,7 @@ export default class CreateEvent extends Component {
                         </Col>
                     </Row>
                     <div className="text-center">
-                      <Button className="mt-5" type="submit">Create Event!</Button>
+                      <Button className="mt-4" type="submit">Create Tournament</Button>
                     </div>
                 </Form>
                 {/* </Col></Row> */}

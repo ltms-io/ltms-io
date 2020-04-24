@@ -67,7 +67,7 @@ class MainDashboard extends Component {
       console.log(err);
     });
   }
-  
+
   async componentDidMount() {
     if (document.cookie.length) {
       var token = document.cookie.substring(13);
@@ -124,7 +124,7 @@ class MainDashboard extends Component {
 
   render() {
     return (
-      <div>
+      <div className="pl-3 pr-3 pt-2">
         <div>
           <h2 className="text-center pt-2">Find Tournaments</h2>
           <div>

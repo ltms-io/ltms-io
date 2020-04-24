@@ -171,7 +171,7 @@ export default class TournamentDashboard extends Component {
       <Container style={{paddingLeft: 0, marginLeft: 0}}>
         <Row>
           <Col style={{background: "#868e96", height: "100vh"}}>
-            <div className="pl-3 pt-2">
+            <div className="pl-3 pt-3">
               <h1>{this.state.dbtournresults.name}</h1>
               <hr />
               <h3>{new Date(this.state.dbtournresults.startDate).toLocaleDateString()} - {new Date(this.state.dbtournresults.endDate).toLocaleDateString()}</h3>
@@ -284,7 +284,7 @@ export default class TournamentDashboard extends Component {
                 <Button className="mb-1" disabled={!this.state.setRefereeAuthorized}>View Match Scores</Button>
               </Link>
               <Link className="pl-1 pr-1" to={"/matchranking/" + this.state.tourneyId}>
-                <Button className="mb-1">See Tournament Rankings</Button>
+                <Button className="mb-1">View Team Rankings</Button>
               </Link>
               <Link className="pl-1 pr-1" to={"/createscoresheet/" + this.state.tourneyId}>
                 <Button className="mb-1" disabled={!this.state.scoresheetsAuthorized}>Create Scoresheet</Button>
