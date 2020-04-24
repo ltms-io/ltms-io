@@ -60,6 +60,20 @@ class Schedule extends React.Component {
         e.preventDefault()
         console.log(this.state.teams)
 
+        var exist = true
+        for(let index = 0; index < this.state.teams.length; index++)
+        {
+            if(this.state.teams[index].teamName === e.target.elements.teamDrops.value)
+            {
+                exist = false
+            }
+        }
+        if(exist)
+        {
+            alert("Error");
+            return;
+        }
+
         /*var sss = this.state.droppedTeams
         var inTeams = false
         var notInDroppedTeams = true
@@ -146,6 +160,14 @@ class Schedule extends React.Component {
         
 
         var matchSchema = [];
+        if(this.state.teams.length % 2 === 1) {
+            this.setState({droppedTeams: true});
+            var arr = this.state.teams;
+            var team = {
+                teamName: "NULL"
+            }
+            arr.push(team);
+        }
         var table = 1;
         this.randomizeTeams();
         for(var j = 0; j<this.state.numMatches; j++) {
