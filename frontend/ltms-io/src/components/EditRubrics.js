@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import axios from "axios";
+import jsonWeb from 'jsonwebtoken';
 
 export default class EditRubrics extends Component {
   constructor(props) {
@@ -13,8 +14,11 @@ export default class EditRubrics extends Component {
       email: this.props.match.params.email,
       uniqueID: this.props.match.params.uniqueID,
       username: this.props.match.params.username,
-      gotrubric: null,
-      dbteamsresults: null
+      uid: "",
+      dbresults: {},
+      dbtournresults: {},
+      dbteamresults: {},
+      gotrubric: null
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -97,30 +101,69 @@ export default class EditRubrics extends Component {
       console.log(error);
     });
   }
+
   async componentDidMount() {
+    if (document.cookie.length) {
+      var token = document.cookie.substring(13);
+      var decoded = jsonWeb.verify(token, "123456");
+
+      await this.setState({
+        dbresults: decoded,
+        uid: decoded.auth0id
+      });
+    }
+
+    await axios.get(`/api/tournaments/${this.state.tourneyId}`)
+    .then( async (result) => {
+      await this.setState({
+        dbtournresults: result.data
+      });
+    })
+    .catch( (error) => {
+        console.log(error);
+    });
+
+    await axios.get(`/api/teams/${this.state.teamId}`)
+    .then( async (result) => {
+      await this.setState({
+        dbteamresults: result.data
+      });
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
+
     await axios.post(`/api/teams/rubricget/${this.state.teamId}`, {
       email: this.state.email,
       uniqueID: this.state.uniqueID
-    }
-    )
+    })
     .then ( (res) => {
       this.setState({gotrubric: res.data});
     });
-    console.log(this.state.gotrubric)
-    console.log(this.state.gotrubric.coreValues.inspiration.discovery)
+
+    if (this.state.dbtournresults.director === this.state.dbresults._id ||
+        this.state.dbtournresults.judgeAdvisor.includes(this.state.dbresults._id)) {
+      await this.setState({
+        isAuthorized: true
+      });
+    }
   }
+
   render() {
-  return (
-  <div>
-    {this.state.gotrubric && (
-      <div>
-  <h3>Rubric Edit for {this.state.username} - {this.state.uniqueID}</h3>
+    return (
+      <div className="pl-3 pr-3 pt-2">
+        {this.state.gotrubric && (
+          <div className="pb-3">
+            <h1 className="pb-1">Edit Rubric for "{this.state.username} - {this.state.uniqueID}" for Team "{this.state.dbteamresults.teamName}" in Tournament "{this.state.dbtournresults.name}"</h1>
+            {this.state.isAuthorized && (
               <Form data-test="theSubmitForm" onSubmit={this.handleSubmit}>
                 <div>
-                  <h4>Core Values</h4>
+                  <h4 className="pb-1">Core Values</h4>
                   <Container>
                     <Row>
-                      <h6>Inspiration</h6>
+                      <Col>
+                        <h6>Inspiration</h6>
+                      </Col>
                       <Col>
                         <Form.Group data-test="anInput" controlId="formDiscovery">
                           <Form.Label>Discovery</Form.Label>
@@ -159,7 +202,9 @@ export default class EditRubrics extends Component {
                       </Col>
                     </Row>
                     <Row>
-                      <h6>Teamwork</h6>
+                      <Col>
+                        <h6>Teamwork</h6>
+                      </Col>
                       <Col>
                         <Form.Group data-test="anInput" controlId="formEffectiveness">
                           <Form.Label>Effectiveness</Form.Label>
@@ -198,7 +243,9 @@ export default class EditRubrics extends Component {
                       </Col>
                     </Row>
                     <Row>
-                      <h6>Gracious Professionalism®</h6>
+                      <Col>
+                        <h6>Gracious Professionalism®</h6>
+                      </Col>
                       <Col>
                         <Form.Group data-test="anInput" controlId="formInclusion">
                           <Form.Label>Inclusion</Form.Label>
@@ -243,10 +290,12 @@ export default class EditRubrics extends Component {
                   </Container>
                 </div>
                 <div>
-                  <h4>Innovation Project</h4>
+                  <h4 className="pb-1">Innovation Project</h4>
                   <Container>
                     <Row>
-                      <h6>Research</h6>
+                      <Col>
+                        <h6>Research</h6>
+                      </Col>
                       <Col>
                         <Form.Group data-test="anInput" controlId="formProblemIdentification">
                           <Form.Label>Problem Identification</Form.Label>
@@ -285,7 +334,9 @@ export default class EditRubrics extends Component {
                       </Col>
                     </Row>
                     <Row>
-                      <h6>Innovative Solution</h6>
+                      <Col>
+                        <h6>Innovative Solution</h6>
+                      </Col>
                       <Col>
                         <Form.Group data-test="anInput" controlId="formTeamSolution">
                           <Form.Label>Team Solution</Form.Label>
@@ -324,7 +375,9 @@ export default class EditRubrics extends Component {
                       </Col>
                     </Row>
                     <Row>
-                      <h6>Presentation</h6>
+                      <Col>
+                        <h6>Presentation</h6>
+                      </Col>
                       <Col>
                         <Form.Group data-test="anInput" controlId="formSharing">
                           <Form.Label>Sharing</Form.Label>
@@ -369,10 +422,12 @@ export default class EditRubrics extends Component {
                   </Container>
                 </div>
                 <div>
-                  <h4>Robot Design</h4>
+                  <h4 className="pb-1">Robot Design</h4>
                   <Container>
                     <Row>
-                      <h6>Mechanical Design</h6>
+                      <Col>
+                        <h6>Mechanical Design</h6>
+                      </Col>
                       <Col>
                         <Form.Group data-test="anInput" controlId="formDurability">
                           <Form.Label>Durability</Form.Label>
@@ -411,7 +466,9 @@ export default class EditRubrics extends Component {
                       </Col>
                     </Row>
                     <Row>
-                      <h6>Programming</h6>
+                      <Col>
+                        <h6>Programming</h6>
+                      </Col>
                       <Col>
                         <Form.Group data-test="anInput" controlId="formProgrammingQuality">
                           <Form.Label>Programming Quality</Form.Label>
@@ -450,7 +507,9 @@ export default class EditRubrics extends Component {
                       </Col>
                     </Row>
                     <Row>
-                      <h6>Strategy & Innovation</h6>
+                      <Col>
+                        <h6>Strategy & Innovation</h6>
+                      </Col>
                       <Col>
                         <Form.Group data-test="anInput" controlId="formDesignProcess">
                           <Form.Label>Design Process</Form.Label>
@@ -498,9 +557,13 @@ export default class EditRubrics extends Component {
                   Submit Rubric
                 </Button>
               </Form>
-              </div>
-    )}
-  </div>
-  );
+            )}
+            {!this.state.isAuthorized && (
+              <h3 data-test="noAuthMsg">You are not authorized to edit rubrics in this tournament.</h3>
+            )}
+          </div>
+        )}
+      </div>
+    );
   }
 }

@@ -8,7 +8,7 @@ const setUp = (props = {}) => {
   return component;
 };
 
-describe("ViewRubrics Component", () => {
+describe("Schedule Component", () => {
   describe("Basic Rendering", () => {
     let component;
     beforeEach( () => {
@@ -38,6 +38,7 @@ describe("ViewRubrics Component", () => {
         teams: component.state().teams,
         droppedTeams: false,
         tableLayout: component.state().tableLayout,
+        isAuthorized: true,
         disabled: true
       })
       var wrapper = findByTestAttr(component, "theChange");

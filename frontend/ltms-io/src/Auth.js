@@ -3,7 +3,7 @@ import auth0 from "auth0-js";
 import axios from 'axios';
 
 const LOGIN_SUCCESS_PAGE = "/maindashboard";
-const LOGIN_FAIL_PAGE = "/login";
+const LOGIN_FAIL_PAGE = "/";
 
 export default class Auth {
   auth0 = null;
