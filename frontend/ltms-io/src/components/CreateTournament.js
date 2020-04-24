@@ -60,7 +60,7 @@ export default class CreateEvent extends Component {
             })
             .then(res => {
                 console.log(res);
-                window.location = '/dashboard';
+                window.location = '/maindashboard';
             })
             .catch(err => {
                 console.log(err);

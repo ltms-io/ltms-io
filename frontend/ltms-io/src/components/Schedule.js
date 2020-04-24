@@ -107,6 +107,8 @@ class Schedule extends React.Component {
       console.log(err);
     });
 
+    console.log(this.state);
+
     //used to get number of matches in a tournament
     await axios.get(`/api/tournaments/${this.state.tourneyId}`)
     .then( async (result) => {

@@ -27,7 +27,7 @@ export default class CreateTeam extends Component {
       teamName: e.target.elements.teamName.value
     })
     .then( (res) => {
-      console.log(res);
+      window.location = "/tournamentdashboard/" + this.state.tourneyId;
     })
     .catch( (err) => {
       console.log(err);

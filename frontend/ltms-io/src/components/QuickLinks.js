@@ -1,31 +1,7 @@
 import React, { Component } from 'react';
 import { ListGroup } from 'react-bootstrap';
-const jsonWeb = require('jsonwebtoken');
 
 class QuickLinks extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      uid: "",
-      dbresults: {}
-    };
-  }
-
-  async componentDidMount() {
-    if (document.cookie.length) {
-      var token = document.cookie.substring(13);
-      var decoded = jsonWeb.verify(token, "123456");
-
-      await this.setState({
-        dbresults: decoded,
-        uid: decoded.auth0id
-      });
-    }
-
-    console.log("INITIAL QUICK LINKS STATE", this.state);
-  }
-
   render() {
     return(
       <div className="pl-3 pr-3 pt-2">

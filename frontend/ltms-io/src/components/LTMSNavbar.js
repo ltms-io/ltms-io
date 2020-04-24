@@ -24,9 +24,16 @@ class LTMSNavbar extends Component {
     return(
       <div>
         <Navbar data-test="theNavbar" bg="info" >
-          <Navbar.Brand href="/maindashboard">
-            <img data-test="theLogo" src={logo} alt="logo" width="100" />
-          </Navbar.Brand>
+          {(this.props.auth && this.props.auth.isAuthenticated()) && (
+            <Navbar.Brand href="/maindashboard">
+              <img data-test="theLogo" src={logo} alt="logo" width="100" />
+            </Navbar.Brand>
+          )}
+          {(this.props.auth && !this.props.auth.isAuthenticated()) && (
+            <Navbar.Brand href="/">
+              <img data-test="theLogo" src={logo} alt="logo" width="100" />
+            </Navbar.Brand>
+          )}
           <Nav className="ml-auto">
             {((this.props.auth && this.props.auth.isAuthenticated()) || (this.props.testAuthorized)) &&
              ((Object.keys(this.state.dbresults).length !== 0 && this.state.dbresults.profilePic.imgUrl.length === 0) || this.props.testProfPic) && (

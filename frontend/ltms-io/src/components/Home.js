@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import { Button } from "react-bootstrap";
 
 class Home extends Component {
   render() {
     return (
 
-      <div>
+      <div className="pl-3 pr-3 pt-2">
         <h1>Welcome!</h1>
 
         {this.props.auth.isAuthenticated() && (
@@ -16,7 +17,7 @@ class Home extends Component {
           </div>
         )}
         <div>
-          <a href="/login">Login</a>
+          <Button href="/login">Login</Button>
         </div>
         {this.props.auth.isAuthenticated() && (
           <div>
