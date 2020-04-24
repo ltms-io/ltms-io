@@ -270,7 +270,7 @@ class Sheet extends React.Component{
                 <Form.Group controlId="teamName">
                   <Form.Control type="text" placeholder="Enter the team's number" readOnly={this.state.readOnly}/>
                 </Form.Group>
-                <Button className="mr-1" variant="primary" type="submit">
+                <Button className="mr-1" type="submit">
                   Set Team
                 </Button>
                 <Button className="ml-1" variant="danger" onClick={this.changeTeam}>
@@ -281,7 +281,10 @@ class Sheet extends React.Component{
             <hr />
             <div className="pb-2">
               <Form onSubmit={this.handleInsert}>
-                <h3>Add Categories</h3>
+                <h3 className="pb-1">Add Categories</h3>
+                <Button className="mb-3" onClick={this.autoPopulate}>
+                  Auto-Populate
+                </Button>
                 <Row>
                   <Col>
                     <Form.Group controlId = "category">
