@@ -235,7 +235,7 @@ class Sheet extends React.Component{
     console.log(this.state);
 
     return(
-      <div>
+      <div data-test="theScoresheet">
         <h2>NOTE: All scores are entered into event 5e7a5410be7af1ae4acc6314 for use in testing modify scores UI</h2>
         <h3>Enter Team</h3>
         <Form onSubmit={this.handleTeam}>
