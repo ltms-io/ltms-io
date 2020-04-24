@@ -133,6 +133,9 @@ export default class TournamentDashboard extends Component {
                                 <Button>Modify Schedule</Button>
                             </Link>
                         )}
+                        <Link to={"/createscoresheet/" + this.state.tourneyId}>
+                            <Button>Create Scoresheet</Button>
+                        </Link>
                         
                     </Col>
                 </Row>

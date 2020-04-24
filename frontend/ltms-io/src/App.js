@@ -67,7 +67,7 @@ class App extends Component {
             <Route path="/timer" component={Timer} />
             <Route path="/createjudge/:tourneyId" component={CreateJudges} />
             <Route path="/accountdetails" component={() => <AccountDetails auth={this.props.auth} />} />
-            <Route path="/createscoresheet" component={ Sheet }/>
+            <Route path="/createscoresheet/:tourneyId" component={ Sheet }/>
             <Route path="/callback" component={Callback} />
             <Route path="/pictureuploadtest" component={PictureUploadModalTest} />
             <Route path="/volunteermodaltest" component={ VolunteerModalTest } />
