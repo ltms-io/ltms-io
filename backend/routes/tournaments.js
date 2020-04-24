@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Tournament = require('../models/tournament-model');
 const User = require('../models/user-model');
+const PDFDocument = require('pdfkit');
+const mongoose = require('mongoose');
 
 /* GET all tournaments listing. */
 router.get('/', (req, res) => {
@@ -133,6 +135,40 @@ router.get('/:id/scores/:scoreid', (req, res) => {
         }
 
         return res.status(200).send(tournament.scores.id(req.params.scoreid));
+    })
+})
+
+/* GET PDF of schedule */
+router.get('/:id/pdf', (req, res) => {
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        return res.status(400).send("bad request");
+    }
+
+    Tournament.findById(req.params.id).then(tournament => {
+        if(!tournament) {
+            return res.status(404).send("tournament not found");
+        }
+
+        const doc = new PDFDocument;
+        doc.pipe(res);
+
+        doc.image("public/ltmsio-logo-wide.png", (doc.page.width - 165), 15, {fit: [150, 250]});
+        doc.fontSize(24)
+            .text(`Match Schedule for ${tournament.name}`);
+
+        doc.fontSize(14)
+            .text(`Date: ${new Date(tournament.startDate).toLocaleDateString()}`);
+
+        doc.moveDown(1);
+
+        doc.fontSize(12);
+        tournament.schedule[0].match.map((match) => {
+            doc.text(`Time: ${match.startTime}    |    Table: ${match.table}    |    Teams: ${match.teamA} and ${match.teamB}`);
+            doc.moveDown(0.25);
+        });
+
+        // end and display the document
+        doc.end();
     })
 })
 
@@ -331,7 +367,7 @@ router.post('/schedule', (req, res) => {
         tournament.schedule[0] = schedule;
 
         tournament.save().then(() => {
-            res.status(200).send("schedule successfully saved");
+            res.status(200).send(tournament);
         }).catch(err => {
             console.log(err);
             res.status(500).send(err);
@@ -470,6 +506,32 @@ router.patch('/:id/scores/:scoreid', (req, res) => {
 
         if(req.body.changeNotes) {
             tournament.scores.id(req.params.scoreid).changeNotes.push(req.body.changeNotes);
+        }
+
+        tournament.save().then(tournament => {
+            res.status(200).send(tournament);
+        }).catch(err => {
+            res.status(500).send(err);
+        })
+    })
+})
+
+router.patch('/:id/schedule', (req, res) => {
+    Tournament.findById(req.params.id).then(tournament => {
+        if(!tournament) {
+            return res.status(404).send("tournament not found");
+        }
+
+        if(req.body.rawData) {
+            tournament.schedule[0].rawData = req.body.rawData;
+        }
+
+        if(req.body.startTime) {
+            tournament.schedule[0].startTime = req.body.startTime;
+        }
+
+        if(req.body.match) {
+            tournament.schedule[0].match = req.body.match;
         }
 
         tournament.save().then(tournament => {

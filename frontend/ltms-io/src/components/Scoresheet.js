@@ -22,7 +22,8 @@ class Sheet extends React.Component{
       scoreType: "Score Type",
       index: 0,
       category: "Category",
-      isAuthorized: false
+      isAuthorized: false,
+      disabled: false
     }
 
     //binds the fuction
@@ -32,6 +33,49 @@ class Sheet extends React.Component{
     this.handleScoreSelect = this.handleScoreSelect.bind(this);
     this.handleTeam = this.handleTeam.bind(this);
     this.changeTeam = this.changeTeam.bind(this);
+    this.autoPopulate = this.autoPopulate.bind(this);
+    this.handleCatChange = this.handleCatChange.bind(this);
+
+  }
+
+  autoPopulate(e) {
+    e.preventDefault();
+
+    axios.get(`/api/tournaments/5ea207a2b67532364020b8e0/scores/5ea21339b67532364020b8e2`).then(result => {
+      var event = JSON.parse(result.data.rawData);
+      var newArray = [];
+      for(var i = 0; i < event.length; i++) {
+        var score;
+        if(event[i].explicitType === "Yes/No"){
+          score = <div>
+                    <Dropdown.Item key="yes" eventKey={"y0"}>Yes</Dropdown.Item>
+                    <Dropdown.Item key="no" eventKey={"n0"}>No</Dropdown.Item>
+                  </div>
+        }else{
+          score = <div>
+                    <Dropdown.Item key="1" eventKey={"11"}>1</Dropdown.Item>
+                    <Dropdown.Item key="2" eventKey={"21"}>2</Dropdown.Item>
+                    <Dropdown.Item key="3" eventKey={"31"}>3</Dropdown.Item>
+                    <Dropdown.Item key="4" eventKey={"41"}>4</Dropdown.Item>
+                    <Dropdown.Item key="5" eventKey={"51"}>5</Dropdown.Item>
+                  </div>
+        }
+        var cate = event[i].categ.props.value
+        newArray.push({
+          categ: <Form.Control type = "text" name={"text" + i} eventkey={"text" + i} defaultValue = {cate} readOnly={false} onChange={this.handleCatChange}/>,
+          scoretype: score,
+          tempScore: "Score",
+          explicitType: event[i].explicitType
+        })
+      }
+
+      var index = newArray.length;
+      this.setState({index: index});
+      this.setState({events: newArray});
+      this.setState({disabled: true});
+    }).catch(err => {
+      console.log(err);
+    })
   }
 
   async handleScoreSelect(eventKey) {
@@ -41,6 +85,14 @@ class Sheet extends React.Component{
     else {
       await this.setState({scoreType: "1-5"});
     }
+  }
+
+  handleCatChange(eventKey) {
+    var array = this.state.events;
+    var index = parseInt(eventKey.target.name.substring(4), 10);
+    array[index].categ = <Form.Control type = "text" name={"text" + index} eventkey={"text" + index} defaultValue = {eventKey.target.value} readOnly={false} onChange={this.handleCatChange}/>;
+    this.setState({events: array});
+    console.log(this.state);
   }
 
   //function to allow edits to team scored
@@ -90,16 +142,17 @@ class Sheet extends React.Component{
     }
 
     newArray.push({
-      categ: <Form.Control type = "text" value = {cate}/>,
+      categ: <Form.Control type = "text" name={"text" + this.state.index} eventkey = {"text" + index} defaultValue = {cate} onChange={this.handleCatChange}/>,
       scoretype: score,
       tempScore: "Score",
       explicitType: this.state.scoreType
     })
 
-    await this.setState({events: newArray});
+    this.setState({events: newArray});
     var index = this.state.index + 1;
-    await this.setState({index: index});
-    await this.setState({scoreType: "Score Type"})
+    this.setState({index: index});
+    this.setState({scoreType: "Score Type"})
+    this.setState({disabled: true});
   }
 
   //function to save the score type for a specific category
@@ -136,14 +189,16 @@ class Sheet extends React.Component{
     var score = 0;
 
     for (var i = 0; i < index; i++) {
-
       if (this.state.events[i].tempScore === "Yes") {
         score += 5;
       }
       else if (this.state.events[i].tempScore === "No") {
         continue;
       }
-      else {
+      else{
+        if (this.state.events[i].tempScore === "Score") {
+          continue;
+        }
         score += parseInt(this.state.events[i].tempScore, 10);
       }
     }
@@ -153,11 +208,11 @@ class Sheet extends React.Component{
     var fixedCats = [];
     var fixedScores = [];
     this.state.events.forEach( (event) => {
-      fixedCats.push(event.categ.props.value);
+      fixedCats.push(event.categ.props.defaultValue);
       fixedScores.push(event.tempScore);
     });
 
-    await axios.post("/api/tournaments/score", {
+    axios.post("/api/tournaments/score", {
       id: this.state.tourneyId,
       fieldTypes: fixedCats,
       fieldValues: fixedScores,
@@ -205,7 +260,7 @@ class Sheet extends React.Component{
   //render function
   render(){
     return(
-      <div className="pl-3 pr-3 pt-2">
+      <div data-test="theScoresheet" className="pl-3 pr-3 pt-2">
         <h1>Create Scoresheet for Tournament "{this.state.dbtournresults.name}"</h1>
         {this.state.isAuthorized && (
           <div>
@@ -265,16 +320,18 @@ class Sheet extends React.Component{
                 </Row>
               ))}
             </Form>
-            <Form>
-              <Button className="mb-2" variant="primary" onClick={this.handleCalculate}>
-                Calculate and Submit Score
-              </Button>
-              <Row>
-                <Col xs="2">
-                  <Form.Control type = "text" value = {"Final Score: " + this.state.finalscore} readOnly = {true}/>
-                </Col>
-              </Row>
-            </Form>
+            {this.state.disabled && (
+              <Form data-test="theFinalScore">
+                <Button className="mb-2" variant="primary" onClick={this.handleCalculate}>
+                  Calculate and Submit Score
+                </Button>
+                <Row>
+                  <Col xs="2">
+                    <Form.Control type = "text" value = {"Final Score: " + this.state.finalscore} readOnly = {true}/>
+                  </Col>
+                </Row>
+              </Form>
+            )}
           </div>
         )}
         {!this.state.isAuthorized && (

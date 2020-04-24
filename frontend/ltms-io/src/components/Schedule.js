@@ -1,302 +1,330 @@
 import React from 'react';
 import axios from 'axios';
 import { Form, Button, Col, Row } from 'react-bootstrap';
-const jsonWeb = require('jsonwebtoken');
+
 
 class Schedule extends React.Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.state = {
-      tourneyId: this.props.match.params.tourneyId,
-      uid: "",
-      dbresults: {},
-      dbtournresults: {},
-      startTime: "",
-      cycleTime: 0,
-      numJudgeRooms: 0,
-      numMatches: 0,
-      numTables: 0,
-      teams: [],
-      droppedTeams: [],
-      tableLayout: [],
-      disabled: false,
-      isAuthorized: false
-    }
-
-    this.handleSchedule = this.handleSchedule.bind(this);
-    this.randomizeTeams = this.randomizeTeams.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleDrop = this.handleDrop.bind(this);
-  }
-
-  async randomizeTeams() {
-    var sched = new Array(this.state.teams.length).fill("");
-
-    //populates each match shedule in robotSchedule
-    for (var i = 0; i < sched.length; i++) {
-      var j = Math.floor(Math.random() * sched.length);
-      if (sched[j] !== "") {
-        while (1) {
-          j++;
-          if (j === sched.length) {
-            j = 0;
-          }
-          if (sched[j] === "") {
-            sched[j] = this.state.teams[i];
-            break;
-          }
-        }
-      }
-      else {
-          sched[j] = this.state.teams[i];
-      }
-    }
-    await this.setState({ teams: sched });
-  }
-
-  async handleChange(e) {
-    e.preventDefault();
-    await this.setState({tableLayout: []});
-    await this.setState({disabled: false});
-  }
-
-  async handleDrop(e) {
-    e.preventDefault();
-
-    var sss = this.state.droppedTeams
-    var inTeams = false
-    var notInDroppedTeams = true
-    for (let index = 0; index < this.state.teams.length; index++) {
-      if (this.state.teams[index].teamName === e.target.elements.teamDrops.value) {
-        inTeams = true
-      }
-    }
-    for (let index = 0; index < this.state.droppedTeams.length; index++) {
-      if (this.state.droppedTeams[index] === e.target.elements.teamDrops.value) {
-        notInDroppedTeams = false
-      }
-    }
-    if ((inTeams === true) && (notInDroppedTeams === true)) {
-      sss.push(e.target.elements.teamDrops.value)
-    }
-    this.setState({droppedTeams: sss});
-
-    console.log(this.state.droppedTeams)
-
-  }
-
-  async handleSchedule(e) {
-    e.preventDefault();
-    if(!e.target.elements.startTime.value || !e.target.elements.cycleTime.value) {
-      alert("Please enter start time and cycle time");
-      return;
-    }
-
-    var startTime = e.target.elements.startTime.value;
-    var cycleTime = parseInt(e.target.elements.cycleTime.value, 10);
-    var hour = parseInt(startTime.substring(0, startTime.indexOf(":")), 10);
-    var min = parseInt(startTime.substring(startTime.indexOf(":") + 1), 10);
-
-    //gets all teams in a tournament
-    await axios.get(`/api/teams/tournid/${this.state.tourneyId}`)
-    .then( async (result) => {
-      await this.setState({ teams: result.data });
-    })
-    .catch( (err) => {
-      console.log(err);
-    });
-
-    console.log(this.state);
-
-    //used to get number of matches in a tournament
-    await axios.get(`/api/tournaments/${this.state.tourneyId}`)
-    .then( async (result) => {
-      await this.setState({ numMatches: result.data.matchesPerTeam });
-      await this.setState({ numJudgeRooms: result.data.numJudgeRooms });
-      await this.setState({ numTables: result.data.fieldsCount });
-    })
-    .catch( (err) => {
-      console.log(err);
-    });
-
-    var matchSchema = [];
-    var table = 1;
-    this.randomizeTeams();
-    for (var j = 0; j < this.state.numMatches; j++) {
-      for (var i = 0; i < this.state.teams.length; i += 2) {
-        var tempMin = "0" + min;
-        var match = {
-          match: j + 1,
-          table: table,
-          teamA: this.state.teams[i].teamName,
-          teamB: this.state.teams[i+1].teamName,
-          startTime: hour + ":" + tempMin.substring(tempMin.length - 2)
+        this.state = {
+            tourneyId: this.props.match.params.tourneyId,
+            startTime: "",
+            cycleTime: 0,
+            numJudgeRooms: 0,
+            numMatches: 0,
+            numTables: 0,
+            teams: [],
+            droppedTeams: false,
+            tableLayout: [],
+            disabled: false
         }
 
-        min += cycleTime;
-        if(min > 59) {
-          min -= 60;
-          hour++;
-          if (hour > 12) {
-              hour -= 12;
-          }
+        this.handleSchedule = this.handleSchedule.bind(this);
+        this.generatePDF = this.generatePDF.bind(this);
+        this.randomizeTeams = this.randomizeTeams.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleDrop = this.handleDrop.bind(this);
+    }
+
+    randomizeTeams() {
+        var sched = new Array(this.state.teams.length).fill("");
+
+        //populates each match shedule in robotSchedule
+        for (var i = 0; i < sched.length; i++) {
+            var j = Math.floor(Math.random() * sched.length);
+            if (sched[j] !== "") {
+                while (1) {
+                    j++;
+                    if (j === sched.length) {
+                        j = 0;
+                    }
+                    if (sched[j] === "") {
+                        sched[j] = this.state.teams[i];
+                        break;
+                    }
+                }
+            } else {
+                sched[j] = this.state.teams[i];
+            }
+
+
+        }
+        this.setState({ teams: sched });
+    }
+
+    handleChange(e) {
+        e.preventDefault();
+        this.setState({ tableLayout: [] });
+        this.setState({ disabled: false });
+    }
+
+    async handleDrop(e) {
+        e.preventDefault()
+        console.log(this.state.teams)
+
+        var exist = true
+        for(let index = 0; index < this.state.teams.length; index++)
+        {
+            if(this.state.teams[index].teamName === e.target.elements.teamDrops.value)
+            {
+                exist = false
+            }
+        }
+        if(exist)
+        {
+            alert("Error");
+            return;
         }
 
-        matchSchema.push(match);
-        if (table === this.state.numTables) {
-          table = 0;
+        /*var sss = this.state.droppedTeams
+        var inTeams = false
+        var notInDroppedTeams = true
+        for(let index = 0; index < this.state.teams.length; index++)
+        {
+            if(this.state.teams[index].teamName == e.target.elements.teamDrops.value)
+            {
+                inTeams = true
+            }
         }
-        table++;
-      }
-      this.randomizeTeams();
-    }
-
-    var tableArr = [];
-    for (var k = 0; k < matchSchema.length; k += this.state.numTables) {
-      var temp = [];
-      for (var m = 0; m < this.state.numTables; m++) {
-        if (!matchSchema[k + m]) {
-          break;
+        for(let index = 0; index < this.state.droppedTeams.length; index++)
+        {
+            if(this.state.droppedTeams[index] == e.target.elements.teamDrops.value)
+            {
+                notInDroppedTeams = false
+            }
         }
-        temp.push(matchSchema[k + m]);
-      }
-      tableArr.push(temp);
+        if((inTeams == true) && (notInDroppedTeams == true))
+        {
+            sss.push(e.target.elements.teamDrops.value)
+        }
+        this.setState({droppedTeams: sss});
+
+        console.log(this.state.droppedTeams)*/
+
+        var temp = [];
+
+        if (this.state.droppedTeams) {
+            for (let index = 0; index < this.state.teams.length; index++) {
+                if (this.state.teams[index].teamName !== e.target.elements.teamDrops.value && this.state.teams[index].teamName !== "NULL") {
+                    temp.push(this.state.teams[index])
+                    console.log("YIPPY")
+                }
+            }
+            this.setState({ droppedTeams: false });
+        } else {
+            for (let index = 0; index < this.state.teams.length; index++) {
+                if (this.state.teams[index].teamName === e.target.elements.teamDrops.value) {
+                    var t = this.state.teams[index];
+                    t.teamName = "NULL";
+                    temp.push(t);
+                } else {
+                    temp.push(this.state.teams[index]);
+                }
+            }
+            this.setState({ droppedTeams: true });
+        }
+        this.setState({ teams: temp })
+        console.log(this.state.teams)
     }
 
-    console.log(tableArr);
-    await this.setState({ tableLayout: tableArr });
-    await this.setState({ disabled: true });
-    await this.setState({ startTime: startTime });
-    await this.setState({ cycleTime: cycleTime });
+    async handleSchedule(e) {
+        e.preventDefault();
+        if (!e.target.elements.startTime.value || !e.target.elements.cycleTime.value) {
+            alert("Please enter start time and cycle time");
+            return;
+        }
 
-    await axios.post(`/api/tournament/schedule`, {
-      id: this.state.tourneyId,
-      startTime: this.state.startTime,
-      cycleTime: this.state.cycleTime,
-      rawData: JSON.stringify(this.state),
-      match: this.state.tableLayout
-    })
-    .then( (result) => {
-      console.log(result);
-    })
-    .catch( (err) => {
-      console.log(err);
-    })
-  }
+        var startTime = e.target.elements.startTime.value;
+        var cycleTime = parseInt(e.target.elements.cycleTime.value, 10);
+        var hour = parseInt(startTime.substring(0, startTime.indexOf(":")), 10);
+        var min = parseInt(startTime.substring(startTime.indexOf(":") + 1), 10);
 
-  async componentDidMount() {
-    if (document.cookie.length) {
-      var token = document.cookie.substring(13);
-      var decoded = jsonWeb.verify(token, "123456");
+        //gets all teams in a tournament
 
-      await this.setState({
-        dbresults: decoded,
-        uid: decoded.auth0id
-      });
+        await axios.get(`/api/teams/tournid/${this.state.tourneyId}`).then((result) => {
+            if (this.state.teams.length === 0) {
+                this.setState({ teams: result.data });
+            }
+        }).catch((err) => {
+            console.log(err);
+        });
+
+        //used to get number of matches in a tournament
+        await axios.get(`/api/tournaments/${this.state.tourneyId}`).then((result) => {
+            this.setState({ numMatches: result.data.matchesPerTeam });
+            this.setState({ numJudgeRooms: result.data.numJudgeRooms });
+            this.setState({ numTables: result.data.fieldsCount });
+        }).catch((err) => {
+            console.log(err);
+        });
+
+
+        var matchSchema = [];
+        if(this.state.teams.length % 2 === 1) {
+            this.setState({droppedTeams: true});
+            var arr = this.state.teams;
+            var team = {
+                teamName: "NULL"
+            }
+            arr.push(team);
+        }
+        var table = 1;
+        this.randomizeTeams();
+        for (var j = 0; j < this.state.numMatches; j++) {
+            for (var i = 0; i < this.state.teams.length; i += 2) {
+                var tempMin = "0" + min;
+                var match = {
+                    match: j + 1,
+                    table: table,
+                    teamA: this.state.teams[i].teamName,
+                    teamB: this.state.teams[i + 1].teamName,
+                    startTime: hour + ":" + tempMin.substring(tempMin.length - 2)
+                }
+
+                min += cycleTime;
+                if (min > 59) {
+                    min -= 60;
+                    hour++;
+                }
+
+                matchSchema.push(match);
+                if (table === this.state.numTables) {
+                    table = 0;
+                }
+                table++;
+            }
+            this.randomizeTeams();
+        }
+
+        var tableArr = [];
+        for (var k = 0; k < matchSchema.length; k += this.state.numTables) {
+            var temp = [];
+            for (var m = 0; m < this.state.numTables; m++) {
+                if (!matchSchema[k + m]) {
+                    break;
+                }
+                temp.push(matchSchema[k + m]);
+            }
+            tableArr.push(temp);
+        }
+
+        console.log(tableArr);
+        this.setState({ tableLayout: tableArr });
+        this.setState({ disabled: true });
+        this.setState({ startTime: startTime });
+        this.setState({ cycleTime: cycleTime });
+
+        await axios.post(`/api/tournament/schedule`, {
+            id: this.state.tourneyId,
+            startTime: this.state.startTime,
+            cycleTime: this.state.cycleTime,
+            rawData: JSON.stringify(this.state),
+            match: this.state.tableLayout
+        }).then(result => {
+            console.log(result);
+        }).catch(err => {
+            console.log(err);
+        })
+
     }
 
-    await axios.get(`/api/tournaments/${this.state.tourneyId}`)
-    .then( async (res) => {
-      await this.setState({
-        dbtournresults: res.data
-      });
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+    generatePDF() {
+        axios({
+            method: 'get',
+            url: `/api/tournaments/${this.state.tourneyId}/pdf`,
+            responseType: 'blob'
+        }).then(res => {
+            const file = new Blob(
+                [res.data],
+                { type: 'application/pdf' }
+            );
 
-    await axios.get(`/api/tournaments/schedule/${this.state.tourneyId}`)
-    .then( async (result) => {
-      var stat = JSON.parse(result.data.rawData);
-      await this.setState(stat);
-      console.log(this.state);
-    })
-    .catch( (err) => {
-      console.log(err);
-    });
-
-    if (this.state.dbtournresults.director === this.state.dbresults._id) {
-      await this.setState({
-        isAuthorized: true
-      });
+            const fileURL = URL.createObjectURL(file);
+            window.open(fileURL);
+        }).catch(err => {
+            console.log(err);
+        })
     }
-  }
 
-  render() {
-    return (
-      <div className="pl-3 pr-3 pt-2">
-        <h1 className="pb-2">Generate Schedule for Tournament "{this.state.dbtournresults.name}"</h1>
-        {this.state.isAuthorized && (
-          <div>
-            {!this.state.disabled && (
-            <Form onSubmit={this.handleSchedule}>
-              <Row className="pb-2">
-                <Col xs="2">
-                  <Form.Group controlId="startTime">
-                    <Form.Control type="text" placeholder="Start Time (hh:mm)" />
-                  </Form.Group>
+    render() {
+        return (
+            <div data-test="theSchedule">
+                {!this.state.disabled && (
+                <Form data-test="theTime" onSubmit={this.handleSchedule}>
+                    <Row>
+                        <Col xs="2">
+                            <Form.Group controlId="startTime">
+                                <Form.Control type="text" placeholder="Start Time (hh:mm)" />
+                            </Form.Group>
+                        </Col>
+                        <Col xs="2">
+                            <Form.Group controlId="cycleTime">
+                                <Form.Control type="text" placeholder="Cycle Time (mm)" />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Form.Group>
+                        <Button variant="outline-primary" type="submit">Generate Tournament Schedule</Button>
+                    </Form.Group>
+                </Form>
+                )}
+
+                <Form>
+
+                    {this.state.tableLayout.map((sched, index) => (
+                        <Form.Group>
+                            <Row>
+                                {sched.map((robot, ind) => (
+                                    <Col xs="4">
+                                        {!index && (
+                                            <h5>Table {ind + 1}</h5>
+                                        )}
+                                        <Form.Control type="text" value={robot.startTime + " " + robot.teamA + " | " + robot.teamB} readOnly={true} />
+                                    </Col>
+                                ))}
+                            </Row>
+                        </Form.Group>
+                    ))}
+                </Form>
+
+                {this.state.disabled && (
+                    <Form data-test="theChange" onSubmit={this.handleChange}>
+                        <Form.Group>
+                            <Button variant="outline-danger" type="submit">Generate New Schedule</Button>
+                        </Form.Group>
+                    </Form>
+
+                )}
+                {this.state.disabled && (
+                    <Form onSubmit={this.handleDrop}>
+                        <div>
+                            <Form.Group data-test="aCommentInput" controlId="teamDrops">
+                                <Form.Label>Team Name</Form.Label>
+                                <Form.Control as="textarea" />
+                            </Form.Group>
+                        </div>
+                        <Button type="submit">
+                            Drop Team
+                        </Button>
+                    </Form>)
+                }
+                <Col>
+                    <Button onClick={this.generatePDF}>Generate PDF</Button>
                 </Col>
-                <Col xs="2">
-                  <Form.Group controlId="cycleTime">
-                    <Form.Control type="text" placeholder="Cycle Time (mm)" />
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Form.Group>
-                <Button type="submit">Generate Schedule</Button>
-              </Form.Group>
-            </Form>
-            )}
+            </div>
+        )
+    }
 
-            <Form>
-              {this.state.tableLayout.map((sched, index) => (
-                <Form.Group>
-                <Row>
-                {sched.map((robot, ind) => (
-                  <Col className="mb-2" xs = "4">
-                    {!index && (
-                      <h5>Table {ind + 1}</h5>
-                    )}
-                    <Form.Control type="text" value={robot.startTime + " " + robot.teamA + " | " + robot.teamB } readOnly={true} />
-                  </Col>
-                ))}
-                </Row>
-                </Form.Group>
-              ))}
-            </Form>
-
-            {this.state.disabled && (
-              <Form onSubmit={this.handleChange}>
-                <Form.Group>
-                  <Button variant="danger" type="submit">Generate New Schedule</Button>
-                </Form.Group>
-              </Form>
-            )}
-
-            {this.state.disabled && (
-              <Form onSubmit={this.handleDrop}>
-                <hr/>
-                <h3 className="pb-1">Drop Team from Schedule</h3>
-                <div className="pb-1">
-                  <Form.Group data-test="aCommentInput" controlId="teamDrops">
-                    <Form.Label>Team Name</Form.Label>
-                    <Form.Control as="input"/>
-                  </Form.Group>
-                </div>
-                <Button type="submit">
-                  Drop Team
-                </Button>
-              </Form>
-            )}
-          </div>
-        )}
-        {!this.state.isAuthorized && (
-          <h3>You are not authorized to generate schedule in this tournament.</h3>
-        )}
-      </div>
-    );
-  }
+    componentDidMount() {
+        axios.get(`/api/tournaments/schedule/${this.state.tourneyId}`).then(result => {
+            var stat = JSON.parse(result.data.rawData);
+            this.setState(stat);
+            console.log(this.state);
+        }).catch(err => {
+            console.log(err);
+        })
+    }
 }
 
 export default Schedule;

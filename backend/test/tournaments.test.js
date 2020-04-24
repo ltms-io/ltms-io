@@ -156,5 +156,25 @@ describe("Tournament Backend Routes", () => {
         done();
       })
     });
+
+    it("PDF GET with INVALID tourney ID should return bad request", done => {
+      chai.request(app)
+        .get("/api/tournaments/1/pdf")
+        .send()
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          done();
+        })
+    });
+
+    it("PDF GET with VALID tounrey ID should return success", done => {
+      chai.request(app)
+        .get("/api/tournaments/5e7a5410be7af1ae4acc6314/pdf")
+        .send()
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          done();
+        })
+    });
   });
 });

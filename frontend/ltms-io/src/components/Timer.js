@@ -73,7 +73,7 @@ export default class Timer extends Component {
         {(this.state.counter <= 0 && this.state.canSound) && (
           <Sound
             url={audio}
-            playStatus={Sound.status.PLAYING} 
+            playStatus={Sound.status.PLAYING}
             onFinishedPlaying={() => this.setState({canSound: false})} />
         )}
 
