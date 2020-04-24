@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import ResetLogin from './ResetLogin';
-import logo from '../logo.svg';
 import axios from 'axios';
 const jsonWeb = require('jsonwebtoken');
 
@@ -67,11 +66,13 @@ class AccountDetails extends Component {
           <Container>
             <Row>
               <Col>
+                {/*
                 <div>
                   <h3>Edit Profile Picture</h3>
                   {(this.state.dbresults.profilePic && this.state.dbresults.profilePic.imgUrl.length !== 0) ? <img src={this.state.dbresults.profilePic.imgUrl} width="250" height="250" alt="account" /> : <img src={logo} width="250" height="250" alt="account" />}
                 </div>
                 <hr />
+                */}
                 <div>
                   <h3 className="pb-1">Edit Name</h3>
                   <Form onSubmit={this.handleName}>

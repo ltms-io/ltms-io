@@ -105,7 +105,7 @@ export default class EditScoreEntry extends Component {
     var fixedCats = [];
     var fixedScores = [];
     this.state.events.forEach( (event) => {
-      fixedCats.push(event.categ.props.value);
+      fixedCats.push(event.categ.props.defaultValue);
       fixedScores.push(event.tempScore);
     });
 
@@ -164,8 +164,9 @@ export default class EditScoreEntry extends Component {
     .then( async (result) => {
       await this.setState({scoreResults: result.data});
       await this.setState({rawData: JSON.parse(result.data.rawData)});
+      console.log(this.state);
       this.state.rawData.forEach(item => {
-          this.handleInsert(item.categ.props.value, item.explicitType);
+          this.handleInsert(item.categ.props.defaultValue, item.explicitType);
       });
     })
     .catch( (error) => {
