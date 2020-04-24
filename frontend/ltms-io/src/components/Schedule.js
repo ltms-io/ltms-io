@@ -84,6 +84,19 @@ class Schedule extends React.Component {
         this.setState({droppedTeams: sss});
 
         console.log(this.state.droppedTeams)*/
+        var exist = true
+        for(let index = 0; index < this.state.teams.length; index++)
+        {
+            if(this.state.teams[index].teamName == e.target.elements.teamDrops.value)
+            {
+                exist = false
+            }
+        }
+        if(exist)
+        {
+            alert("Error");
+            return;
+        }
     
         var temp = [];
 
@@ -279,6 +292,7 @@ class Schedule extends React.Component {
         }).catch(err => {
             console.log(err);
         })
+        console.log(this.state)
     }
 }
 
