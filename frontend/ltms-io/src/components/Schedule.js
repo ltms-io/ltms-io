@@ -63,6 +63,20 @@ class Schedule extends React.Component {
         e.preventDefault()
         console.log(this.state.teams)
 
+        var exist = true
+        for(let index = 0; index < this.state.teams.length; index++)
+        {
+            if(this.state.teams[index].teamName === e.target.elements.teamDrops.value)
+            {
+                exist = false
+            }
+        }
+        if(exist)
+        {
+            alert("Error");
+            return;
+        }
+
         /*var sss = this.state.droppedTeams
         var inTeams = false
         var notInDroppedTeams = true
@@ -147,6 +161,14 @@ class Schedule extends React.Component {
 
 
         var matchSchema = [];
+        if(this.state.teams.length % 2 === 1) {
+            this.setState({droppedTeams: true});
+            var arr = this.state.teams;
+            var team = {
+                teamName: "NULL"
+            }
+            arr.push(team);
+        }
         var table = 1;
         this.randomizeTeams();
         for (var j = 0; j < this.state.numMatches; j++) {
@@ -227,25 +249,25 @@ class Schedule extends React.Component {
 
     render() {
         return (
-            <div>
+            <div data-test="theSchedule">
                 {!this.state.disabled && (
-                    <Form onSubmit={this.handleSchedule}>
-                        <Row>
-                            <Col xs="2">
-                                <Form.Group controlId="startTime">
-                                    <Form.Control type="text" placeholder="Start Time (hh:mm)" />
-                                </Form.Group>
-                            </Col>
-                            <Col xs="2">
-                                <Form.Group controlId="cycleTime">
-                                    <Form.Control type="text" placeholder="Cycle Time (mm)" />
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Form.Group>
-                            <Button variant="outline-primary" type="submit">Generate Tournament Schedule</Button>
-                        </Form.Group>
-                    </Form>
+                <Form data-test="theTime" onSubmit={this.handleSchedule}>
+                    <Row>
+                        <Col xs="2">
+                            <Form.Group controlId="startTime">
+                                <Form.Control type="text" placeholder="Start Time (hh:mm)" />
+                            </Form.Group>
+                        </Col>
+                        <Col xs="2">
+                            <Form.Group controlId="cycleTime">
+                                <Form.Control type="text" placeholder="Cycle Time (mm)" />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Form.Group>
+                        <Button variant="outline-primary" type="submit">Generate Tournament Schedule</Button>
+                    </Form.Group>
+                </Form>
                 )}
 
                 <Form>
@@ -267,7 +289,7 @@ class Schedule extends React.Component {
                 </Form>
 
                 {this.state.disabled && (
-                    <Form onSubmit={this.handleChange}>
+                    <Form data-test="theChange" onSubmit={this.handleChange}>
                         <Form.Group>
                             <Button variant="outline-danger" type="submit">Generate New Schedule</Button>
                         </Form.Group>
