@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import PropTypes from "prop-types";
+import jsonWeb from 'jsonwebtoken';
 
 /*
 The rubric structure used here is based off of the Sep. 3 2019 (City Shaper 2019
@@ -15,10 +16,10 @@ class RubricEntry extends Component {
     this.state = {
       tourneyId: this.props.match.params.tourneyId,
       teamId: this.props.match.params.teamId,
+      uid: "",
       dbresults: {},
       dbtournresults: {},
       dbteamresults: {},
-      authresults: {},
       isAuthorized: false,
       isSendAuthorized: false
     };
@@ -98,8 +99,6 @@ class RubricEntry extends Component {
 
     this.updateState();
     console.log("UPDATED STATE", this.state);
-
-    alert("Submitted!");
   }
 
   async handleDelete(e) {
@@ -116,8 +115,6 @@ class RubricEntry extends Component {
 
     this.updateState();
     console.log("UPDATED STATE", this.state);
-
-    alert("Deleted!");
   }
 
   async handleSend(e) {
@@ -133,71 +130,56 @@ class RubricEntry extends Component {
 
     this.updateState();
     console.log("UPDATED STATE", this.state);
-
-    alert("Sent!");
   }
 
   async updateState() {
-    await axios({
-      method: 'GET',
-      url: `https://dev-s68c-q-y.auth0.com/userinfo`,
-      headers: {
-        'content-type': 'application/json',
-        'authorization': 'Bearer ' + localStorage.getItem("access_token")
-      },
-      json: true
-    })
-    .then( (result) => {
-      this.state.authresults = result.data;
-    })
-    .catch( (error) => {
-      console.log(error);
-    });
+    if (document.cookie.length) {
+      var token = document.cookie.substring(13);
+      var decoded = jsonWeb.verify(token, "123456");
 
-    await axios.post(`/api/users/getuser`, {
-      auth0id: this.state.authresults.sub
-    }).then ( (result) => {
-        this.state.dbresults = result.data;
-    }).catch( (error) => {
-        console.log(error);
-    });
+      await this.setState({
+        dbresults: decoded,
+        uid: decoded.auth0id
+      });
+    }
 
     await axios.get(`/api/tournaments/${this.state.tourneyId}`)
-    .then( (result) => {
-        this.state.dbtournresults = result.data;
-    }).catch( (error) => {
+    .then( async (result) => {
+      await this.setState({
+        dbtournresults: result.data
+      });
+    })
+    .catch( (error) => {
         console.log(error);
     });
 
     await axios.get(`/api/teams/${this.state.teamId}`)
-    .then( (result) => {
-        this.state.dbteamresults = result.data;
-    }).catch( (error) => {
+    .then( async (result) => {
+      await this.setState({
+        dbteamresults: result.data
+      });
+    })
+    .catch( (error) => {
         console.log(error);
     });
 
-    if (this.state.dbtournresults.director === this.state.dbresults._id) {
-      this.state.isAuthorized = true;
-      this.state.isSendAuthorized = true;
+    if (this.state.dbtournresults.director === this.state.dbresults._id ||
+        this.state.dbtournresults.judgeAdvisor.includes(this.state.dbresults._id)) {
+      await this.setState({
+        isAuthorized: true,
+        isSendAuthorized: true
+      });
     }
-    else {
-      for (var i = 0; i < this.state.dbtournresults.judgeAdvisor.length; i++) {
-        if (this.state.dbtournresults.judgeAdvisor[i] === this.state.dbresults._id) {
-          this.state.isAuthorized = true;
-          this.state.isSendAuthorized = true;
-        }
-      }
-      if (!this.state.isAuthorized) {
-        for (var j = 0; j < this.state.dbtournresults.judges.length; j++) {
-          if (this.state.dbtournresults.judges[j] === this.state.dbresults._id) {
-            this.state.isAuthorized = true;
-          }
-        }
-      }
+    if (this.state.dbtournresults.judges.includes(this.state.dbresults._id)) {
+      await this.setState({
+        isAuthorized: true
+      });
     }
 
     if (this.state.isSendAuthorized) {
-      this.state.dbrubricsresults = this.state.dbteamresults.rubrics;
+      await this.setState({
+        dbrubricsresults: this.state.dbteamresults.rubrics
+      });
     }
     else {
       var rubrics = [];
@@ -206,16 +188,21 @@ class RubricEntry extends Component {
           rubrics.push(item);
         }
       });
-      this.state.dbrubricsresults = rubrics;
+      await this.setState({
+        dbrubricsresults: rubrics
+      });
     }
+  }
 
-    this.setState(this.state);
+  async componentDidMount() {
+    await this.updateState();
+    console.log("INITIAL RUBRIC ENTRY STATE", this.state);
   }
 
   render() {
     return(
-      <div data-test="theComponent">
-        <h1 data-test="theMainHeader">Rubric Entry for Team "{this.state.dbteamresults.teamName}" in Tournament "{this.state.dbtournresults.name}"</h1>
+      <div data-test="theComponent" className="pl-3 pr-3 pt-2">
+        <h1 data-test="theMainHeader" className="pb-1">Rubric Entry for Team "{this.state.dbteamresults.teamName}" in Tournament "{this.state.dbtournresults.name}"</h1>
         {this.state.isSendAuthorized && (
           <div>
             <div>
@@ -230,10 +217,11 @@ class RubricEntry extends Component {
                 </Button>
               </Form>
             </div>
+            <hr />
           </div>
         )}
         {this.state.isAuthorized && (
-          <div>
+          <div className="pb-3">
             <div>
               <h3>Rubric Deletion</h3>
               <Form data-test="theDeleteForm" onSubmit={this.handleDelete}>
@@ -255,6 +243,7 @@ class RubricEntry extends Component {
                 </Button>
               </Form>
             </div>
+            <hr />
             <div>
               <h3>Rubric Submission</h3>
               <Form data-test="theSubmitForm" onSubmit={this.handleSubmit}>
@@ -263,10 +252,12 @@ class RubricEntry extends Component {
                   <Form.Control required type="text" />
                 </Form.Group>
                 <div>
-                  <h4>Core Values</h4>
+                  <h4 className="pb-1">Core Values</h4>
                   <Container>
                     <Row>
-                      <h6>Inspiration</h6>
+                      <Col>
+                        <h6>Inspiration</h6>
+                      </Col>
                       <Col>
                         <Form.Group data-test="anInput" controlId="formDiscovery">
                           <Form.Label>Discovery</Form.Label>
@@ -305,7 +296,9 @@ class RubricEntry extends Component {
                       </Col>
                     </Row>
                     <Row>
-                      <h6>Teamwork</h6>
+                      <Col>
+                        <h6>Teamwork</h6>
+                      </Col>
                       <Col>
                         <Form.Group data-test="anInput" controlId="formEffectiveness">
                           <Form.Label>Effectiveness</Form.Label>
@@ -344,7 +337,9 @@ class RubricEntry extends Component {
                       </Col>
                     </Row>
                     <Row>
-                      <h6>Gracious Professionalism®</h6>
+                      <Col>
+                        <h6>Gracious Professionalism®</h6>
+                      </Col>
                       <Col>
                         <Form.Group data-test="anInput" controlId="formInclusion">
                           <Form.Label>Inclusion</Form.Label>
@@ -389,10 +384,12 @@ class RubricEntry extends Component {
                   </Container>
                 </div>
                 <div>
-                  <h4>Innovation Project</h4>
+                  <h4 className="pb-1">Innovation Project</h4>
                   <Container>
                     <Row>
-                      <h6>Research</h6>
+                      <Col>
+                        <h6>Research</h6>
+                      </Col>
                       <Col>
                         <Form.Group data-test="anInput" controlId="formProblemIdentification">
                           <Form.Label>Problem Identification</Form.Label>
@@ -431,7 +428,9 @@ class RubricEntry extends Component {
                       </Col>
                     </Row>
                     <Row>
-                      <h6>Innovative Solution</h6>
+                      <Col>
+                        <h6>Innovative Solution</h6>
+                      </Col>
                       <Col>
                         <Form.Group data-test="anInput" controlId="formTeamSolution">
                           <Form.Label>Team Solution</Form.Label>
@@ -470,7 +469,9 @@ class RubricEntry extends Component {
                       </Col>
                     </Row>
                     <Row>
-                      <h6>Presentation</h6>
+                      <Col>
+                        <h6>Presentation</h6>
+                      </Col>
                       <Col>
                         <Form.Group data-test="anInput" controlId="formSharing">
                           <Form.Label>Sharing</Form.Label>
@@ -515,10 +516,12 @@ class RubricEntry extends Component {
                   </Container>
                 </div>
                 <div>
-                  <h4>Robot Design</h4>
+                  <h4 className="pb-1">Robot Design</h4>
                   <Container>
                     <Row>
-                      <h6>Mechanical Design</h6>
+                      <Col>
+                        <h6>Mechanical Design</h6>
+                      </Col>
                       <Col>
                         <Form.Group data-test="anInput" controlId="formDurability">
                           <Form.Label>Durability</Form.Label>
@@ -557,7 +560,9 @@ class RubricEntry extends Component {
                       </Col>
                     </Row>
                     <Row>
-                      <h6>Programming</h6>
+                      <Col>
+                        <h6>Programming</h6>
+                      </Col>
                       <Col>
                         <Form.Group data-test="anInput" controlId="formProgrammingQuality">
                           <Form.Label>Programming Quality</Form.Label>
@@ -596,7 +601,9 @@ class RubricEntry extends Component {
                       </Col>
                     </Row>
                     <Row>
-                      <h6>Strategy & Innovation</h6>
+                      <Col>
+                        <h6>Strategy & Innovation</h6>
+                      </Col>
                       <Col>
                         <Form.Group data-test="anInput" controlId="formDesignProcess">
                           <Form.Label>Design Process</Form.Label>
@@ -652,40 +659,6 @@ class RubricEntry extends Component {
         )}
       </div>
     );
-  }
-
-  async componentDidMount() {
-    await axios.get(`/api/users`)
-    .then ( (result) => {
-      console.log("USERS", result.data);
-    })
-    .catch( (error) => {
-      console.log(error);
-    });
-    await axios.get(`/api/tournaments`)
-    .then ( (result) => {
-      console.log("TOURNAMENTS", result.data);
-    })
-    .catch( (error) => {
-      console.log(error);
-    });
-    await axios.get(`/api/teams`)
-    .then ( (result) => {
-      console.log("ALL TEAMS", result.data);
-    })
-    .catch( (error) => {
-      console.log(error);
-    });
-    await axios.get(`/api/teams/tournid/${this.state.tourneyId}`)
-    .then ( (result) => {
-      console.log(`ALL TEAMS FROM ${this.state.tourneyId}`, result.data);
-    })
-    .catch( (error) => {
-      console.log(error);
-    });
-
-    await this.updateState();
-    console.log("INITIAL RUBRIC ENTRY STATE", this.state);
   }
 }
 

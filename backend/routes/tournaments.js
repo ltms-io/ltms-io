@@ -349,7 +349,7 @@ router.post('/schedule', (req, res) => {
             return res.status(404).send("tourney not found");
         }
 
-    
+
         var array = [];
         for(var i = 0; i < req.body.match.length; i++) {
             for(var j = 0; j < req.body.match[i].length; j++) {
@@ -372,7 +372,7 @@ router.post('/schedule', (req, res) => {
             console.log(err);
             res.status(500).send(err);
         })
-        
+
     })
 })
 

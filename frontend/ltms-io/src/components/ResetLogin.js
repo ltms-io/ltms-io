@@ -21,6 +21,7 @@ class ResetLogin extends Component {
     e.preventDefault();
     alert("Resetting email to: " + e.target.elements.email.value);
     this.state.dbresults.email = e.target.elements.email.value;
+    await this.setState(this.state);
 
     await axios.patch(`/api/users/updateuser`, {
       auth0id: this.state.uid,
@@ -65,41 +66,43 @@ class ResetLogin extends Component {
     alert("An email has been sent to you with a link to reset your password.");
   }
 
+  async componentDidMount() {
+    if (document.cookie.length) {
+      var token = document.cookie.substring(13);
+      var decoded = jsonWeb.verify(token, "123456");
+
+      await this.setState({
+        dbresults: decoded,
+        uid: decoded.auth0id
+      });
+    }
+
+    console.log("INITIAL RESET LOGIN STATE", this.state);
+  }
+
   render() {
     return(
       <div>
         <div>
-          <h3>Reset Email Address</h3>
+          <h3 className="pb-1">Reset Email Address</h3>
           <Form onSubmit={this.handleUsername}>
             <Form.Group controlId="email">
-              <Form.Label>New Email Address</Form.Label>
               <Form.Control type="email" placeholder="Enter new email address" />
             </Form.Group>
-            <Button variant="outline-primary" type="submit">
+            <Button type="submit">
               Submit
             </Button>
           </Form>
         </div>
+        <hr />
         <div>
-          <h3>Reset Password</h3>
-          <Button variant="outline-primary" onClick={this.handlePassword}>
+          <h3 className="pb-1">Reset Password</h3>
+          <Button onClick={this.handlePassword}>
             Send Password Reset Link
           </Button>
         </div>
       </div>
     );
-  }
-
-  async componentDidMount() {
-    var token = document.cookie.substring(13);
-    var decoded = jsonWeb.verify(token, "123456");
-
-    this.state.dbresults = decoded;
-    this.state.uid = decoded.auth0id;
-
-    this.setState(this.state);
-
-    console.log("INITIAL RESET LOGIN STATE", this.state);
   }
 }
 

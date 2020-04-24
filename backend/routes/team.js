@@ -71,7 +71,7 @@ router.post('/register', (req, res) => {
       });
     }
     else {
-      res.status(200).send(team);
+      res.status(400).send("Team already exists");
     }
   });
 });
