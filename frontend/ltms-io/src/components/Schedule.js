@@ -19,7 +19,9 @@ class Schedule extends React.Component {
             tableLayout: [],
             disabled: false
         }
+
         this.handleSchedule = this.handleSchedule.bind(this);
+        this.generatePDF = this.generatePDF.bind(this);
         this.randomizeTeams = this.randomizeTeams.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleDrop = this.handleDrop.bind(this);
@@ -53,9 +55,10 @@ class Schedule extends React.Component {
 
     handleChange(e) {
         e.preventDefault();
-        this.setState({tableLayout: []});
-        this.setState({disabled: false});
+        this.setState({ tableLayout: [] });
+        this.setState({ disabled: false });
     }
+
     async handleDrop(e) {
         e.preventDefault()
         console.log(this.state.teams)
@@ -84,23 +87,20 @@ class Schedule extends React.Component {
         this.setState({droppedTeams: sss});
 
         console.log(this.state.droppedTeams)*/
-    
+
         var temp = [];
 
-        if(this.state.droppedTeams){
-            for(let index = 0; index < this.state.teams.length; index++)
-            {
-                if(this.state.teams[index].teamName !== e.target.elements.teamDrops.value && this.state.teams[index].teamName !== "NULL")
-                {
+        if (this.state.droppedTeams) {
+            for (let index = 0; index < this.state.teams.length; index++) {
+                if (this.state.teams[index].teamName !== e.target.elements.teamDrops.value && this.state.teams[index].teamName !== "NULL") {
                     temp.push(this.state.teams[index])
                     console.log("YIPPY")
                 }
             }
-            this.setState({droppedTeams: false});
+            this.setState({ droppedTeams: false });
         } else {
-            for(let index = 0; index < this.state.teams.length; index++)
-            {
-                if(this.state.teams[index].teamName === e.target.elements.teamDrops.value) {
+            for (let index = 0; index < this.state.teams.length; index++) {
+                if (this.state.teams[index].teamName === e.target.elements.teamDrops.value) {
                     var t = this.state.teams[index];
                     t.teamName = "NULL";
                     temp.push(t);
@@ -108,14 +108,15 @@ class Schedule extends React.Component {
                     temp.push(this.state.teams[index]);
                 }
             }
-            this.setState({droppedTeams: true});
+            this.setState({ droppedTeams: true });
         }
-        this.setState({teams: temp})
+        this.setState({ teams: temp })
         console.log(this.state.teams)
     }
+
     async handleSchedule(e) {
         e.preventDefault();
-        if(!e.target.elements.startTime.value || !e.target.elements.cycleTime.value) {
+        if (!e.target.elements.startTime.value || !e.target.elements.cycleTime.value) {
             alert("Please enter start time and cycle time");
             return;
         }
@@ -128,7 +129,7 @@ class Schedule extends React.Component {
         //gets all teams in a tournament
 
         await axios.get(`/api/teams/tournid/${this.state.tourneyId}`).then((result) => {
-            if(this.state.teams.length === 0) {
+            if (this.state.teams.length === 0) {
                 this.setState({ teams: result.data });
             }
         }).catch((err) => {
@@ -143,30 +144,30 @@ class Schedule extends React.Component {
         }).catch((err) => {
             console.log(err);
         });
-        
+
 
         var matchSchema = [];
         var table = 1;
         this.randomizeTeams();
-        for(var j = 0; j<this.state.numMatches; j++) {
-            for(var i = 0; i<this.state.teams.length; i += 2) {
+        for (var j = 0; j < this.state.numMatches; j++) {
+            for (var i = 0; i < this.state.teams.length; i += 2) {
                 var tempMin = "0" + min;
                 var match = {
                     match: j + 1,
                     table: table,
                     teamA: this.state.teams[i].teamName,
-                    teamB: this.state.teams[i+1].teamName,
+                    teamB: this.state.teams[i + 1].teamName,
                     startTime: hour + ":" + tempMin.substring(tempMin.length - 2)
                 }
 
                 min += cycleTime;
-                if(min > 59) {
+                if (min > 59) {
                     min -= 60;
                     hour++;
                 }
 
                 matchSchema.push(match);
-                if(table === this.state.numTables) {
+                if (table === this.state.numTables) {
                     table = 0;
                 }
                 table++;
@@ -175,17 +176,17 @@ class Schedule extends React.Component {
         }
 
         var tableArr = [];
-        for(var k = 0; k < matchSchema.length; k += this.state.numTables) {
+        for (var k = 0; k < matchSchema.length; k += this.state.numTables) {
             var temp = [];
-            for(var m = 0; m < this.state.numTables; m++) {
-                if(!matchSchema[k+m]){
+            for (var m = 0; m < this.state.numTables; m++) {
+                if (!matchSchema[k + m]) {
                     break;
                 }
-                temp.push(matchSchema[k+m]);
+                temp.push(matchSchema[k + m]);
             }
             tableArr.push(temp);
         }
-        
+
         console.log(tableArr);
         this.setState({ tableLayout: tableArr });
         this.setState({ disabled: true });
@@ -206,45 +207,63 @@ class Schedule extends React.Component {
 
     }
 
+    generatePDF() {
+        axios({
+            method: 'get',
+            url: `/api/tournaments/${this.state.tourneyId}/pdf`,
+            responseType: 'blob'
+        }).then(res => {
+            const file = new Blob(
+                [res.data],
+                { type: 'application/pdf' }
+            );
+
+            const fileURL = URL.createObjectURL(file);
+            window.open(fileURL);
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+
     render() {
         return (
             <div>
                 {!this.state.disabled && (
-                <Form onSubmit={this.handleSchedule}>
-                    <Row>
-                        <Col xs="2">
-                            <Form.Group controlId="startTime">
-                                <Form.Control type="text" placeholder="Start Time (hh:mm)" />
-                            </Form.Group>
-                        </Col>
-                        <Col xs="2">
-                            <Form.Group controlId="cycleTime">
-                                <Form.Control type="text" placeholder="Cycle Time (mm)" />
-                            </Form.Group>
-                        </Col>
-                    </Row>
-                    <Form.Group>
-                        <Button variant="outline-primary" type="submit">Generate Tournament Schedule</Button>
-                    </Form.Group>
-                </Form>
+                    <Form onSubmit={this.handleSchedule}>
+                        <Row>
+                            <Col xs="2">
+                                <Form.Group controlId="startTime">
+                                    <Form.Control type="text" placeholder="Start Time (hh:mm)" />
+                                </Form.Group>
+                            </Col>
+                            <Col xs="2">
+                                <Form.Group controlId="cycleTime">
+                                    <Form.Control type="text" placeholder="Cycle Time (mm)" />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Form.Group>
+                            <Button variant="outline-primary" type="submit">Generate Tournament Schedule</Button>
+                        </Form.Group>
+                    </Form>
                 )}
 
                 <Form>
-                    
-                            {this.state.tableLayout.map((sched, index) => (
-                                <Form.Group>
-                                <Row>
+
+                    {this.state.tableLayout.map((sched, index) => (
+                        <Form.Group>
+                            <Row>
                                 {sched.map((robot, ind) => (
-                                    <Col xs = "4">
+                                    <Col xs="4">
                                         {!index && (
                                             <h5>Table {ind + 1}</h5>
                                         )}
-                                        <Form.Control type="text" value={robot.startTime + " " + robot.teamA + " | " + robot.teamB } readOnly={true} />
+                                        <Form.Control type="text" value={robot.startTime + " " + robot.teamA + " | " + robot.teamB} readOnly={true} />
                                     </Col>
                                 ))}
-                                </Row>
-                                </Form.Group>
-                            ))}
+                            </Row>
+                        </Form.Group>
+                    ))}
                 </Form>
 
                 {this.state.disabled && (
@@ -256,17 +275,21 @@ class Schedule extends React.Component {
 
                 )}
                 {this.state.disabled && (
-                <Form onSubmit={this.handleDrop}>
+                    <Form onSubmit={this.handleDrop}>
                         <div>
-                        <Form.Group data-test="aCommentInput" controlId="teamDrops">
-                      <Form.Label>Team Name</Form.Label>
-                      <Form.Control as="textarea"/>
-                    </Form.Group>
+                            <Form.Group data-test="aCommentInput" controlId="teamDrops">
+                                <Form.Label>Team Name</Form.Label>
+                                <Form.Control as="textarea" />
+                            </Form.Group>
                         </div>
                         <Button type="submit">
                             Drop Team
                         </Button>
-                    </Form>)}
+                    </Form>)
+                }
+                <Col>
+                    <Button onClick={this.generatePDF}>Generate PDF</Button>
+                </Col>
             </div>
         )
     }
