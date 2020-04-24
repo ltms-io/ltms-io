@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Form, Button, Row, Col, ListGroup } from "react-bootstrap";
+import Sound from 'react-sound';
+import audio from '../ENDMATCH.mp3';
 
 const ms = require('pretty-ms')
 
@@ -13,8 +15,10 @@ export default class Timer extends Component {
       start: 0,
       min: 0,
       sec: 0,
-      go: false
+      go: false,
+      canSound: true
     };
+
     this.startTimer = this.startTimer.bind(this)
     this.stopTimer = this.stopTimer.bind(this)
     this.resetTimer = this.resetTimer.bind(this)
@@ -53,7 +57,10 @@ export default class Timer extends Component {
   }
 
   async resetTimer() {
-    await this.setState({counter: this.state.initalCounter})
+    await this.setState({
+      counter: this.state.initalCounter,
+      canSound: true
+    })
   }
 
   async componentDidMount() {
@@ -63,6 +70,13 @@ export default class Timer extends Component {
   render() {
     return (
       <div className="pl-3 pr-3 pt-2 text-center">
+        {(this.state.counter <= 0 && this.state.canSound) && (
+          <Sound
+            url={audio}
+            playStatus={Sound.status.PLAYING} 
+            onFinishedPlaying={() => this.setState({canSound: false})} />
+        )}
+
         <h1>Timer</h1>
         <ListGroup className="pb-2">
           {this.state.counter > 0 && (
