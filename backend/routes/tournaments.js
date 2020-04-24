@@ -3,6 +3,7 @@ const router = express.Router();
 const Tournament = require('../models/tournament-model');
 const User = require('../models/user-model');
 const PDFDocument = require('pdfkit');
+const mongoose = require('mongoose');
 
 /* GET all tournaments listing. */
 router.get('/', (req, res) => {
@@ -139,6 +140,10 @@ router.get('/:id/scores/:scoreid', (req, res) => {
 
 /* GET PDF of schedule */
 router.get('/:id/pdf', (req, res) => {
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        return res.status(400).send("bad request");
+    }
+
     Tournament.findById(req.params.id).then(tournament => {
         if(!tournament) {
             return res.status(404).send("tournament not found");
