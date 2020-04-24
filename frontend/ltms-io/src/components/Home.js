@@ -15,7 +15,7 @@ class Home extends Component {
               <Col className="p-5">
                 <Jumbotron className="text-center">
                   <h1 className="pb-3">LEGO Tournament Management System</h1>
-                  <Button onClick={this.props.auth.login} className="m-3" size="lg" block>Login or Register</Button>
+                  <Button onClick={this.props.auth.login} className="" size="lg" block>Login or Register</Button>
                 </Jumbotron>
               </Col>
             </Row>
