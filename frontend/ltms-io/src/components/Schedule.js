@@ -232,7 +232,7 @@ class Schedule extends React.Component {
         return (
             <div data-test="theSchedule">
                 {!this.state.disabled && (
-                <Form onSubmit={this.handleSchedule}>
+                <Form data-test="theTime" onSubmit={this.handleSchedule}>
                     <Row>
                         <Col xs="2">
                             <Form.Group controlId="startTime">
@@ -270,7 +270,7 @@ class Schedule extends React.Component {
                 </Form>
 
                 {this.state.disabled && (
-                    <Form onSubmit={this.handleChange}>
+                    <Form data-test="theChange" onSubmit={this.handleChange}>
                         <Form.Group>
                             <Button variant="outline-danger" type="submit">Generate New Schedule</Button>
                         </Form.Group>

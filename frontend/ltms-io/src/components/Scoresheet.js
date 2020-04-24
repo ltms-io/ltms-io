@@ -17,7 +17,8 @@ class Sheet extends React.Component{
       finalscore: 0,
       scoreType: "Score Type",
       index: 0,
-      category: "Category"
+      category: "Category",
+      disabled: false
     }
 
     //binds the fuction
@@ -66,6 +67,7 @@ class Sheet extends React.Component{
       var index = newArray.length;
       this.setState({index: index});
       this.setState({events: newArray});
+      this.setState({disabled: true});
     }).catch(err => {
       console.log(err);
     })
@@ -152,6 +154,7 @@ class Sheet extends React.Component{
     var index = this.state.index+1;
     this.setState({index: index});
     this.setState({scoreType: "Score Type"})
+    this.setState({disabled: true});
   }
 
   //function to save the score type for a specific category
@@ -299,16 +302,18 @@ class Sheet extends React.Component{
             </Row>
           ))}
         </Form>
-        <Form>
-          <Button variant = "outline-primary" onClick={this.handleCalculate}>
-            Calculate Score
-          </Button>
-          <Row>
-            <Col xs = "2">
-            <Form.Control type = "text" value = {"Final Score: " + this.state.finalscore} readOnly = {true}/>
-            </Col>
-          </Row>
-        </Form>
+        {this.state.disabled && (
+          <Form data-test="theFinalScore">
+            <Button variant = "outline-primary" onClick={this.handleCalculate}>
+              Calculate Score
+            </Button>
+            <Row>
+              <Col xs = "2">
+              <Form.Control type = "text" value = {"Final Score: " + this.state.finalscore} readOnly = {true}/>
+              </Col>
+            </Row>
+          </Form>
+        )}
       </div>
     );
   }
