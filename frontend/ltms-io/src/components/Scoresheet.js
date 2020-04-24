@@ -48,16 +48,16 @@ class Sheet extends React.Component{
         var score;
         if(event[i].explicitType === "Yes/No"){
           score = <div>
-                    <Dropdown.Item key="yes" eventKey={"y0"}>Yes</Dropdown.Item>
-                    <Dropdown.Item key="no" eventKey={"n0"}>No</Dropdown.Item>
+                    <Dropdown.Item key="yes" eventKey={"y" + i}>Yes</Dropdown.Item>
+                    <Dropdown.Item key="no" eventKey={"n" + i}>No</Dropdown.Item>
                   </div>
         }else{
           score = <div>
-                    <Dropdown.Item key="1" eventKey={"11"}>1</Dropdown.Item>
-                    <Dropdown.Item key="2" eventKey={"21"}>2</Dropdown.Item>
-                    <Dropdown.Item key="3" eventKey={"31"}>3</Dropdown.Item>
-                    <Dropdown.Item key="4" eventKey={"41"}>4</Dropdown.Item>
-                    <Dropdown.Item key="5" eventKey={"51"}>5</Dropdown.Item>
+                    <Dropdown.Item key="1" eventKey={"1" + i}>1</Dropdown.Item>
+                    <Dropdown.Item key="2" eventKey={"2" + i}>2</Dropdown.Item>
+                    <Dropdown.Item key="3" eventKey={"3" + i}>3</Dropdown.Item>
+                    <Dropdown.Item key="4" eventKey={"4" + i}>4</Dropdown.Item>
+                    <Dropdown.Item key="5" eventKey={"5" + i}>5</Dropdown.Item>
                   </div>
         }
         var cate = event[i].categ.props.value
