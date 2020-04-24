@@ -53,7 +53,7 @@ export default class Auth {
             }
         }).then(async (userDataResponse) => {
           localStorage.setItem("auth0_id", userDataResponse.data.sub);
-          await axios.post(`http://localhost:5000/api/users/auth`, {
+          await axios.post(`/api/users/auth`, {
             data: userDataResponse.data
           }).then((x) => {
             location.hash = "";
