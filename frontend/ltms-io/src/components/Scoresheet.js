@@ -142,7 +142,7 @@ class Sheet extends React.Component{
     }
 
     newArray.push({
-      categ: <Form.Control type = "text" name={"text" + this.state.index} eventkey = {"text" + index} defaultValue = {cate} onChange={this.handleCatChange}/>,
+      categ: <Form.Control type = "text" name={"text" + this.state.index} eventkey = {"text" + this.state.index} defaultValue = {cate} onChange={this.handleCatChange}/>,
       scoretype: score,
       tempScore: "Score",
       explicitType: this.state.scoreType
@@ -264,11 +264,11 @@ class Sheet extends React.Component{
         <h1>Create Scoresheet for Tournament "{this.state.dbtournresults.name}"</h1>
         {this.state.isAuthorized && (
           <div>
-            <h3>Enter Team</h3>
+            <h3>Enter Team #</h3>
             <div className="pb-2">
               <Form onSubmit={this.handleTeam}>
                 <Form.Group controlId="teamName">
-                  <Form.Control type="text" placeholder="Team" readOnly={this.state.readOnly}/>
+                  <Form.Control type="text" placeholder="Enter the team's number" readOnly={this.state.readOnly}/>
                 </Form.Group>
                 <Button className="mr-1" variant="primary" type="submit">
                   Set Team
@@ -281,11 +281,11 @@ class Sheet extends React.Component{
             <hr />
             <div className="pb-2">
               <Form onSubmit={this.handleInsert}>
-                <h3>Add a category</h3>
+                <h3>Add Categories</h3>
                 <Row>
                   <Col>
                     <Form.Group controlId = "category">
-                      <Form.Control type = "text" placeholder = "Category"/>
+                      <Form.Control type = "text" placeholder = "Enter the category's name"/>
                     </Form.Group>
                   </Col>
                   <Col>

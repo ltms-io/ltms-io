@@ -61,7 +61,7 @@ export default class SortTeams extends React.Component {
   render() {
     return(
       <div className="pl-3 pr-3 pt-2">
-        <h3>Team Rankings for Tournament "{this.state.dbtournresults.name}"</h3>
+        <h1>Team Rankings for Tournament "{this.state.dbtournresults.name}"</h1>
         {this.state.teams && (
           <ListGroup>
             {this.state.teams.map( (item, i) => {

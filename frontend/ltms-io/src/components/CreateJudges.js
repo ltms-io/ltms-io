@@ -101,7 +101,7 @@ class CreateJudges extends Component {
   render() {
     return(
       <div data-test="theComponent" className="pl-3 pr-3 pt-2">
-        <h1 data-test="theMainHeader">Set Judges for {this.state.dbtournresults.name}</h1>
+        <h1 data-test="theMainHeader">Set Judges for Tournament "{this.state.dbtournresults.name}"</h1>
         <div>
           {this.state.isAuthorized && (
             <Form data-test="theForm" onSubmit={this.handleSubmit}>
