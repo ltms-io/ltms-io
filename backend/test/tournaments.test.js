@@ -136,5 +136,45 @@ describe("Tournament Backend Routes", () => {
         done();
       });
     });
+    it("GET call should return success given valid tournament", (done) => {
+      chai.request(app)
+      .get("/api/tournaments/schedule/5e7c53f30c6d5700d3701567")
+      .send()
+      .end( (err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
+        done();
+      })
+    });
+    it("GET call should return error given invalid tournament", (done) => {
+      chai.request(app)
+      .get("/api/tournaments/schedule/5e834fd76221c1118acfcf2d")
+      .send()
+      .end( (err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body).to.be.empty;
+        done();
+      })
+    });
+
+    it("PDF GET with INVALID tourney ID should return bad request", done => {
+      chai.request(app)
+        .get("/api/tournaments/1/pdf")
+        .send()
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          done();
+        })
+    });
+
+    it("PDF GET with VALID tounrey ID should return success", done => {
+      chai.request(app)
+        .get("/api/tournaments/5e7a5410be7af1ae4acc6314/pdf")
+        .send()
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          done();
+        })
+    });
   });
 });

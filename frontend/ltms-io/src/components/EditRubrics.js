@@ -1,40 +1,41 @@
-import React, { Component } from 'react';
-import axios from 'axios';
+import React, { Component } from "react";
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
-import PropTypes from "prop-types";
+import axios from "axios";
 import jsonWeb from 'jsonwebtoken';
 
-/*
-The rubric structure used here is based off of the Sep. 3 2019 (City Shaper 2019
-challenge) version of the official judging rubrics provided by FLL. It can be
-found here: https://www.firstinspires.org/resource-library/fll/judging-rubrics
-*/
-class RubricEntry extends Component {
+export default class EditRubrics extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      teams: [],
       tourneyId: this.props.match.params.tourneyId,
       teamId: this.props.match.params.teamId,
+      email: this.props.match.params.email,
+      uniqueID: this.props.match.params.uniqueID,
+      username: this.props.match.params.username,
       uid: "",
       dbresults: {},
       dbtournresults: {},
       dbteamresults: {},
-      isAuthorized: false,
-      isSendAuthorized: false
+      gotrubric: null
     };
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
-    this.handleSend = this.handleSend.bind(this);
-    this.updateState = this.updateState.bind(this);
   }
-
   async handleSubmit(e) {
     e.preventDefault();
+    e.persist()
+    await axios.patch(`/api/teams/rubricdelete/${this.state.teamId}`, {
+      email: this.state.email,
+      uniqueID: this.state.uniqueID
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
     var rubric = {
-      username: this.state.dbresults.name,
-      email: this.state.dbresults.email,
-      uniqueID: e.target.elements.formUniqueID.value,
+      username: this.state.username,
+      email: this.state.email,
+      uniqueID: this.state.uniqueID,
       coreValues: {
         inspiration: {
           discovery: e.target.elements.formDiscovery.value,
@@ -93,46 +94,15 @@ class RubricEntry extends Component {
     await axios.patch(`/api/teams/${this.state.teamId}`, {
       rubric: rubric
     })
-    .catch( (error) => {
-      console.log(error);
-    });
-
-    this.updateState();
-    console.log("UPDATED STATE", this.state);
-  }
-
-  async handleDelete(e) {
-    e.preventDefault();
-
-    var parsed = JSON.parse(e.target.elements.formDelete.value);
-    await axios.patch(`/api/teams/rubricdelete/${this.state.teamId}`, {
-      email: parsed.email,
-      uniqueID: parsed.uniqueID
+    .then( (res) => {
+      window.location = `/viewrubrics/` + this.state.tourneyId;
     })
     .catch( (error) => {
       console.log(error);
     });
-
-    this.updateState();
-    console.log("UPDATED STATE", this.state);
   }
 
-  async handleSend(e) {
-    e.preventDefault();
-
-    await axios.post(`/api/teams/sendrubrics/${this.state.teamId}`, {
-      email: e.target.elements.sendEmail.value,
-      tournName: this.state.dbtournresults.name
-    })
-    .catch( (error) => {
-      console.log(error);
-    });
-
-    this.updateState();
-    console.log("UPDATED STATE", this.state);
-  }
-
-  async updateState() {
+  async componentDidMount() {
     if (document.cookie.length) {
       var token = document.cookie.substring(13);
       var decoded = jsonWeb.verify(token, "123456");
@@ -160,97 +130,33 @@ class RubricEntry extends Component {
       });
     })
     .catch( (error) => {
-        console.log(error);
+      console.log(error);
+    });
+
+    await axios.post(`/api/teams/rubricget/${this.state.teamId}`, {
+      email: this.state.email,
+      uniqueID: this.state.uniqueID
+    })
+    .then ( (res) => {
+      this.setState({gotrubric: res.data});
     });
 
     if (this.state.dbtournresults.director === this.state.dbresults._id ||
         this.state.dbtournresults.judgeAdvisor.includes(this.state.dbresults._id)) {
       await this.setState({
-        isAuthorized: true,
-        isSendAuthorized: true
-      });
-    }
-    if (this.state.dbtournresults.judges.includes(this.state.dbresults._id)) {
-      await this.setState({
         isAuthorized: true
       });
     }
-
-    if (this.state.isSendAuthorized) {
-      await this.setState({
-        dbrubricsresults: this.state.dbteamresults.rubrics
-      });
-    }
-    else {
-      var rubrics = [];
-      this.state.dbteamresults.rubrics.forEach( (item) => {
-        if (item.email === this.state.dbresults.email) {
-          rubrics.push(item);
-        }
-      });
-      await this.setState({
-        dbrubricsresults: rubrics
-      });
-    }
-  }
-
-  async componentDidMount() {
-    await this.updateState();
-    console.log("INITIAL RUBRIC ENTRY STATE", this.state);
   }
 
   render() {
-    return(
-      <div data-test="theComponent" className="pl-3 pr-3 pt-2">
-        <h1 data-test="theMainHeader" className="pb-1">Rubric Entry for Team "{this.state.dbteamresults.teamName}" in Tournament "{this.state.dbtournresults.name}"</h1>
-        {this.state.isSendAuthorized && (
-          <div>
-            <div>
-              <h3>Send All Rubrics to Team</h3>
-              <Form data-test="theSendForm" onSubmit={this.handleSend}>
-                <Form.Group controlId="sendEmail">
-                  <Form.Label>What email should the rubrics be sent to?</Form.Label>
-                  <Form.Control placeholder="Enter the email address" />
-                </Form.Group>
-                <Button type="submit">
-                  Send Email
-                </Button>
-              </Form>
-            </div>
-            <hr />
-          </div>
-        )}
-        {this.state.isAuthorized && (
+    return (
+      <div className="pl-3 pr-3 pt-2">
+        {this.state.gotrubric && (
           <div className="pb-3">
-            <div>
-              <h3>Rubric Deletion</h3>
-              <Form data-test="theDeleteForm" onSubmit={this.handleDelete}>
-                <Form.Group controlId="formDelete">
-                  <Form.Label>Which rubric do you want to delete?</Form.Label>
-                  <Form.Control required as="select">
-                    <option></option>
-                    {this.state.dbrubricsresults && (
-                      this.state.dbrubricsresults.map( (item, i) => {
-                        return (
-                          <option data-test="aDeleteOption" value={"{\"email\": \"" + item.email + "\", \"uniqueID\": \"" + item.uniqueID + "\"}"} key={i}>{item.username} - {item.uniqueID}</option>
-                        );
-                      })
-                    )}
-                  </Form.Control>
-                </Form.Group>
-                <Button variant="danger" type="submit">
-                  Delete Rubric
-                </Button>
-              </Form>
-            </div>
-            <hr />
-            <div>
-              <h3>Rubric Submission</h3>
+            <h1 className="pb-1">Edit Rubric for "{this.state.username} - {this.state.uniqueID}" for Team "{this.state.dbteamresults.teamName}" in Tournament "{this.state.dbtournresults.name}"</h1>
+            {this.state.isAuthorized && (
               <Form data-test="theSubmitForm" onSubmit={this.handleSubmit}>
-                <Form.Group data-test="anInput" controlId="formUniqueID">
-                  <Form.Label>Unique ID/Name</Form.Label>
-                  <Form.Control required type="text" />
-                </Form.Group>
                 <div>
                   <h4 className="pb-1">Core Values</h4>
                   <Container>
@@ -261,7 +167,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formDiscovery">
                           <Form.Label>Discovery</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.coreValues.inspiration.discovery}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -273,7 +179,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formTeamIdentity">
                           <Form.Label>Team Identity</Form.Label>
-                          <Form.Control required  as="select">
+                          <Form.Control required  as="select" defaultValue = {this.state.gotrubric.coreValues.inspiration.teamIdentity}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -285,7 +191,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formImpact">
                           <Form.Label>Impact</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.coreValues.inspiration.impact}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -302,7 +208,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formEffectiveness">
                           <Form.Label>Effectiveness</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.coreValues.teamwork.effectiveness}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -314,7 +220,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formEfficiency">
                           <Form.Label>Efficiency</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.coreValues.teamwork.efficiency}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -326,7 +232,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formKidsDoTheWork">
                           <Form.Label>Kids Do the Work</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.coreValues.teamwork.kidsDoTheWork}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -343,7 +249,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formInclusion">
                           <Form.Label>Inclusion</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.coreValues.graciousProfessionalism.inclusion}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -355,7 +261,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formRespect">
                           <Form.Label>Respect</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.coreValues.graciousProfessionalism.respect}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -367,7 +273,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formCoopertition">
                           <Form.Label>Coopertition®</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.coreValues.graciousProfessionalism.coopertition}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -379,7 +285,7 @@ class RubricEntry extends Component {
                     </Row>
                     <Form.Group data-test="aCommentInput" controlId="formCoreValuesComments">
                       <Form.Label>Comments</Form.Label>
-                      <Form.Control as="textarea" />
+                      <Form.Control as="textarea" defaultValue = {this.state.gotrubric.coreValues.comments}/>
                     </Form.Group>
                   </Container>
                 </div>
@@ -393,7 +299,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formProblemIdentification">
                           <Form.Label>Problem Identification</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.innovationProject.research.problemIdentificaton}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -405,7 +311,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formSourcesOfInformation">
                           <Form.Label>Sources of Information</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.innovationProject.research.sourcesOfInformation}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -417,7 +323,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formProblemAnalysis">
                           <Form.Label>Problem Analysis</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.innovationProject.research.problemAnalysis}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -434,7 +340,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formTeamSolution">
                           <Form.Label>Team Solution</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.innovationProject.innovativeSolution.teamSolution}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -446,7 +352,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formInnovation1">
                           <Form.Label>Innovation</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.innovationProject.innovativeSolution.innovation}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -458,7 +364,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formSolutionDevelopment">
                           <Form.Label>Solution Development</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.innovationProject.innovativeSolution.solutionDevelopment}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -475,7 +381,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formSharing">
                           <Form.Label>Sharing</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.innovationProject.presentation.sharing}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -487,7 +393,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formCreativity">
                           <Form.Label>Creativity</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.innovationProject.presentation.creativity}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -499,7 +405,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formPresentationEffectiveness">
                           <Form.Label>Presentation Effectiveness</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.innovationProject.presentation.presentationEffectiveness}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -511,7 +417,7 @@ class RubricEntry extends Component {
                     </Row>
                     <Form.Group data-test="aCommentInput" controlId="formInnovationProjectComments">
                       <Form.Label>Comments</Form.Label>
-                      <Form.Control as="textarea" />
+                      <Form.Control as="textarea" defaultValue = {this.state.gotrubric.innovationProject.comments}/>
                     </Form.Group>
                   </Container>
                 </div>
@@ -525,7 +431,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formDurability">
                           <Form.Label>Durability</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.robotDesign.mechanicalDesign.durability}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -537,7 +443,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formMechanicalEfficiency">
                           <Form.Label>Mechanical Efficiency</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.robotDesign.mechanicalDesign.mechanicalEfficiency}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -549,7 +455,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formMechanization">
                           <Form.Label>Mechanization</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.robotDesign.mechanicalDesign.mechanization}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -566,7 +472,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formProgrammingQuality">
                           <Form.Label>Programming Quality</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.robotDesign.programming.programmingQuality}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -578,7 +484,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formProgrammingEfficiency">
                           <Form.Label>Programming Efficiency</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.robotDesign.programming.programmingEfficiency}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -590,7 +496,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formAutomationNavigation">
                           <Form.Label>Automation/Navigation</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.robotDesign.programming.automationNavigation}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -607,7 +513,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formDesignProcess">
                           <Form.Label>Design Process</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.robotDesign.strategyInnovation.designProcess}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -619,7 +525,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formMissionStrategy">
                           <Form.Label>Mission Strategy</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.robotDesign.strategyInnovation.missionStrategy}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -631,7 +537,7 @@ class RubricEntry extends Component {
                       <Col>
                         <Form.Group data-test="anInput" controlId="formInnovation2">
                           <Form.Label>Innovation</Form.Label>
-                          <Form.Control required as="select">
+                          <Form.Control required as="select" defaultValue = {this.state.gotrubric.robotDesign.strategyInnovation.innovation}>
                             <option></option>
                             <option value="1">Beginning</option>
                             <option value="2">Developing</option>
@@ -643,7 +549,7 @@ class RubricEntry extends Component {
                     </Row>
                     <Form.Group data-test="aCommentInput" controlId="formRobotDesignComments">
                       <Form.Label>Comments</Form.Label>
-                      <Form.Control as="textarea" />
+                      <Form.Control as="textarea" defaultValue = {this.state.gotrubric.robotDesign.comments}/>
                     </Form.Group>
                   </Container>
                 </div>
@@ -651,24 +557,13 @@ class RubricEntry extends Component {
                   Submit Rubric
                 </Button>
               </Form>
-            </div>
+            )}
+            {!this.state.isAuthorized && (
+              <h3 data-test="noAuthMsg">You are not authorized to edit rubrics in this tournament.</h3>
+            )}
           </div>
-        )}
-        {!this.state.isAuthorized && (
-          <h3 data-test="noAuthMsg">You are not authorized for rubric entry in this tournament.</h3>
         )}
       </div>
     );
   }
 }
-
-RubricEntry.propTypes = {
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      tourneyId: PropTypes.string,
-      teamId: PropTypes.string
-    })
-  })
-}
-
-export default RubricEntry;

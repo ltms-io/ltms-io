@@ -12,7 +12,10 @@ describe("LTMSNavbar Component", () => {
   describe("Basic Rendering", () => {
     let component;
     beforeEach( () => {
-      component = setUp();
+      const props = {
+        testAuthorized: true
+      };
+      component = setUp(props);
     })
 
     it("Should render without errors", () => {

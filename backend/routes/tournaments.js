@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Tournament = require('../models/tournament-model');
 const User = require('../models/user-model');
+const PDFDocument = require('pdfkit');
+const mongoose = require('mongoose');
 
 /* GET all tournaments listing. */
 router.get('/', (req, res) => {
@@ -100,6 +102,20 @@ router.post('/user', (req, res) => {
     });
 });
 
+/* GET most recent schedule for tournament. */
+router.get('/schedule/:id', (req, res) => {
+    Tournament.findById(req.params.id).then((tournament) => {
+        if(!tournament) {
+            return res.status(404).send("No tournament found");
+        }
+        if(!tournament.schedule.length) {
+            return res.status(400).send("No schedule generated for tournament");
+        }
+
+        return res.status(200).send(tournament.schedule[0]);
+    })
+})
+
 /* GET all scores for tournament given tourney id */
 router.get('/:id/scores', (req, res) => {
     Tournament.findById(req.params.id).then(tournament => {
@@ -119,6 +135,40 @@ router.get('/:id/scores/:scoreid', (req, res) => {
         }
 
         return res.status(200).send(tournament.scores.id(req.params.scoreid));
+    })
+})
+
+/* GET PDF of schedule */
+router.get('/:id/pdf', (req, res) => {
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        return res.status(400).send("bad request");
+    }
+
+    Tournament.findById(req.params.id).then(tournament => {
+        if(!tournament) {
+            return res.status(404).send("tournament not found");
+        }
+
+        const doc = new PDFDocument;
+        doc.pipe(res);
+
+        doc.image("public/ltmsio-logo-wide.png", (doc.page.width - 165), 15, {fit: [150, 250]});
+        doc.fontSize(24)
+            .text(`Match Schedule for ${tournament.name}`);
+
+        doc.fontSize(14)
+            .text(`Date: ${new Date(tournament.startDate).toLocaleDateString()}`);
+
+        doc.moveDown(1);
+
+        doc.fontSize(12);
+        tournament.schedule[0].match.map((match) => {
+            doc.text(`Time: ${match.startTime}    |    Table: ${match.table}    |    Teams: ${match.teamA} and ${match.teamB}`);
+            doc.moveDown(0.25);
+        });
+
+        // end and display the document
+        doc.end();
     })
 })
 
@@ -293,6 +343,39 @@ router.post('/score', (req, res) => {
     })
 })
 
+router.post('/schedule', (req, res) => {
+    Tournament.findById(req.body.id).then((tournament) => {
+        if(!tournament) {
+            return res.status(404).send("tourney not found");
+        }
+
+
+        var array = [];
+        for(var i = 0; i < req.body.match.length; i++) {
+            for(var j = 0; j < req.body.match[i].length; j++) {
+                array.push(req.body.match[i][j]);
+            }
+        }
+
+        var schedule = {
+            startTime: req.body.startTime,
+            cycleTime: req.body.cycleTime,
+            rawData: req.body.rawData,
+            match: array
+        }
+
+        tournament.schedule[0] = schedule;
+
+        tournament.save().then(() => {
+            res.status(200).send(tournament);
+        }).catch(err => {
+            console.log(err);
+            res.status(500).send(err);
+        })
+
+    })
+})
+
 /* PATCH specific tournament. */
 router.patch('/:id', (req, res) => {
     // if (!req.headers.auth) { // TODO: replace with correct authorization field or auth handler module
@@ -372,6 +455,23 @@ router.patch('/setofficialevent/:id', (req, res) => {
         tournament.save().then((tournament) => res.send(tournament)).catch((err) => console.log(err));
     });
 });
+// Drops team and turn it to NULL. If NULL exists, delete both teams
+
+router.patch('/teamdrop/:id/:teamid', (req, res) => {
+    Tournament.findById(req.params.id).then(tournament => {
+        if(!tournament){
+            return res.status(404).send("tournament not found");
+        }
+        for(let index = 0; index < tournament.teams.length; index++)
+        {
+            if(tournament.teams[index] == req.params.teamid)
+            {
+                tournament.teams[index] = "NULL";
+            }
+        }
+        tournament.save().then((tournament) => res.send(tournament)).catch((err) => console.log(err));
+    })
+})
 
 //update a score given tourney and score ids
 router.patch('/:id/scores/:scoreid', (req, res) => {
@@ -416,6 +516,32 @@ router.patch('/:id/scores/:scoreid', (req, res) => {
     })
 })
 
+router.patch('/:id/schedule', (req, res) => {
+    Tournament.findById(req.params.id).then(tournament => {
+        if(!tournament) {
+            return res.status(404).send("tournament not found");
+        }
+
+        if(req.body.rawData) {
+            tournament.schedule[0].rawData = req.body.rawData;
+        }
+
+        if(req.body.startTime) {
+            tournament.schedule[0].startTime = req.body.startTime;
+        }
+
+        if(req.body.match) {
+            tournament.schedule[0].match = req.body.match;
+        }
+
+        tournament.save().then(tournament => {
+            res.status(200).send(tournament);
+        }).catch(err => {
+            res.status(500).send(err);
+        })
+    })
+})
+
 /* DELETE */
 
 //Delete a tournament given its id
@@ -447,6 +573,23 @@ router.delete('/scores/yesimsure', (req, res) => {
         }).catch(err => {
             console.log(err)
             return res.status(500).send(err) ;
+        })
+    })
+})
+
+router.delete('/schedules/byebye', (req, res) => {
+    Tournament.findById(req.body.id).then(tournament => {
+        if(!tournament) {
+            return res.status(404).send("tourney not found");
+        }
+
+        tournament.schedule = [];
+
+        tournament.save().then(tournament => {
+            return res.status(200).send(tournament);
+        }).catch(err => {
+            console.log(err);
+            return res.status(500).send(err);
         })
     })
 })

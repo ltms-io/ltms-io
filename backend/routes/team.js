@@ -71,7 +71,7 @@ router.post('/register', (req, res) => {
       });
     }
     else {
-      res.status(200).send(team);
+      res.status(400).send("Team already exists");
     }
   });
 });
@@ -273,5 +273,39 @@ router.patch('/rubricdelete/:id', (req, res) => {
     }
   });
 });
+router.post('/rubricget/:id', (req, res) => {
+  if(!req.body.email || !req.body.uniqueID) {
+    return res.status(400).send("No unique ID or email given");
+  }
 
+  Team.findById(req.params.id).then( (team) => {
+    if (!team) {
+      return res.status(404).send("Team not found");
+    }
+
+    var index = -1;
+    team.rubrics.forEach( (item, i) => {
+      if (item.email === req.body.email && item.uniqueID === req.body.uniqueID) {
+        index = i;
+      }
+    });
+
+    if (index == -1) {
+      return res.status(404).send("Rubric not found");
+    }
+    else {
+      return res.status(200).send(team.rubrics[index]);
+    }
+  });
+});
+
+
+/*router.get('/:id', (req, res) => {
+  Team.findById(req.params.id).then( (team) => {
+    if (!team) {
+      return res.status(404).send("No such team found");
+    }
+    return res.status(200).send(team);
+  });
+});*/
 module.exports = router;
