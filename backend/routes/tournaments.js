@@ -151,6 +151,17 @@ router.get('/:id/pdf', (req, res) => {
         doc.fontSize(24)
             .text(`Match Schedule for ${tournament.name}`);
 
+        doc.fontSize(14)
+            .text(`Date: ${new Date(tournament.startDate).toLocaleDateString()}`);
+
+        doc.moveDown(1);
+
+        doc.fontSize(12);
+        tournament.schedule[0].match.map((match) => {
+            doc.text(`Time: ${match.startTime}    |    Table: ${match.table}    |    Teams: ${match.teamA} and ${match.teamB}`);
+            doc.moveDown(0.25);
+        });
+
         // end and display the document
         doc.end();
     })
