@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import { Row, Col, Container, Button, Form, DropdownButton, Dropdown } from 'react-bootstrap';
+import { Pacman } from 'react-pure-loaders';
+import LoadingOverlay from 'react-loading-overlay';
 const jsonWeb = require('jsonwebtoken');
 
 export default class EditScoreEntry extends Component {
@@ -19,7 +21,8 @@ export default class EditScoreEntry extends Component {
       insertIdx: 0,
       finalscore: 0,
       notesBox: "",
-      isAuthorized: false
+      isAuthorized: false,
+      uploading: false
     }
 
     this.handleInsert = this.handleInsert.bind(this);
@@ -84,6 +87,10 @@ export default class EditScoreEntry extends Component {
 
   async handleUpdate(e) {
     e.preventDefault();
+    e.persist()
+    await this.setState({
+      uploading: true
+    });
 
     var index = this.state.events.length;
     var score = 0;
@@ -119,7 +126,10 @@ export default class EditScoreEntry extends Component {
       rawData: JSON.stringify(this.state.events),
       changeNotes: this.state.notesBox
     })
-    .then( (res) => {
+    .then( async (res) => {
+      await this.setState({
+        uploading: false
+      });
       window.location = '/tournamentdashboard/' + this.state.tourneyId;
     })
     .catch( (err) => {
@@ -186,62 +196,64 @@ export default class EditScoreEntry extends Component {
 
   render() {
     return (
-      <div className="pl-3 pr-3 pt-2">
-        <h1 className="text-center">Edit Score for Match ID "{this.state.scoreId}" in Tournament "{this.state.dbtournresults.name}"</h1>
-        {this.state.isAuthorized && (
-          <div>
-            <h3 className="text-center">Score Type: {this.state.scoreResults.scoreType}</h3>
+      <LoadingOverlay active={this.state.uploading} spinner={<Pacman loading color="black" />} text='Loading...' >
+        <div className="pl-3 pr-3 pt-2">
+          <h1 className="text-center">Edit Score for Match ID "{this.state.scoreId}" in Tournament "{this.state.dbtournresults.name}"</h1>
+          {this.state.isAuthorized && (
+            <div>
+              <h3 className="text-center">Score Type: {this.state.scoreResults.scoreType}</h3>
 
-            <Container>
-              <Form>
-                {this.state.rawData &&
-                  this.state.events.map((event, i) => (
-                    <Row key={i}>
-                      <Col>
-                        <Form.Group controlId="category">
-                          {event.categ}
-                        </Form.Group>
-                      </Col>
-                      <Col>
-                        <Form.Group controlId="score">
-                          <DropdownButton title={event.tempScore} onSelect={this.handleChange}>
-                            {event.scoretype}
-                          </DropdownButton>
-                        </Form.Group>
-                      </Col>
-                    </Row>
-                  ))}
-                <hr />
-                <Row>
-                  <Col>
-                    <h5>Notes</h5>
-                    <ul>
-                      {this.state.scoreResults.changeNotes &&
-                        this.state.scoreResults.changeNotes.map((item, i) => {
-                          return (
-                            <li key={i}>
-                              {item}
-                            </li>
-                          );
-                        })
-                      }
-                    </ul>
-                    <Form.Group controlId="notes">
-                      <Form.Control as="textarea" onChange={this.notesUpdate}/>
-                    </Form.Group>
-                  </Col>
-                </Row>
-              </Form>
-              <Button onClick={this.handleUpdate}>
-                Submit Changes
-              </Button>
-            </Container>
-          </div>
-        )}
-        {!this.state.isAuthorized && (
-          <h3>You are not authorized to edit score in this tournament.</h3>
-        )}
-      </div>
+              <Container>
+                <Form>
+                  {this.state.rawData &&
+                    this.state.events.map((event, i) => (
+                      <Row key={i}>
+                        <Col>
+                          <Form.Group controlId="category">
+                            {event.categ}
+                          </Form.Group>
+                        </Col>
+                        <Col>
+                          <Form.Group controlId="score">
+                            <DropdownButton title={event.tempScore} onSelect={this.handleChange}>
+                              {event.scoretype}
+                            </DropdownButton>
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                    ))}
+                  <hr />
+                  <Row>
+                    <Col>
+                      <h5>Notes</h5>
+                      <ul>
+                        {this.state.scoreResults.changeNotes &&
+                          this.state.scoreResults.changeNotes.map((item, i) => {
+                            return (
+                              <li key={i}>
+                                {item}
+                              </li>
+                            );
+                          })
+                        }
+                      </ul>
+                      <Form.Group controlId="notes">
+                        <Form.Control as="textarea" onChange={this.notesUpdate}/>
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                </Form>
+                <Button onClick={this.handleUpdate}>
+                  Submit Changes
+                </Button>
+              </Container>
+            </div>
+          )}
+          {!this.state.isAuthorized && (
+            <h3>You are not authorized to edit score in this tournament.</h3>
+          )}
+        </div>
+      </LoadingOverlay>
     )
   }
 }

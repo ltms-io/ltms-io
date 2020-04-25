@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Form, Button } from 'react-bootstrap';
 import PropTypes from "prop-types";
 import jsonWeb from 'jsonwebtoken';
+import { Pacman } from 'react-pure-loaders';
+import LoadingOverlay from 'react-loading-overlay';
 
 class SetReferee extends Component {
   constructor(props) {
@@ -13,7 +15,8 @@ class SetReferee extends Component {
       uid: "",
       dbresults: {},
       dbtournresults: {},
-      isAuthorized: false
+      isAuthorized: false,
+      uploading: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -22,48 +25,79 @@ class SetReferee extends Component {
 
   async handleSubmit(e) {
     e.preventDefault();
-    let strings = e.target.elements.users.value.split(",");
-    let ids = [];
-    let message = "";
+    e.persist();
+    await this.setState({
+      uploading: true
+    });
+    var strings = e.target.elements.users.value.split(",");
+    var ids = [];
+    var message = "";
 
-    strings.forEach( async (item, index) => {
-      var temp = item;
-      temp = temp.trim();
-      await axios.post(`/api/users/search`, {
-        email: temp
-      })
-      .then( (result) => {
-        ids[index] = result.data._id;
-        if (this.state.dbtournresults.referees.includes(ids[index])) {
-          message += ("User " + temp + " already is a referee.\n");
+    var waiting1 = new Promise( (resolve, reject) => {
+      strings.forEach( async (item, index) => {
+        var temp = item;
+        temp = temp.trim();
+        await axios.post(`/api/users/search`, {
+          email: temp
+        })
+        .then( (result) => {
+          ids[index] = result.data._id;
+          if (this.state.dbtournresults.referees.includes(ids[index])) {
+            message += ("User " + temp + " already is a referee.\n");
+            ids[index] = "DNE";
+          }
+          if (index === strings.length - 1) {
+            resolve();
+          }
+        })
+        .catch( (error) => {
+          message += ("There was an error finding user " + temp + ".\n");
           ids[index] = "DNE";
-        }
-      })
-      .catch( (error) => {
-        message += ("There was an error finding user " + temp + ".\n");
-        ids[index] = "DNE";
-        console.log(error);
-      });
-    });
-    message += "\n";
-
-    ids.forEach( async (item, index) => {
-      var temp = item;
-      await axios.patch(`/api/tournaments/${this.state.tourneyId}`, {
-        referee: temp
-      })
-      .catch( (error) => {
-        if (temp !== "DNE") {
-          message += ("There was an error adding user ID " + temp + " to the database.\n");
-        }
-        console.log(error);
+          console.log(error);
+          if (index === strings.length - 1) {
+            resolve();
+          }
+        });
       });
     });
 
-    this.updateState();
-    console.log("UPDATED STATE", this.state);
+    waiting1.then( () => {
+      message += "\n";
 
-    alert(message);
+      var waiting2 = new Promise( (resolve, reject) => {
+        ids.forEach( async (item, index) => {
+          var temp = item;
+          await axios.patch(`/api/tournaments/${this.state.tourneyId}`, {
+            referee: temp
+          })
+          .then( () => {
+            if (index === ids.length - 1) {
+              resolve();
+            }
+          })
+          .catch( (error) => {
+            if (temp !== "DNE") {
+              message += ("There was an error adding user ID " + temp + " to the database.\n");
+            }
+            console.log(error);
+            if (index === ids.length - 1) {
+              resolve();
+            }
+          });
+        });
+      });
+
+      waiting2.then( async () => {
+        this.updateState();
+        console.log("UPDATED STATE", this.state);
+
+        await this.setState({
+          uploading: false
+        });
+
+        alert(message);
+      });
+    });
   }
 
   async updateState() {
@@ -102,23 +136,25 @@ class SetReferee extends Component {
 
   render() {
     return(
-      <div data-test="theComponent" className="pl-3 pr-3 pt-2">
-        <h1 data-test="theMainHeader">Set Referees for Tournament "{this.state.dbtournresults.name}"</h1>
-        <div>
-          {this.state.isAuthorized && (
-            <Form data-test="theForm" onSubmit={this.handleSubmit}>
-              <Form.Group controlId="users">
-                <Form.Label>Enter user(s) below</Form.Label>
-                <Form.Control type="text" placeholder="Enter user email(s) separated by commas" />
-              </Form.Group>
-              <Button type="submit">Submit</Button>
-            </Form>
-          )}
-          {!this.state.isAuthorized && (
-            <h3 data-test="noAuthMsg">You are not authorized for set referees in this tournament.</h3>
-          )}
+      <LoadingOverlay active={this.state.uploading} spinner={<Pacman loading color="black" />} text='Loading...' >
+        <div data-test="theComponent" className="pl-3 pr-3 pt-2">
+          <h1 data-test="theMainHeader">Set Referees for Tournament "{this.state.dbtournresults.name}"</h1>
+          <div>
+            {this.state.isAuthorized && (
+              <Form data-test="theForm" onSubmit={this.handleSubmit}>
+                <Form.Group controlId="users">
+                  <Form.Label>Enter user(s) below</Form.Label>
+                  <Form.Control type="text" placeholder="Enter user email(s) separated by commas" />
+                </Form.Group>
+                <Button type="submit">Submit</Button>
+              </Form>
+            )}
+            {!this.state.isAuthorized && (
+              <h3 data-test="noAuthMsg">You are not authorized for set referees in this tournament.</h3>
+            )}
+          </div>
         </div>
-      </div>
+      </LoadingOverlay>
     );
   }
 }
