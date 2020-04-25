@@ -49,6 +49,8 @@ class SetReferee extends Component {
           if (index === strings.length - 1) {
             resolve();
           }
+
+          window.location = `/tournamentdashboard/${this.state.tourneyId}`
         })
         .catch( (error) => {
           message += ("There was an error finding user " + temp + ".\n");
