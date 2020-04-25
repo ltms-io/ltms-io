@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import ResetLogin from './ResetLogin';
 import axios from 'axios';
+import { Pacman } from 'react-pure-loaders';
+import LoadingOverlay from 'react-loading-overlay';
 const jsonWeb = require('jsonwebtoken');
 
 class AccountDetails extends Component {
@@ -11,7 +13,8 @@ class AccountDetails extends Component {
     this.state = {
       uid: "",
       profilepic: "",
-      dbresults: {}
+      dbresults: {},
+      uploading: false
     };
 
     this.handleName = this.handleName.bind(this);
@@ -20,7 +23,11 @@ class AccountDetails extends Component {
 
   async handleName(e) {
     e.preventDefault();
-    alert("Resetting name to: " + e.target.elements.name.value);
+    e.persist();
+    await this.setState({
+      uploading: true
+    });
+
     this.state.dbresults.name = e.target.elements.name.value;
 
     await axios.patch(`/api/users/updateuser`, {
@@ -44,11 +51,14 @@ class AccountDetails extends Component {
 
     this.setState(this.state);
     console.log("UPDATED STATE", this.state);
+
+    await this.setState({
+      uploading: false
+    });
   }
 
   async handleDelete(e) {
     e.preventDefault();
-    alert("Deleting account!");
 
     await axios.delete(`/api/users/${this.state.dbresults._id}`)
     .catch( (error) => {
@@ -60,48 +70,50 @@ class AccountDetails extends Component {
 
   render() {
     return(
-      <div className="pl-3 pr-3 pt-2">
-        <h1 className="text-center pb-2">Account Details</h1>
-        <div>
-          <Container>
-            <Row>
-              <Col>
-                {/*
-                <div>
-                  <h3>Edit Profile Picture</h3>
-                  {(this.state.dbresults.profilePic && this.state.dbresults.profilePic.imgUrl.length !== 0) ? <img src={this.state.dbresults.profilePic.imgUrl} width="250" height="250" alt="account" /> : <img src={logo} width="250" height="250" alt="account" />}
-                </div>
-                <hr />
-                */}
-                <div>
-                  <h3 className="pb-1">Edit Name</h3>
-                  <Form onSubmit={this.handleName}>
-                    <Row>
-                      <Col>
-                        <Form.Group controlId="name">
-                          <Form.Control defaultValue={this.state.dbresults.name} />
-                        </Form.Group>
-                      </Col>
-                    </Row>
-                    <Button type="submit">
-                      Submit
-                    </Button>
-                  </Form>
-                </div>
-              </Col>
-              <Col>
-                <ResetLogin />
-              </Col>
-            </Row>
-            <hr />
-          </Container>
+      <LoadingOverlay active={this.state.uploading} spinner={<Pacman loading color="black" />} text='Loading...' >
+        <div className="pl-3 pr-3 pt-2">
+          <h1 className="text-center pb-2">Account Details</h1>
+          <div>
+            <Container>
+              <Row>
+                <Col>
+                  {/*
+                  <div>
+                    <h3>Edit Profile Picture</h3>
+                    {(this.state.dbresults.profilePic && this.state.dbresults.profilePic.imgUrl.length !== 0) ? <img src={this.state.dbresults.profilePic.imgUrl} width="250" height="250" alt="account" /> : <img src={logo} width="250" height="250" alt="account" />}
+                  </div>
+                  <hr />
+                  */}
+                  <div>
+                    <h3 className="pb-1">Edit Name</h3>
+                    <Form onSubmit={this.handleName}>
+                      <Row>
+                        <Col>
+                          <Form.Group controlId="name">
+                            <Form.Control defaultValue={this.state.dbresults.name} />
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                      <Button type="submit">
+                        Submit
+                      </Button>
+                    </Form>
+                  </div>
+                </Col>
+                <Col>
+                  <ResetLogin />
+                </Col>
+              </Row>
+              <hr />
+            </Container>
+          </div>
+          <div className="text-center">
+            <Button variant="danger" onClick={this.handleDelete}>
+              Delete my Account
+            </Button>
+          </div>
         </div>
-        <div className="text-center">
-          <Button variant="danger" onClick={this.handleDelete}>
-            Delete my Account
-          </Button>
-        </div>
-      </div>
+      </LoadingOverlay>
     );
   }
 

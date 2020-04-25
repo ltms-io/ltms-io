@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import { Pacman } from 'react-pure-loaders';
+import LoadingOverlay from 'react-loading-overlay';
 const jsonWeb = require('jsonwebtoken');
 
 class ResetLogin extends Component {
@@ -10,7 +12,8 @@ class ResetLogin extends Component {
 
     this.state = {
       uid: "",
-      dbresults: {}
+      dbresults: {},
+      uploading: false
     };
 
     this.handleUsername = this.handleUsername.bind(this);
@@ -19,7 +22,11 @@ class ResetLogin extends Component {
 
   async handleUsername(e) {
     e.preventDefault();
-    alert("Resetting email to: " + e.target.elements.email.value);
+    e.persist();
+    await this.setState({
+      uploading: true
+    });
+
     this.state.dbresults.email = e.target.elements.email.value;
     await this.setState(this.state);
 
@@ -44,10 +51,18 @@ class ResetLogin extends Component {
 
     this.setState(this.state);
     console.log("UPDATED STATE", this.state);
+
+    await this.setState({
+      uploading: false
+    });
   }
 
   async handlePassword(e) {
     e.preventDefault();
+    e.persist();
+    await this.setState({
+      uploading: true
+    });
 
     await axios({
       method: 'POST',
@@ -63,6 +78,10 @@ class ResetLogin extends Component {
     .catch( (error) => {
       console.log(error);
     });
+    await this.setState({
+      uploading: false
+    });
+    
     alert("An email has been sent to you with a link to reset your password.");
   }
 
@@ -82,26 +101,28 @@ class ResetLogin extends Component {
 
   render() {
     return(
-      <div>
+      <LoadingOverlay active={this.state.uploading} spinner={<Pacman loading color="black" />} text='Loading...' >
         <div>
-          <h3 className="pb-1">Reset Email Address</h3>
-          <Form onSubmit={this.handleUsername}>
-            <Form.Group controlId="email">
-              <Form.Control type="email" placeholder="Enter new email address" />
-            </Form.Group>
-            <Button type="submit">
-              Submit
+          <div>
+            <h3 className="pb-1">Reset Email Address</h3>
+            <Form onSubmit={this.handleUsername}>
+              <Form.Group controlId="email">
+                <Form.Control type="email" placeholder="Enter new email address" />
+              </Form.Group>
+              <Button type="submit">
+                Submit
+              </Button>
+            </Form>
+          </div>
+          <hr />
+          <div>
+            <h3 className="pb-1">Reset Password</h3>
+            <Button onClick={this.handlePassword}>
+              Send Password Reset Link
             </Button>
-          </Form>
+          </div>
         </div>
-        <hr />
-        <div>
-          <h3 className="pb-1">Reset Password</h3>
-          <Button onClick={this.handlePassword}>
-            Send Password Reset Link
-          </Button>
-        </div>
-      </div>
+      </LoadingOverlay>
     );
   }
 }

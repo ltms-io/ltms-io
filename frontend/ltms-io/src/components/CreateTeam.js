@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Form, Button } from "react-bootstrap";
 import axios from "axios";
 import jsonWeb from 'jsonwebtoken';
+import { Pacman } from 'react-pure-loaders';
+import LoadingOverlay from 'react-loading-overlay';
 
 export default class CreateTeam extends Component {
   constructor(props) {
@@ -12,7 +14,8 @@ export default class CreateTeam extends Component {
       uid: "",
       dbresults: {},
       dbtournresults: {},
-      isAuthorized: false
+      isAuthorized: false,
+      uploading: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -21,13 +24,21 @@ export default class CreateTeam extends Component {
 
   async handleSubmit(e) {
     e.preventDefault();
+    e.persist();
+    await this.setState({
+      uploading: true
+    });
     await axios.post("/api/teams/register", {
       tournamentId: this.state.tourneyId,
       teamNum: e.target.elements.teamNum.value,
       teamName: e.target.elements.teamName.value
     })
-    .then( (res) => {
-      window.location = "/tournamentdashboard/" + this.state.tourneyId;
+    .then( async (res) => {
+      await this.setState({
+        uploading: false
+      });
+
+      window.location = `/tournamentdashboard/${this.state.tourneyId}`
     })
     .catch( (err) => {
       console.log(err);
@@ -69,27 +80,29 @@ export default class CreateTeam extends Component {
 
   render() {
     return (
-      <div className="pl-3 pr-3 pt-2">
-        <h1>Create Team for Tournament "{this.state.dbtournresults.name}"</h1>
-        <div>
-          {this.state.isAuthorized && (
-            <Form onSubmit={this.handleSubmit}>
-              <Form.Group controlId="teamNum">
-                <Form.Label>Team Number</Form.Label>
-                <Form.Control required placeholder="Enter the team number"/>
-              </Form.Group>
-              <Form.Group controlId="teamName">
-                <Form.Label>Team Name</Form.Label>
-                <Form.Control required placeholder="Enter the team name"/>
-              </Form.Group>
-              <Button type="submit">Submit</Button>
-            </Form>
-          )}
-          {!this.state.isAuthorized && (
-            <h3>You are not authorized for create team in this tournament.</h3>
-          )}
+      <LoadingOverlay active={this.state.uploading} spinner={<Pacman loading color="black" />} text='Loading...' >
+        <div className="pl-3 pr-3 pt-2">
+          <h1>Create Team for Tournament "{this.state.dbtournresults.name}"</h1>
+          <div>
+            {this.state.isAuthorized && (
+              <Form onSubmit={this.handleSubmit}>
+                <Form.Group controlId="teamNum">
+                  <Form.Label>Team Number</Form.Label>
+                  <Form.Control required placeholder="Enter the team number"/>
+                </Form.Group>
+                <Form.Group controlId="teamName">
+                  <Form.Label>Team Name</Form.Label>
+                  <Form.Control required placeholder="Enter the team name"/>
+                </Form.Group>
+                <Button type="submit">Submit</Button>
+              </Form>
+            )}
+            {!this.state.isAuthorized && (
+              <h3>You are not authorized for create team in this tournament.</h3>
+            )}
+          </div>
         </div>
-      </div>
+      </LoadingOverlay>
     );
   }
 }

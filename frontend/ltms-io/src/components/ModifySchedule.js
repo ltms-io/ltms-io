@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {Form, Button, Col, Row} from 'react-bootstrap';
 import axios from 'axios';
 import jsonWeb from 'jsonwebtoken';
+import { Pacman } from 'react-pure-loaders';
+import LoadingOverlay from 'react-loading-overlay';
 
 export default class ModifySchedule extends Component {
   constructor(props) {
@@ -12,7 +14,8 @@ export default class ModifySchedule extends Component {
       uid: "",
       dbresults: {},
       dbtournresults: {},
-      schedule: {}
+      schedule: {},
+      uploading: false
     }
 
     this.handleSwitch = this.handleSwitch.bind(this);
@@ -50,6 +53,10 @@ export default class ModifySchedule extends Component {
 
   async handleSwitch(e) {
     e.preventDefault();
+    e.persist();
+    await this.setState({
+      uploading: true
+    });
 
     if (!e.target.elements.teamA.value || !e.target.elements.teamB.value) {
       alert("Please enter both Team A and Team B");
@@ -78,11 +85,17 @@ export default class ModifySchedule extends Component {
 
     if (!a) {
       alert(teamA + " is not a team in tournament");
+      await this.setState({
+        uploading: false
+      });
       return;
     }
 
     if (!b) {
       alert(teamB + " is not a team in tournament");
+      await this.setState({
+        uploading: false
+      });
       return;
     }
 
@@ -119,17 +132,24 @@ export default class ModifySchedule extends Component {
       rawData: JSON.stringify(this.state.schedule),
       match: match2
     })
-    .then(result => {
-        console.log(result);
+    .then( async (result) => {
+      await this.setState({
+        uploading: false
+      });
+      console.log(result);
     })
-    .catch(err => {
-        console.log(err);
+    .catch( (err) => {
+      console.log(err);
     });
 
   }
 
   async moveBackTime(e){
     e.preventDefault();
+    e.persist();
+    await this.setState({
+      uploading: true
+    });
 
     if (!e.target.elements.oldTime.value || !e.target.elements.newTime.value) {
       alert("Please enter old time and new time");
@@ -210,11 +230,14 @@ export default class ModifySchedule extends Component {
       match: match,
       startTime: this.state.schedule.startTime
     })
-    .then(result => {
-        console.log(result);
+    .then( async (result) => {
+      await this.setState({
+        uploading: false
+      });
+      console.log(result);
     })
     .catch(err => {
-        console.log(err);
+      console.log(err);
     });
 
 
@@ -222,55 +245,57 @@ export default class ModifySchedule extends Component {
 
   render() {
     return (
-      <div className="pl-3 pr-3 pt-2">
-        <h1 className="pb-2">Modify Schedule for Tournament "{this.state.dbtournresults.name}"</h1>
-        {this.state.isAuthorized && (
-          <div>
-            <Form className="pb-2" onSubmit={this.handleSwitch}>
-              <Row>
-                <Col>
-                  <Form.Group controlId="teamA">
-                    <Form.Control type="text" placeholder="Team A" />
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group controlId="teamB">
-                    <Form.Control type="text" placeholder="Team B" />
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group controlId="match">
-                    <Form.Control type="text" placeholder="Match Number" />
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Form.Group>
-                <Button type="submit">Switch Teams</Button>
-              </Form.Group>
-            </Form>
-            <Form onSubmit={this.moveBackTime}>
-              <Row>
-                <Col>
-                  <Form.Group controlId="oldTime">
-                    <Form.Control type="text" placeholder="Original Start Time" />
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group controlId="newTime">
-                    <Form.Control type="text" placeholder="New Start Time" />
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Form.Group>
-                <Button type="submit">Change Match Time</Button>
-              </Form.Group>
-            </Form>
-          </div>
-        )}
-        {!this.state.isAuthorized && (
-          <h3 data-test="noAuthMsg">You are not authorized for modify schedule in this tournament.</h3>
-        )}
-      </div>
+      <LoadingOverlay active={this.state.uploading} spinner={<Pacman loading color="black" />} text='Loading...' >
+        <div className="pl-3 pr-3 pt-2">
+          <h1 className="pb-2">Modify Schedule for Tournament "{this.state.dbtournresults.name}"</h1>
+          {this.state.isAuthorized && (
+            <div>
+              <Form className="pb-2" onSubmit={this.handleSwitch}>
+                <Row>
+                  <Col>
+                    <Form.Group controlId="teamA">
+                      <Form.Control type="text" placeholder="Team A" />
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group controlId="teamB">
+                      <Form.Control type="text" placeholder="Team B" />
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group controlId="match">
+                      <Form.Control type="text" placeholder="Match Number" />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Form.Group>
+                  <Button type="submit">Switch Teams</Button>
+                </Form.Group>
+              </Form>
+              <Form onSubmit={this.moveBackTime}>
+                <Row>
+                  <Col>
+                    <Form.Group controlId="oldTime">
+                      <Form.Control type="text" placeholder="Original Start Time" />
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group controlId="newTime">
+                      <Form.Control type="text" placeholder="New Start Time" />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Form.Group>
+                  <Button type="submit">Change Match Time</Button>
+                </Form.Group>
+              </Form>
+            </div>
+          )}
+          {!this.state.isAuthorized && (
+            <h3 data-test="noAuthMsg">You are not authorized for modify schedule in this tournament.</h3>
+          )}
+        </div>
+      </LoadingOverlay>
     );
   }
 
