@@ -53,15 +53,16 @@ export default class ModifySchedule extends Component {
 
   async handleSwitch(e) {
     e.preventDefault();
-    e.persist();
-    await this.setState({
-      uploading: true
-    });
 
     if (!e.target.elements.teamA.value || !e.target.elements.teamB.value) {
       alert("Please enter both Team A and Team B");
       return;
     }
+
+    e.persist();
+    await this.setState({
+      uploading: true
+    });
 
     var teamA = e.target.elements.teamA.value;
     var teamB = e.target.elements.teamB.value;
@@ -146,10 +147,7 @@ export default class ModifySchedule extends Component {
 
   async moveBackTime(e){
     e.preventDefault();
-    e.persist();
-    await this.setState({
-      uploading: true
-    });
+
 
     if (!e.target.elements.oldTime.value || !e.target.elements.newTime.value) {
       alert("Please enter old time and new time");
@@ -193,6 +191,11 @@ export default class ModifySchedule extends Component {
       alert("Match/Table does not exist");
       return;
     }
+
+    e.persist();
+    await this.setState({
+      uploading: true
+    });
 
     if (i === 0 && j === 0) {
       sched.startTime = newTime;

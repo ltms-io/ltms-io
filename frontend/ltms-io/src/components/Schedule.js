@@ -134,14 +134,16 @@ class Schedule extends React.Component {
 
   async handleSchedule(e) {
     e.preventDefault();
-    e.persist();
-    await this.setState({
-      uploading: true
-    });
+    
     if (!e.target.elements.startTime.value || !e.target.elements.cycleTime.value) {
       alert("Please enter start time and cycle time");
       return;
     }
+
+    e.persist();
+    await this.setState({
+      uploading: true
+    });
 
     var startTime = e.target.elements.startTime.value;
     var cycleTime = parseInt(e.target.elements.cycleTime.value, 10);
