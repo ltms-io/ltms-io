@@ -232,6 +232,8 @@ class Sheet extends React.Component{
       await this.setState({
         uploading: false
       });
+
+      window.location = `/tournamentdashboard/${this.state.tourneyId}`
     })
     .catch( (err) => {
       console.log(err);

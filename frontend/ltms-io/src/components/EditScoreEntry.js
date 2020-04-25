@@ -55,7 +55,7 @@ export default class EditScoreEntry extends Component {
     }
 
     newArray.push({
-      categ: <Form.Control type="text" value={cate} disabled />,
+      categ: <Form.Control type="text" defaultValue={cate} disabled />,
       scoretype: score,
       tempScore: this.state.scoreResults.fieldValues[this.state.insertIdx]
     })
