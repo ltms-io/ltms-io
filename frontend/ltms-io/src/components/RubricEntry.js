@@ -28,6 +28,7 @@ class RubricEntry extends Component {
       uploading2: false,
       uploading3: false
     };
+
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleSend = this.handleSend.bind(this);
@@ -112,6 +113,8 @@ class RubricEntry extends Component {
     await this.setState({
       uploading3: false
     });
+
+    window.location = `/tournamentdashboard/${this.state.tourneyId}`
   }
 
   async handleDelete(e) {
