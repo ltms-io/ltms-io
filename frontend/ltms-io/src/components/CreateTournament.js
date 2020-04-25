@@ -4,6 +4,8 @@ import React, { Component } from 'react'
 import { Container, Col, Row, Form, Button } from 'react-bootstrap'
 import { SingleDatePicker } from 'react-dates'
 import axios from 'axios';
+import { Pacman } from 'react-pure-loaders';
+import LoadingOverlay from 'react-loading-overlay';
 const jsonWeb = require('jsonwebtoken');
 //import { Redirect } from 'react-router-dom';
 
@@ -22,6 +24,7 @@ export default class CreateEvent extends Component {
             judgeAdvisor: null,
             headReferee: null,
             validated: false,
+            uploading: false
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -43,6 +46,10 @@ export default class CreateEvent extends Component {
         }
         else {
             event.preventDefault();
+            event.persist();
+            await this.setState({
+              uploading: true
+            });
 
             var token = document.cookie.substring(13);
             var decoded = jsonWeb.verify(token, "123456");
@@ -58,11 +65,14 @@ export default class CreateEvent extends Component {
                 startDate: this.state.date,
                 endDate: this.state.date
             })
-            .then(res => {
+            .then( async (res) => {
                 console.log(res);
+                await this.setState({
+                  uploading: false
+                });
                 window.location = '/maindashboard';
             })
-            .catch(err => {
+            .catch( async (err) => {
                 console.log(err);
             })
         }
@@ -70,6 +80,7 @@ export default class CreateEvent extends Component {
 
     render() {
         return (
+          <LoadingOverlay active={this.state.uploading} spinner={<Pacman loading color="black" />} text='Loading...' >
             <Container className="pl-3 pr-3 pt-2">
                 <h1 className="text-center">Create a Tournament</h1>
                 <Form noValidate validated={this.state.validated} onSubmit={this.handleSubmit}>
@@ -158,6 +169,7 @@ export default class CreateEvent extends Component {
                 </Form>
                 {/* </Col></Row> */}
             </Container>
+          </LoadingOverlay>
         )
     }
 }

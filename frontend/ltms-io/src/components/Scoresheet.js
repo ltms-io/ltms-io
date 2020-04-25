@@ -1,6 +1,8 @@
 import React from 'react';
 import {Form, Button, Col, Row, DropdownButton, Dropdown} from 'react-bootstrap';
 import axios from 'axios';
+import { Pacman } from 'react-pure-loaders';
+import LoadingOverlay from 'react-loading-overlay';
 const jsonWeb = require('jsonwebtoken');
 
 class Sheet extends React.Component{
@@ -23,7 +25,8 @@ class Sheet extends React.Component{
       index: 0,
       category: "Category",
       isAuthorized: false,
-      disabled: false
+      disabled: false,
+      uploading: false
     }
 
     //binds the fuction
@@ -38,10 +41,19 @@ class Sheet extends React.Component{
 
   }
 
-  autoPopulate(e) {
+  async autoPopulate(e) {
     e.preventDefault();
+    var tourney = "";
+    var scoreNum = "";
+    await axios.post(`/api/tournaments/search`, {tournament_name: "Auto-populate Tourney"}).then(result => {
+      tourney = result.data[0]._id;
+      scoreNum = result.data[0].scores[0]._id;
 
-    axios.get(`/api/tournaments/5ea207a2b67532364020b8e0/scores/5ea21339b67532364020b8e2`).then(result => {
+    }).catch(err => {
+      console.log(err);
+    })
+
+    axios.get(`/api/tournaments/${tourney}/scores/${scoreNum}`).then(result => {
       var event = JSON.parse(result.data.rawData);
       var newArray = [];
       for(var i = 0; i < event.length; i++) {
@@ -60,7 +72,7 @@ class Sheet extends React.Component{
                     <Dropdown.Item key="5" eventKey={"5" + i}>5</Dropdown.Item>
                   </div>
         }
-        var cate = event[i].categ.props.value
+        var cate = event[i].categ.props.defaultValue
         newArray.push({
           categ: <Form.Control type = "text" name={"text" + i} eventkey={"text" + i} defaultValue = {cate} readOnly={false} onChange={this.handleCatChange}/>,
           scoretype: score,
@@ -185,6 +197,11 @@ class Sheet extends React.Component{
       return;
     }
 
+    e.persist()
+    await this.setState({
+      uploading: true
+    });
+
     var index = this.state.index;
     var score = 0;
 
@@ -212,7 +229,7 @@ class Sheet extends React.Component{
       fixedScores.push(event.tempScore);
     });
 
-    axios.post("/api/tournaments/score", {
+    await axios.post("/api/tournaments/score", {
       id: this.state.tourneyId,
       fieldTypes: fixedCats,
       fieldValues: fixedScores,
@@ -220,6 +237,13 @@ class Sheet extends React.Component{
       scoreType: "match",
       finalScore: score,
       rawData: JSON.stringify(this.state.events)
+    })
+    .then( async () => {
+      await this.setState({
+        uploading: false
+      });
+
+      window.location = `/tournamentdashboard/${this.state.tourneyId}`
     })
     .catch( (err) => {
       console.log(err);
@@ -260,87 +284,89 @@ class Sheet extends React.Component{
   //render function
   render(){
     return(
-      <div data-test="theScoresheet" className="pl-3 pr-3 pt-2">
-        <h1>Create Scoresheet for Tournament "{this.state.dbtournresults.name}"</h1>
-        {this.state.isAuthorized && (
-          <div>
-            <h3>Enter Team #</h3>
-            <div className="pb-2">
-              <Form onSubmit={this.handleTeam}>
-                <Form.Group controlId="teamName">
-                  <Form.Control type="text" placeholder="Enter the team's number" readOnly={this.state.readOnly}/>
-                </Form.Group>
-                <Button className="mr-1" type="submit">
-                  Set Team
-                </Button>
-                <Button className="ml-1" variant="danger" onClick={this.changeTeam}>
-                  Change Team
-                </Button>
+      <LoadingOverlay active={this.state.uploading} spinner={<Pacman loading color="black" />} text='Loading...' >
+        <div data-test="theScoresheet" className="pl-3 pr-3 pt-2">
+          <h1>Create Scoresheet for Tournament "{this.state.dbtournresults.name}"</h1>
+          {this.state.isAuthorized && (
+            <div>
+              <h3>Enter Team #</h3>
+              <div className="pb-2">
+                <Form onSubmit={this.handleTeam}>
+                  <Form.Group controlId="teamName">
+                    <Form.Control type="text" placeholder="Enter the team's number" readOnly={this.state.readOnly}/>
+                  </Form.Group>
+                  <Button className="mr-1" type="submit">
+                    Set Team
+                  </Button>
+                  <Button className="ml-1" variant="danger" onClick={this.changeTeam}>
+                    Change Team
+                  </Button>
+                </Form>
+              </div>
+              <hr />
+              <div className="pb-2">
+                <Form onSubmit={this.handleInsert}>
+                  <h3 className="pb-1">Add Categories</h3>
+                  <Button className="mb-3" onClick={this.autoPopulate}>
+                    Auto-Populate
+                  </Button>
+                  <Row>
+                    <Col>
+                      <Form.Group controlId = "category">
+                        <Form.Control type = "text" placeholder = "Enter the category's name"/>
+                      </Form.Group>
+                    </Col>
+                    <Col>
+                      <Form.Group controlId = "score">
+                        <DropdownButton title={this.state.scoreType} onSelect={this.handleScoreSelect}>
+                          <Dropdown.Item key="yes" eventKey="yes">Yes/No</Dropdown.Item>
+                          <Dropdown.Item key="15" eventKey="15">1-5</Dropdown.Item>
+                        </DropdownButton>
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                  <Button variant = "primary" type = "submit">
+                    Add Category
+                  </Button>
+                </Form>
+              </div>
+              <Form>
+                {this.state.events.map(event => (
+                  <Row>
+                    <Col>
+                      <Form.Group controlId = "category">
+                        {event.categ}
+                      </Form.Group>
+                    </Col>
+                    <Col>
+                      <Form.Group controlId = "score">
+                        <DropdownButton title={event.tempScore} onSelect={this.handleChange}>
+                          {event.scoretype}
+                        </DropdownButton>
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                ))}
               </Form>
+              {this.state.disabled && (
+                <Form data-test="theFinalScore">
+                  <Button className="mb-2" variant="primary" onClick={this.handleCalculate}>
+                    Calculate and Submit Score
+                  </Button>
+                  <Row>
+                    <Col xs="2">
+                      <Form.Control type = "text" value = {"Final Score: " + this.state.finalscore} readOnly = {true}/>
+                    </Col>
+                  </Row>
+                </Form>
+              )}
             </div>
-            <hr />
-            <div className="pb-2">
-              <Form onSubmit={this.handleInsert}>
-                <h3 className="pb-1">Add Categories</h3>
-                <Button className="mb-3" onClick={this.autoPopulate}>
-                  Auto-Populate
-                </Button>
-                <Row>
-                  <Col>
-                    <Form.Group controlId = "category">
-                      <Form.Control type = "text" placeholder = "Enter the category's name"/>
-                    </Form.Group>
-                  </Col>
-                  <Col>
-                    <Form.Group controlId = "score">
-                      <DropdownButton title={this.state.scoreType} onSelect={this.handleScoreSelect}>
-                        <Dropdown.Item key="yes" eventKey="yes">Yes/No</Dropdown.Item>
-                        <Dropdown.Item key="15" eventKey="15">1-5</Dropdown.Item>
-                      </DropdownButton>
-                    </Form.Group>
-                  </Col>
-                </Row>
-                <Button variant = "primary" type = "submit">
-                  Add Category
-                </Button>
-              </Form>
-            </div>
-            <Form>
-              {this.state.events.map(event => (
-                <Row>
-                  <Col>
-                    <Form.Group controlId = "category">
-                      {event.categ}
-                    </Form.Group>
-                  </Col>
-                  <Col>
-                    <Form.Group controlId = "score">
-                      <DropdownButton title={event.tempScore} onSelect={this.handleChange}>
-                        {event.scoretype}
-                      </DropdownButton>
-                    </Form.Group>
-                  </Col>
-                </Row>
-              ))}
-            </Form>
-            {this.state.disabled && (
-              <Form data-test="theFinalScore">
-                <Button className="mb-2" variant="primary" onClick={this.handleCalculate}>
-                  Calculate and Submit Score
-                </Button>
-                <Row>
-                  <Col xs="2">
-                    <Form.Control type = "text" value = {"Final Score: " + this.state.finalscore} readOnly = {true}/>
-                  </Col>
-                </Row>
-              </Form>
-            )}
-          </div>
-        )}
-        {!this.state.isAuthorized && (
-          <h3 data-test="noAuthMsg">You are not authorized for create scoresheet in this tournament.</h3>
-        )}
-      </div>
+          )}
+          {!this.state.isAuthorized && (
+            <h3 data-test="noAuthMsg">You are not authorized for create scoresheet in this tournament.</h3>
+          )}
+        </div>
+      </LoadingOverlay>
     );
   }
 }

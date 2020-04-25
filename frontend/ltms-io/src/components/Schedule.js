@@ -1,6 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import { Form, Button, Col, Row } from 'react-bootstrap';
+import { Pacman } from 'react-pure-loaders';
+import LoadingOverlay from 'react-loading-overlay';
 const jsonWeb = require('jsonwebtoken');
 
 class Schedule extends React.Component {
@@ -21,7 +23,8 @@ class Schedule extends React.Component {
       droppedTeams: false,
       tableLayout: [],
       disabled: false,
-      isAuthorized: false
+      isAuthorized: false,
+      uploading: false
     }
 
     this.handleSchedule = this.handleSchedule.bind(this);
@@ -125,14 +128,22 @@ class Schedule extends React.Component {
       await this.setState({ droppedTeams: true });
     }
     await this.setState({ teams: temp });
+
+    window.location = "/tournamentdashboard/" + this.state.tourneyId;
   }
 
   async handleSchedule(e) {
     e.preventDefault();
+    
     if (!e.target.elements.startTime.value || !e.target.elements.cycleTime.value) {
       alert("Please enter start time and cycle time");
       return;
     }
+
+    e.persist();
+    await this.setState({
+      uploading: true
+    });
 
     var startTime = e.target.elements.startTime.value;
     var cycleTime = parseInt(e.target.elements.cycleTime.value, 10);
@@ -224,27 +235,39 @@ class Schedule extends React.Component {
       rawData: JSON.stringify(this.state),
       match: this.state.tableLayout
     })
+    .then( async () => {
+      await this.setState({
+        uploading: false
+      });
+    })
     .catch(err => {
       console.log(err);
     })
   }
 
   async generatePDF() {
+    await this.setState({
+      uploading: true
+    });
+
     await axios({
       method: 'get',
       url: `/api/tournaments/${this.state.tourneyId}/pdf`,
       responseType: 'blob'
     })
-    .then(res => {
+    .then( async (res) => {
       const file = new Blob(
         [res.data],
         { type: 'application/pdf' }
       );
 
       const fileURL = URL.createObjectURL(file);
+      await this.setState({
+        uploading: false
+      });
       window.open(fileURL);
     })
-    .catch(err => {
+    .catch( (err) => {
       console.log(err);
     });
   }
@@ -285,82 +308,88 @@ class Schedule extends React.Component {
         isAuthorized: true
       });
     }
+
+    await this.setState({
+      uploading: false
+    });
   }
 
   render() {
     return (
-      <div data-test="theSchedule" className="pl-3 pr-3 pt-2">
-        <h1 className="pb-2">Generate Schedule for Tournament "{this.state.dbtournresults.name}"</h1>
-        {this.state.isAuthorized && (
-          <div>
-            {!this.state.disabled && (
-            <Form data-test="theTime" onSubmit={this.handleSchedule}>
-              <Row className="pb-2">
-                <Col xs="2">
-                  <Form.Group controlId="startTime">
-                    <Form.Control type="text" placeholder="Start Time (hh:mm)" />
-                  </Form.Group>
-                </Col>
-                <Col xs="2">
-                  <Form.Group controlId="cycleTime">
-                    <Form.Control type="text" placeholder="Cycle Time (mm)" />
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Form.Group>
-                <Button type="submit">Generate Schedule</Button>
-              </Form.Group>
-            </Form>
-            )}
-
-            <Form>
-              {this.state.tableLayout.map((sched, index) => (
-                <Form.Group>
-                <Row>
-                {sched.map((robot, ind) => (
-                  <Col className="mb-2" xs = "4">
-                    {!index && (
-                      <h5>Table {ind + 1}</h5>
-                    )}
-                    <Form.Control type="text" value={robot.startTime + " " + robot.teamA + " | " + robot.teamB } readOnly={true} />
+      <LoadingOverlay active={this.state.uploading} spinner={<Pacman loading color="black" />} text='Loading...' >
+        <div data-test="theSchedule" className="pl-3 pr-3 pt-2">
+          <h1 className="pb-2">Generate Schedule for Tournament "{this.state.dbtournresults.name}"</h1>
+          {this.state.isAuthorized && (
+            <div>
+              {!this.state.disabled && (
+              <Form data-test="theTime" onSubmit={this.handleSchedule}>
+                <Row className="pb-2">
+                  <Col xs="2">
+                    <Form.Group controlId="startTime">
+                      <Form.Control type="text" placeholder="Start Time (hh:mm)" />
+                    </Form.Group>
                   </Col>
-                ))}
+                  <Col xs="2">
+                    <Form.Group controlId="cycleTime">
+                      <Form.Control type="text" placeholder="Cycle Time (mm)" />
+                    </Form.Group>
+                  </Col>
                 </Row>
-                </Form.Group>
-              ))}
-            </Form>
-
-            {this.state.disabled && (
-              <Form data-test="theChange" onSubmit={this.handleChange}>
                 <Form.Group>
-                  <Button variant="danger" type="submit">Generate New Schedule</Button>
+                  <Button type="submit">Generate Schedule</Button>
                 </Form.Group>
               </Form>
-            )}
+              )}
 
-            {this.state.disabled && (
-              <Form onSubmit={this.handleDrop}>
-                <hr/>
-                <h3 className="pb-1">Drop Team from Schedule</h3>
-                <div className="pb-1">
-                  <Form.Group data-test="aCommentInput" controlId="teamDrops">
-                    <Form.Label>Team Name</Form.Label>
-                    <Form.Control as="input"/>
+              <Form>
+                {this.state.tableLayout.map((sched, index) => (
+                  <Form.Group>
+                  <Row>
+                  {sched.map((robot, ind) => (
+                    <Col className="mb-2" xs = "4">
+                      {!index && (
+                        <h5>Table {ind + 1}</h5>
+                      )}
+                      <Form.Control type="text" value={robot.startTime + " " + robot.teamA + " | " + robot.teamB } readOnly={true} />
+                    </Col>
+                  ))}
+                  </Row>
                   </Form.Group>
-                </div>
-                <Button type="submit">
-                  Drop Team
-                </Button>
-                <hr />
+                ))}
               </Form>
-            )}
-            <Button onClick={this.generatePDF}>Generate PDF</Button>
-          </div>
-        )}
-        {!this.state.isAuthorized && (
-          <h3>You are not authorized to generate schedule in this tournament.</h3>
-        )}
-      </div>
+
+              {this.state.disabled && (
+                <Form data-test="theChange" onSubmit={this.handleChange}>
+                  <Form.Group>
+                    <Button variant="danger" type="submit">Generate New Schedule</Button>
+                  </Form.Group>
+                </Form>
+              )}
+
+              {this.state.disabled && (
+                <Form onSubmit={this.handleDrop}>
+                  <hr/>
+                  <h3 className="pb-1">Drop Team from Schedule</h3>
+                  <div className="pb-1">
+                    <Form.Group data-test="aCommentInput" controlId="teamDrops">
+                      <Form.Label>Team Name</Form.Label>
+                      <Form.Control as="input"/>
+                    </Form.Group>
+                  </div>
+                  <Button type="submit">
+                    Drop Team
+                  </Button>
+                  <hr />
+                </Form>
+              )}
+              <Button onClick={this.generatePDF}>Generate PDF</Button>
+            </div>
+          )}
+          {!this.state.isAuthorized && (
+            <h3>You are not authorized to generate schedule in this tournament.</h3>
+          )}
+        </div>
+      </LoadingOverlay>
     );
   }
 }
