@@ -97,7 +97,12 @@ class SetReferee extends Component {
           uploading: false
         });
 
-        alert(message);
+        if (alert(message)) {
+          window.location = `/tournamentdashboard/${this.state.tourneyId}`;
+        }
+        else {
+          window.location = `/tournamentdashboard/${this.state.tourneyId}`;
+        }
       });
     });
   }
