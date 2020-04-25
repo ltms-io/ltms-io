@@ -41,10 +41,19 @@ class Sheet extends React.Component{
 
   }
 
-  autoPopulate(e) {
+  async autoPopulate(e) {
     e.preventDefault();
+    var tourney = "";
+    var scoreNum = "";
+    await axios.post(`/api/tournaments/search`, {tournament_name: "Auto-populate Tourney"}).then(result => {
+      tourney = result.data[0]._id;
+      scoreNum = result.data[0].scores[0]._id;
 
-    axios.get(`/api/tournaments/5ea207a2b67532364020b8e0/scores/5ea21339b67532364020b8e2`).then(result => {
+    }).catch(err => {
+      console.log(err);
+    })
+
+    axios.get(`/api/tournaments/${tourney}/scores/${scoreNum}`).then(result => {
       var event = JSON.parse(result.data.rawData);
       var newArray = [];
       for(var i = 0; i < event.length; i++) {
@@ -63,7 +72,7 @@ class Sheet extends React.Component{
                     <Dropdown.Item key="5" eventKey={"5" + i}>5</Dropdown.Item>
                   </div>
         }
-        var cate = event[i].categ.props.value
+        var cate = event[i].categ.props.defaultValue
         newArray.push({
           categ: <Form.Control type = "text" name={"text" + i} eventkey={"text" + i} defaultValue = {cate} readOnly={false} onChange={this.handleCatChange}/>,
           scoretype: score,
