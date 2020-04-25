@@ -129,7 +129,7 @@ class Schedule extends React.Component {
     }
     await this.setState({ teams: temp });
 
-    window.location = "/tournamentdashboard" + this.state.tourneyId;
+    window.location = "/tournamentdashboard/" + this.state.tourneyId;
   }
 
   async handleSchedule(e) {
