@@ -191,15 +191,16 @@ class Sheet extends React.Component{
   //function to calculate team score
   async handleCalculate(e){
     e.preventDefault();
-    e.persist()
-    await this.setState({
-      uploading: true
-    });
 
     if (this.state.readOnly === false) {
       alert("Please set the team being scored");
       return;
     }
+
+    e.persist()
+    await this.setState({
+      uploading: true
+    });
 
     var index = this.state.index;
     var score = 0;
