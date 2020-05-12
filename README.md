@@ -17,7 +17,6 @@
 
 ## Contributors
 
-## General Notes
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
@@ -30,6 +29,8 @@
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
+## General Notes
 
 - The repository is setup to auto deploy to Heroku on every push to master. Branching should be done off of dev, which will be merged as needed.
 - Testing has been setup in the backend. It requires you to go into the testing-app.js file and declare your routes and any other dependencies that are in app.js. Open to better approaches. 
