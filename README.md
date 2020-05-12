@@ -10,23 +10,16 @@
 
 ## General Notes
 
-- The current plan is to develop the frontend and backend in their own folders as opposed to serving the frontend out of the express server from the build directory. This is so that we can take advantage of hot-reload developing.
+- The repository is setup to auto deploy to Heroku on every push to master. Branching should be done off of dev, which will be merged as needed.
 - Testing has been setup in the backend. It requires you to go into the testing-app.js file and declare your routes and any other dependencies that are in app.js. Open to better approaches. 
 
 ## Lanuages and Frameworks
 
 - Backend: Node.js + Express + mongoose
 - Frontend: Node.js + React
-- Databse: MongoDB
+- Database: MongoDB
 
-## Running List of Installed (or need to be installed) NPM Packages
-
-- React Router
-- React Bootstrap
-- React Redux
-    - React Redux Dev Tools
-
-## Dev Environment Setup (INCOMPLETE, ask Jack)
+## Dev Environment Setup
 
 ### Frontend
 
@@ -38,7 +31,7 @@
 2. Type the following to setup frontend/
 
 ``` {bash}
-cd frontend/
+cd frontend/ltms-io/
 npm install
 ```
 
