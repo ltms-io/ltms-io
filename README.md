@@ -12,6 +12,8 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
+## Contributors
+
 ## General Notes
 
 - The repository is setup to auto deploy to Heroku on every push to master. Branching should be done off of dev, which will be merged as needed.
