@@ -30,6 +30,8 @@
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
+Want to help out? Join our Slack [here](https://join.slack.com/t/ltmsio/shared_invite/zt-ef96hd01-hPKQGh7CuruRoPskPljkEg)! 
+
 ## General Notes
 
 - The repository is setup to auto deploy to Heroku on every push to master. Branching should be done off of dev, which will be merged as needed.
