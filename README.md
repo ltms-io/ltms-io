@@ -1,6 +1,6 @@
 # LTMS.io
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![forthebadge](https://forthebadge.com/images/badges/built-with-grammas-recipe.svg)](https://forthebadge.com)
@@ -23,6 +23,7 @@
 <table>
   <tr>
     <td align="center"><a href="https://github.com/thatnerdjack"><img src="https://avatars2.githubusercontent.com/u/6924261?v=4" width="100px;" alt=""/><br /><sub><b>Jack Doherty</b></sub></a><br /><a href="https://github.com/ltms-io/ltms-io/commits?author=thatnerdjack" title="Code">💻</a> <a href="#ideas-thatnerdjack" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-thatnerdjack" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#projectManagement-thatnerdjack" title="Project Management">📆</a> <a href="https://github.com/ltms-io/ltms-io/pulls?q=is%3Apr+reviewed-by%3Athatnerdjack" title="Reviewed Pull Requests">👀</a></td>
+    <td align="center"><a href="http://neelch.com"><img src="https://avatars2.githubusercontent.com/u/11469222?v=4" width="100px;" alt=""/><br /><sub><b>Neel Chaudhari</b></sub></a><br /><a href="https://github.com/ltms-io/ltms-io/commits?author=neelc17" title="Code">💻</a> <a href="#design-neelc17" title="Design">🎨</a> <a href="https://github.com/ltms-io/ltms-io/pulls?q=is%3Apr+reviewed-by%3Aneelc17" title="Reviewed Pull Requests">👀</a></td>
   </tr>
 </table>
 
