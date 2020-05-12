@@ -17,6 +17,17 @@
         "projectManagement",
         "review"
       ]
+    },
+    {
+      "login": "neelc17",
+      "name": "Neel Chaudhari",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/11469222?v=4",
+      "profile": "http://neelch.com",
+      "contributions": [
+        "code",
+        "design",
+        "review"
+      ]
     }
   ],
   "contributorsPerLine": 7,
