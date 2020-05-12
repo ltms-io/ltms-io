@@ -1,0 +1,28 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "thatnerdjack",
+      "name": "Jack Doherty",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/6924261?v=4",
+      "profile": "https://github.com/thatnerdjack",
+      "contributions": [
+        "code",
+        "ideas",
+        "infra",
+        "projectManagement",
+        "review"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "ltms-io",
+  "projectOwner": "thatnerdjack",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
