@@ -8,6 +8,10 @@
 [![forthebadge](https://forthebadge.com/images/badges/makes-people-smile.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/validated-html2.svg)](https://forthebadge.com)
 
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+
 ## General Notes
 
 - The repository is setup to auto deploy to Heroku on every push to master. Branching should be done off of dev, which will be merged as needed.
