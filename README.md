@@ -11,10 +11,6 @@
 [![forthebadge](https://forthebadge.com/images/badges/makes-people-smile.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/validated-html2.svg)](https://forthebadge.com)
 
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
-
 ## Contributors
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
@@ -24,6 +20,9 @@
   <tr>
     <td align="center"><a href="https://github.com/thatnerdjack"><img src="https://avatars2.githubusercontent.com/u/6924261?v=4" width="100px;" alt=""/><br /><sub><b>Jack Doherty</b></sub></a><br /><a href="https://github.com/ltms-io/ltms-io/commits?author=thatnerdjack" title="Code">💻</a> <a href="#ideas-thatnerdjack" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-thatnerdjack" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#projectManagement-thatnerdjack" title="Project Management">📆</a> <a href="https://github.com/ltms-io/ltms-io/pulls?q=is%3Apr+reviewed-by%3Athatnerdjack" title="Reviewed Pull Requests">👀</a></td>
     <td align="center"><a href="https://github.com/singh497"><img src="https://avatars3.githubusercontent.com/u/47434320?v=4" width="100px;" alt=""/><br /><sub><b>singh497</b></sub></a><br /><a href="https://github.com/ltms-io/ltms-io/commits?author=singh497" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/schmi150"><img src="https://avatars3.githubusercontent.com/u/45135268?v=4" width="100px;" alt=""/><br /><sub><b>Joseph Schmidt</b></sub></a><br /><a href="https://github.com/ltms-io/ltms-io/commits?author=schmi150" title="Code">💻</a> <a href="https://github.com/ltms-io/ltms-io/pulls?q=is%3Apr+reviewed-by%3Aschmi150" title="Reviewed Pull Requests">👀</a></td>
+    <td align="center"><a href="http://neelch.com"><img src="https://avatars2.githubusercontent.com/u/11469222?v=4" width="100px;" alt=""/><br /><sub><b>Neel Chaudhari</b></sub></a><br /><a href="https://github.com/ltms-io/ltms-io/commits?author=neelc17" title="Code">💻</a> <a href="#design-neelc17" title="Design">🎨</a> <a href="https://github.com/ltms-io/ltms-io/pulls?q=is%3Apr+reviewed-by%3Aneelc17" title="Reviewed Pull Requests">👀</a></td>
+    <td align="center"><a href="https://github.com/CrescentRune"><img src="https://avatars0.githubusercontent.com/u/21012272?v=4" width="100px;" alt=""/><br /><sub><b>Hank Krutulis</b></sub></a><br /><a href="#ideas-CrescentRune" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/ltms-io/ltms-io/commits?author=CrescentRune" title="Code">💻</a> <a href="https://github.com/ltms-io/ltms-io/pulls?q=is%3Apr+reviewed-by%3ACrescentRune" title="Reviewed Pull Requests">👀</a></td>
   </tr>
 </table>
 

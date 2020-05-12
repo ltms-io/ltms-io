@@ -26,6 +26,36 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "schmi150",
+      "name": "Joseph Schmidt",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/45135268?v=4",
+      "profile": "https://github.com/schmi150",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "neelc17",
+      "name": "Neel Chaudhari",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/11469222?v=4",
+      "profile": "http://neelch.com",
+      "contributions": [
+        "code",
+        "design"
+      ]
+    },
+    {
+      "login": "CrescentRune",
+      "name": "Hank Krutulis",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/21012272?v=4",
+      "profile": "https://github.com/CrescentRune",
+      "contributions": [
+        "ideas",
+        "code",
+        "review"
+      ]
     }
   ],
   "contributorsPerLine": 7,
