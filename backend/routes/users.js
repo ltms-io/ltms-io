@@ -12,23 +12,23 @@ const uploadStrategy = multer({ storage: inMemoryStorage }).single('file');
 const getStream = require('into-stream');
 const uuidv1 = require('uuidv1');
 
-const ONE_MEGABYTE = 1024 * 1024;
-const uploadOptions = { bufferSize: 4 * ONE_MEGABYTE, maxBuffers: 20 };
+// const ONE_MEGABYTE = 1024 * 1024;
+// const uploadOptions = { bufferSize: 4 * ONE_MEGABYTE, maxBuffers: 20 };
 
-const sharedKeyCredential = new StorageSharedKeyCredential(
-    dev_config.AZURE_STORAGE_ACCOUNT_NAME || process.env.AZURE_STORAGE_ACCOUNT_NAME,
-    dev_config.AZURE_STORAGE_ACCOUNT_ACCESS_KEY || process.env.AZURE_STORAGE_ACCOUNT_ACCESS_KEY);
-const pipeline = newPipeline(sharedKeyCredential);
+// const sharedKeyCredential = new StorageSharedKeyCredential(
+//     dev_config.AZURE_STORAGE_ACCOUNT_NAME || process.env.AZURE_STORAGE_ACCOUNT_NAME,
+//     dev_config.AZURE_STORAGE_ACCOUNT_ACCESS_KEY || process.env.AZURE_STORAGE_ACCOUNT_ACCESS_KEY);
+// const pipeline = newPipeline(sharedKeyCredential);
 
-const blobServiceClient = new BlobServiceClient(
-    `https://${dev_config.AZURE_STORAGE_ACCOUNT_NAME || process.env.AZURE_STORAGE_ACCOUNT_NAME}.blob.core.windows.net`,
-    pipeline
-)
+// const blobServiceClient = new BlobServiceClient(
+//     `https://${dev_config.AZURE_STORAGE_ACCOUNT_NAME || process.env.AZURE_STORAGE_ACCOUNT_NAME}.blob.core.windows.net`,
+//     pipeline
+// )
 
-const getBlobName = originalName => {
-    const ident = uuidv1();
-    return `${ident}-${originalName}`;
-}
+// const getBlobName = originalName => {
+//     const ident = uuidv1();
+//     return `${ident}-${originalName}`;
+// }
 
 sgMail.setApiKey(dev_config.SENDGRID_API_KEY || process.env.SENDGRID_API_KEY);
 
