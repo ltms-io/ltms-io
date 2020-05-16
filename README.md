@@ -1,5 +1,6 @@
 # LTMS.io
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d2e93e34bea44c19bc7079bb012649a6)](https://app.codacy.com/gh/ltms-io/ltms-io?utm_source=github.com&utm_medium=referral&utm_content=ltms-io/ltms-io&utm_campaign=Badge_Grade_Settings)
 [![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
