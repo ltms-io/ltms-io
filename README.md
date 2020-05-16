@@ -1,6 +1,6 @@
 # LTMS.io
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![forthebadge](https://forthebadge.com/images/badges/built-with-grammas-recipe.svg)](https://forthebadge.com)
@@ -34,8 +34,7 @@ Want to help out? Join our Slack [here](https://join.slack.com/t/ltmsio/shared_i
 
 ## General Notes
 
-- The repository is setup to auto deploy to Heroku on every push to master. Branching should be done off of dev, which will be merged as needed.
-- Testing has been setup in the backend. It requires you to go into the testing-app.js file and declare your routes and any other dependencies that are in app.js. Open to better approaches. 
+- The repository is setup to auto deploy to Heroku on every push to master. Branching should be done off of dev, which will be merged as needed. 
 
 ## Lanuages and Frameworks
 
