@@ -2,7 +2,6 @@
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/0b322da47f3649cd839dd132d52c32fc)](https://www.codacy.com/gh/ltms-io/ltms-io?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ltms-io/ltms-io&amp;utm_campaign=Badge_Grade)
 
 [![forthebadge](https://forthebadge.com/images/badges/built-with-grammas-recipe.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/compatibility-club-penguin.svg)](https://forthebadge.com)
