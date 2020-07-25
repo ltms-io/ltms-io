@@ -19,7 +19,7 @@
     "jest-enzyme": "^7.1.2",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.26.0",
-    "mocha": "^7.2.0",
+    "mocha": "^8.0.1",
     "njwt": "^1.0.0",
     "pretty-ms": "^7.0.0",
     "prop-types": "^15.7.2",
