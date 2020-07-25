@@ -30,7 +30,7 @@
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "jsonwebtoken": "^8.5.1",
-    "mocha": "^7.1.2",
+    "mocha": "^8.0.1",
     "should": "^13.2.3"
   }
 }
