@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@azure/storage-blob": "^12.1.2",
-    "@sendgrid/mail": "^7.1.1",
+    "@sendgrid/mail": "^7.2.2",
     "axios": "^0.19.2",
     "body-parser": "^1.19.0",
     "cookie-parser": "~1.4.5",
