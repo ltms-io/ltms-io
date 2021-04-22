@@ -17,7 +17,7 @@
     "debug": "~4.1.1",
     "express": "~4.17.1",
     "http-errors": "~1.7.3",
-    "into-stream": "^5.1.1",
+    "into-stream": "^7.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.14",
     "morgan": "~1.10.0",
